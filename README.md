@@ -211,6 +211,15 @@ npm run ios           # Launch iOS simulator (macOS only)
 
 ## ⚙️ Environment Variables
 
+---
+
+## 📘 User Manual
+
+A detailed user manual for end-users, therapists, and platform administrators is available at [USER_MANUAL.md](USER_MANUAL.md). It covers account setup, daily workflows, therapist tools, admin operations, safety procedures, and troubleshooting.
+
+Please consult the manual for role-specific step-by-step guides and screenshots.
+
+
 ### Backend (`backend/.env`)
 
 ```env

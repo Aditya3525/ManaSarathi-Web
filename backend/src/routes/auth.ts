@@ -1,6 +1,5 @@
 import express from 'express';
 import passport from '../config/passport';
-import rateLimit from 'express-rate-limit';
 import {
   register,
   login,
@@ -8,8 +7,6 @@ import {
   googleAuthSuccess,
   googleAuthFailure,
   validateToken,
-  verifyEmail,
-  resendEmailVerification,
   setupPassword,
   updateProfile,
   logout,
@@ -30,21 +27,41 @@ import {
   updateProfileSchema,
 } from '../api/validators';
 import { prisma } from '../config/database';
-import { isAllowedFrontendOrigin, normalizeOrigin } from '../config/allowedOrigins';
-// NEW: Import specific auth rate limiters
-import {
-  loginLimiter,
-  registerLimiter,
-  passwordResetLimiter,
-  verificationResendLimiter,
-  oauthLimiter,
-} from '../middleware/authRateLimits';
 
 const router = express.Router();
 
+const normalizeUrl = (value: string): string => value.replace(/\/+$/, '');
+
+const isAllowedFrontendOrigin = (origin: string): boolean => {
+  const normalizedOrigin = normalizeUrl(origin);
+  const configuredFrontendUrl = process.env.FRONTEND_URL ? normalizeUrl(process.env.FRONTEND_URL) : '';
+
+  if (configuredFrontendUrl && normalizedOrigin === configuredFrontendUrl) {
+    return true;
+  }
+
+  try {
+    const parsed = new URL(normalizedOrigin);
+    const protocol = parsed.protocol.toLowerCase();
+    const hostname = parsed.hostname.toLowerCase();
+
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      return protocol === 'http:' || protocol === 'https:';
+    }
+
+    if (protocol !== 'https:') {
+      return false;
+    }
+
+    return hostname.endsWith('.vercel.app') || hostname === 'maansarathi.app';
+  } catch {
+    return false;
+  }
+};
+
 const extractOrigin = (value: string): string => {
   try {
-    return normalizeOrigin(new URL(value).origin);
+    return normalizeUrl(new URL(value).origin);
   } catch {
     return '';
   }
@@ -54,19 +71,13 @@ const encodeOAuthState = (payload: { platform: 'web' | 'mobile'; frontendOrigin?
   return Buffer.from(JSON.stringify(payload), 'utf8').toString('base64url');
 };
 
-// NEW: Using specific rate limiters for each auth endpoint
 // Traditional email/password routes
-router.post('/register', registerLimiter, validate(registerSchema), asyncHandler(register));
-router.post('/login', loginLimiter, validate(loginSchema), asyncHandler(login));
-router.get('/verify-email', asyncHandler(verifyEmail));
-router.post('/resend-verification', verificationResendLimiter, asyncHandler(resendEmailVerification));
-router.post('/reset-password', passwordResetLimiter, asyncHandler(resetPasswordWithSecurityAnswer));
-router.post('/reset-password/authenticated', authenticate, asyncHandler(resetPasswordWithSecurityAnswerAuthenticated));
-router.post('/update-security-question', authenticate, asyncHandler(updateSecurityQuestionWithPassword));
-router.post('/update-approach', authenticate, asyncHandler(updateApproachWithPassword));
+router.post('/register', validate(registerSchema), asyncHandler(register));
+router.post('/login', validate(loginSchema), asyncHandler(login));
 
-// Google OAuth routes with rate limiting
-router.get('/google', oauthLimiter, (req, res, next) => {
+// Google OAuth routes
+// Accept ?platform=mobile query param so the callback knows where to redirect
+router.get('/google', (req, res, next) => {
   const platform = req.query.platform === 'mobile' ? 'mobile' : 'web';
   let frontendOriginForState = '';
 
@@ -102,9 +113,8 @@ router.get('/google/failure', googleAuthFailure);
 // (Mobile apps can't use browser redirect flow, so they send a code from Google Sign-In SDK)
 router.post('/google/mobile', asyncHandler(async (req, res) => {
   const { code, idToken, email, name, googleId, profilePhoto, firstName, lastName } = req.body;
-  const normalizedEmail = typeof email === 'string' ? email.trim().toLowerCase() : '';
 
-  if (!normalizedEmail || !googleId) {
+  if (!email || !googleId) {
     return res.status(400).json({
       success: false,
       error: 'Email and googleId are required for mobile Google auth',
@@ -115,13 +125,12 @@ router.post('/google/mobile', asyncHandler(async (req, res) => {
 
   try {
     // Find or create user by email
-    let user = await db.user.findUnique({ where: { email: normalizedEmail } });
+    let user = await db.user.findUnique({ where: { email } });
 
     if (user) {
       // Update Google ID and profile info if needed
       const updateData: any = {};
       if (!user.googleId) updateData.googleId = googleId;
-      if (!user.isEmailVerified) updateData.isEmailVerified = true;
       if (!user.profilePhoto && profilePhoto) updateData.profilePhoto = profilePhoto;
       if (!user.firstName && firstName) updateData.firstName = firstName;
       if (!user.lastName && lastName) updateData.lastName = lastName;
@@ -133,13 +142,12 @@ router.post('/google/mobile', asyncHandler(async (req, res) => {
       // Create new user
       user = await db.user.create({
         data: {
-          email: normalizedEmail,
-          name: name || `${firstName || ''} ${lastName || ''}`.trim() || normalizedEmail.split('@')[0],
+          email,
+          name: name || `${firstName || ''} ${lastName || ''}`.trim() || email.split('@')[0],
           googleId,
           profilePhoto: profilePhoto || null,
           firstName: firstName || null,
           lastName: lastName || null,
-          isEmailVerified: true,
           isOnboarded: false,
           dataConsent: true,
         },

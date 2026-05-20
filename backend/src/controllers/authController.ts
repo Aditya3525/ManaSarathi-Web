@@ -3,24 +3,20 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import Joi from 'joi';
 import { prisma } from '../config/database';
-import { getJwtSecret } from '../config/auth';
-import { isAllowedFrontendOrigin } from '../config/allowedOrigins';
 import { 
   AppError,
   NotFoundError, 
   ConflictError, 
+  UnauthorizedError,
   DatabaseError,
   BadRequestError
 } from '../shared/errors/AppError';
-import { validateRegistrationEmail } from '../utils/emailValidation';
-import { STRONG_PASSWORD_MESSAGE, STRONG_PASSWORD_REGEX, isStrongPassword } from '../shared/auth/passwordPolicy';
 
 // Validation schemas
 const registerSchema = Joi.object({
+  name: Joi.string().min(2).max(50).required(),
   email: Joi.string().email().required(),
-  password: Joi.string().pattern(STRONG_PASSWORD_REGEX).required().messages({
-    'string.pattern.base': STRONG_PASSWORD_MESSAGE,
-  }),
+  password: Joi.string().min(6).required(),
 });
 
 const loginSchema = Joi.object({
@@ -40,16 +36,12 @@ const forgotPasswordSchema = Joi.object({
 const resetPasswordWithSecuritySchema = Joi.object({
   email: Joi.string().email().required(),
   answer: Joi.string().min(2).max(200).required(),
-  newPassword: Joi.string().pattern(STRONG_PASSWORD_REGEX).required().messages({
-    'string.pattern.base': STRONG_PASSWORD_MESSAGE,
-  }),
+  newPassword: Joi.string().min(6).required(),
 });
 
 const selfResetPasswordSchema = Joi.object({
   answer: Joi.string().min(2).max(200).required(),
-  newPassword: Joi.string().pattern(STRONG_PASSWORD_REGEX).required().messages({
-    'string.pattern.base': STRONG_PASSWORD_MESSAGE,
-  }),
+  newPassword: Joi.string().min(6).required(),
 });
 
 const updateSecurityQuestionWithPasswordSchema = Joi.object({
@@ -66,20 +58,31 @@ const updateApproachWithPasswordSchema = Joi.object({
 const normalizeSecurityAnswer = (answer: string): string => answer.trim().toLowerCase();
 const getFrontendBaseUrl = (): string => (process.env.FRONTEND_URL || 'http://localhost:3000').replace(/\/+$/, '');
 
-const buildVerificationRedirectUrl = (status: 'success' | 'expired' | 'invalid', email?: string): string => {
-  const params = new URLSearchParams();
+const isAllowedFrontendOrigin = (origin: string): boolean => {
+  const normalizedOrigin = origin.replace(/\/+$/, '');
+  const configuredFrontendUrl = (process.env.FRONTEND_URL || '').replace(/\/+$/, '');
 
-  if (status === 'success') {
-    params.set('email_verified', '1');
-  } else {
-    params.set('email_verification', status);
+  if (configuredFrontendUrl && normalizedOrigin === configuredFrontendUrl) {
+    return true;
   }
 
-  if (email) {
-    params.set('email', email);
-  }
+  try {
+    const parsed = new URL(normalizedOrigin);
+    const protocol = parsed.protocol.toLowerCase();
+    const hostname = parsed.hostname.toLowerCase();
 
-  return `${getFrontendBaseUrl()}/user_login?${params.toString()}`;
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      return protocol === 'http:' || protocol === 'https:';
+    }
+
+    if (protocol !== 'https:') {
+      return false;
+    }
+
+    return hostname.endsWith('.vercel.app') || hostname === 'maansarathi.app';
+  } catch {
+    return false;
+  }
 };
 
 const getOAuthOriginFromState = (req: Request): string | null => {
@@ -121,7 +124,8 @@ const getOAuthFrontendBaseUrl = (req: Request): string => {
 
 // Generate JWT token
 const generateToken = (userId: string): string => {
-  const secret = getJwtSecret();
+  // Use provided secret or safe fallback for development to prevent silent flow break
+  const secret = process.env.JWT_SECRET || 'dev-fallback-secret';
   return jwt.sign(
     { id: userId },
     secret as jwt.Secret,
@@ -141,79 +145,43 @@ export const googleAuthSuccess = async (req: Request, res: Response) => {
     }
 
     const user = req.user as any;
-    const justCreated = Boolean(user.justCreated);
+    const token = generateToken(user.id);
 
-    // Re-read from DB for canonical account state. req.user may not include password
-    // depending on passport serialization/deserialization path.
-    const canonicalUser = await prisma.user.findUnique({
-      where: { id: user.id },
-      select: {
-        id: true,
-        email: true,
-        isEmailVerified: true,
-        name: true,
-        firstName: true,
-        lastName: true,
-        profilePhoto: true,
-        isOnboarded: true,
-        approach: true,
-        birthday: true,
-        gender: true,
-        region: true,
-        language: true,
-        emergencyContact: true,
-        emergencyPhone: true,
-        dataConsent: true,
-        clinicianSharing: true,
-        isPremium: true,
-        createdAt: true,
-        updatedAt: true,
-        password: true,
-      }
-    });
+    // Detect if this user was just created in passport strategy
+    const justCreated = user.justCreated;
 
-    if (!canonicalUser) {
-      return res.redirect(`${frontendBaseUrl}/auth/callback?error=oauth_failed`);
-    }
-
-    const token = generateToken(canonicalUser.id);
-    const hasPassword = Boolean(canonicalUser.password);
-
+    // Determine redirect:
+    // Existing user (has password OR already onboarded) -> dashboard
+    // Newly created Google user with no password -> setup-password
+    // After password but not onboarded -> onboarding
     let redirectParam = 'dashboard';
     let needsSetup = false;
 
-    if (!hasPassword) {
+    if (justCreated && !user.password) {
       redirectParam = 'setup-password';
       needsSetup = true;
-    } else if (!canonicalUser.isOnboarded) {
+    } else if (!user.isOnboarded) {
+      // Only prompt onboarding if not a fully onboarded existing account
       redirectParam = 'onboarding';
       needsSetup = true;
     }
 
     // Create comprehensive user data object for frontend
     const userData = {
-      id: canonicalUser.id,
-      email: canonicalUser.email,
-      isEmailVerified: canonicalUser.isEmailVerified,
-      name: canonicalUser.name,
-      firstName: canonicalUser.firstName,
-      lastName: canonicalUser.lastName,
-      profilePhoto: canonicalUser.profilePhoto,
-      isOnboarded: canonicalUser.isOnboarded,
-      hasPassword,
-      justCreated,
-      approach: canonicalUser.approach,
-      birthday: canonicalUser.birthday,
-      gender: canonicalUser.gender,
-      region: canonicalUser.region,
-      language: canonicalUser.language,
-      emergencyContact: canonicalUser.emergencyContact,
-      emergencyPhone: canonicalUser.emergencyPhone,
-      dataConsent: canonicalUser.dataConsent,
-      clinicianSharing: canonicalUser.clinicianSharing,
-      isPremium: canonicalUser.isPremium,
-      createdAt: canonicalUser.createdAt,
-      updatedAt: canonicalUser.updatedAt,
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      profilePhoto: user.profilePhoto,
+      isOnboarded: user.isOnboarded,
+  hasPassword: !!user.password,
+    justCreated, // Include justCreated in user data
+      approach: user.approach,
+      birthday: user.birthday,
+      gender: user.gender,
+      region: user.region,
+      language: user.language
     };
 
     // Redirect to frontend OAuth callback with token and comprehensive user data
@@ -253,17 +221,11 @@ export const register = async (req: Request, res: Response) => {
       throw new BadRequestError(error.details[0].message);
     }
 
-    const { email, password } = req.body;
-    const emailValidation = validateRegistrationEmail(email);
-    if (!emailValidation.isValid) {
-      throw new BadRequestError(emailValidation.message || 'Invalid email address');
-    }
-
-    const normalizedEmail = emailValidation.normalizedEmail;
+    const { name, email, password } = req.body;
 
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({
-      where: { email: normalizedEmail },
+      where: { email: email.toLowerCase() },
     });
 
     if (existingUser) {
@@ -274,30 +236,24 @@ export const register = async (req: Request, res: Response) => {
     const salt = await bcrypt.genSalt(12);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const placeholderName = normalizedEmail.split('@')[0];
-
     // Create user
     const createdUser = await prisma.user.create({
       data: {
-        name: placeholderName,
-        email: normalizedEmail,
+        name,
+        email: email.toLowerCase(),
         password: hashedPassword,
-        isEmailVerified: true,
       }
     });
 
-    const token = generateToken(createdUser.id);
-    const { password: _password, securityAnswerHash: _answerHash, ...userWithoutSensitive } = createdUser as any;
-    const userResponse = {
-      ...userWithoutSensitive,
-      hasPassword: !!createdUser.password,
-      isEmailVerified: true,
-    };
+    const { password: _createdPassword, securityAnswerHash: _createdAnswerHash, ...user } = createdUser as any;
+
+    // Generate token
+    const token = generateToken(user.id);
 
     res.status(201).json({
       success: true,
       data: {
-        user: userResponse,
+        user,
         token,
       },
     });
@@ -322,35 +278,23 @@ export const login = async (req: Request, res: Response) => {
 
     const { email, password } = req.body;
 
-    const sendInvalidCredentialResponse = () => {
-      res.status(401).json({
-        success: false,
-        error: 'Invalid email or password.',
-        suggestion: 'check_credentials',
-        message: 'Please check your credentials and try again.',
-      });
-    };
-
     // Find user
     const user = await prisma.user.findUnique({
       where: { email: email.toLowerCase() },
     });
 
     if (!user) {
-      sendInvalidCredentialResponse();
-      return;
+      throw new UnauthorizedError('Invalid credentials');
     }
 
     // Check password
     if (!user.password) {
-      sendInvalidCredentialResponse();
-      return;
+      throw new UnauthorizedError('Invalid credentials');
     }
     
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      sendInvalidCredentialResponse();
-      return;
+      throw new UnauthorizedError('Invalid credentials');
     }
 
     // Generate token
@@ -358,16 +302,11 @@ export const login = async (req: Request, res: Response) => {
 
     // Return user data (excluding sensitive fields)
     const { password: userPassword, securityAnswerHash, ...userWithoutSensitive } = user as any;
-    const userResponse = {
-      ...userWithoutSensitive,
-      hasPassword: !!userPassword,
-      isEmailVerified: !!user.isEmailVerified,
-    };
 
     res.json({
       success: true,
       data: {
-        user: userResponse,
+        user: userWithoutSensitive,
         token,
       },
     });
@@ -393,14 +332,10 @@ export const getCurrentUser = async (req: any, res: Response) => {
     }
 
     const { password: _password, securityAnswerHash: _answerHash, ...user } = userRecord as any;
-    const userResponse = {
-      ...user,
-      hasPassword: !!(userRecord as any).password,
-    };
 
     res.json({
       success: true,
-      data: { user: userResponse },
+      data: { user },
     });
   } catch (error) {
     // Re-throw AppError instances to be handled by error middleware
@@ -422,7 +357,7 @@ export const validateToken = async (req: Request, res: Response): Promise<void> 
       return;
     }
 
-    const decoded = jwt.verify(token, getJwtSecret()) as any;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key') as any;
     const userRecord = await prisma.user.findUnique({
       where: { id: decoded.id }
     });
@@ -441,35 +376,26 @@ export const validateToken = async (req: Request, res: Response): Promise<void> 
   }
 };
 
-export const verifyEmail = async (req: Request, res: Response) => {
-  const email = typeof req.query.email === 'string' ? req.query.email : undefined;
-  res.redirect(buildVerificationRedirectUrl('success', email));
-};
-
-export const resendEmailVerification = async (_req: Request, res: Response) => {
-  res.json({
-    success: true,
-    data: {
-      verificationSent: false,
-      message: 'Email verification is no longer required. You can log in directly.',
-    },
-  });
-};
-
 // Setup password for OAuth users
 export const setupPassword = async (req: any, res: Response) => {
   try {
+    console.log('Setup password request received');
+    console.log('Request body:', req.body);
+    console.log('User from auth middleware:', req.user);
+    
     const { password } = req.body;
     
-    if (!password || !isStrongPassword(password)) {
+    if (!password || password.length < 6) {
+      console.log('Password validation failed:', { password: password ? 'provided' : 'missing', length: password?.length });
       res.status(400).json({
         success: false,
-        error: STRONG_PASSWORD_MESSAGE,
+        error: 'Password must be at least 6 characters long',
       });
       return;
     }
 
     if (!req.user || !req.user.id) {
+      console.log('User not found in request:', req.user);
       res.status(401).json({
         success: false,
         error: 'User not authenticated',
@@ -478,24 +404,23 @@ export const setupPassword = async (req: any, res: Response) => {
     }
 
     // Hash password
+    console.log('Hashing password for user:', req.user.id);
     const salt = await bcrypt.genSalt(12);
     const hashedPassword = await bcrypt.hash(password, salt);
 
     // Update user with password
+    console.log('Updating user password in database');
     const updatedUser = await prisma.user.update({
       where: { id: req.user.id },
       data: { password: hashedPassword }
     });
 
     const { password: _password, securityAnswerHash: _answerHash, ...user } = updatedUser as any;
-    const userResponse = {
-      ...user,
-      hasPassword: !!updatedUser.password,
-    };
 
+    console.log('Password setup successful for user:', user.id);
     res.json({
       success: true,
-      data: { user: userResponse },
+      data: { user },
     });
   } catch (error) {
     console.error('Setup password error:', error);

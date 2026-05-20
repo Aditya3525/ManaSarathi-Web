@@ -1,57 +1,41 @@
 /**
  * Centralized API URL configuration.
  * 
- * In production, VITE_API_URL is set at build time (e.g. https://mana-sarathi-platform.onrender.com/api).
+ * In production, VITE_API_URL is set at build time (e.g. https://maansarathi-backend.onrender.com/api).
  * In development, dynamically resolves based on the browser's hostname so LAN
  * access from mobile devices also works.
  */
 
-const PROD_BACKEND_ORIGIN = 'https://mana-sarathi-platform.onrender.com';
+const PROD_API_ORIGIN_FALLBACK = 'https://maansarathi-backend.onrender.com';
 
-const toApiBase = (origin: string): string => `${origin.replace(/\/+$/, '')}/api`;
-
-const resolveConfiguredOrigin = (): string | null => {
-    const configured = (import.meta.env.VITE_API_URL as string | undefined)?.trim();
-    if (!configured) {
-        return null;
+/** Returns the API base URL with /api suffix, e.g. http://192.168.1.5:5000/api */
+export const getApiBaseUrl = (): string => {
+    // Production: always use the env-var set at build time
+    if (import.meta.env.VITE_API_URL) {
+        const raw = import.meta.env.VITE_API_URL as string;
+        return raw.endsWith('/api') ? raw : `${raw.replace(/\/+$/, '')}/api`;
     }
-
-    // Accept env values with or without /api and normalize to an origin.
-    const withScheme = /^https?:\/\//i.test(configured) ? configured : `https://${configured}`;
-
-    try {
-        const parsed = new URL(withScheme.replace(/\/api\/?$/i, ''));
-
-        if (import.meta.env.PROD) {
-            if (parsed.protocol !== 'https:') {
-                console.warn('[apiConfig] VITE_API_URL used non-https protocol in production; forcing https.');
-                parsed.protocol = 'https:';
-            }
-
-            // A frontend-hosted API URL is almost always a deployment misconfiguration.
-            if (typeof window !== 'undefined' && parsed.hostname === window.location.hostname) {
-                console.warn('[apiConfig] VITE_API_URL points to current frontend host in production; using backend fallback.');
-                return null;
-            }
-        }
-
-        return parsed.origin;
-    } catch {
-        console.warn('[apiConfig] Invalid VITE_API_URL; using fallback.');
-        return null;
+    if (import.meta.env.PROD) {
+        return `${PROD_API_ORIGIN_FALLBACK}/api`;
     }
+    // Development: dynamic hostname detection
+    const hostname = window.location.hostname;
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+        return 'http://localhost:5000/api';
+    }
+    return `http://${hostname}:5000/api`;
 };
 
-const resolveServerOrigin = (): string => {
-    const configuredOrigin = resolveConfiguredOrigin();
-    if (configuredOrigin) {
-        return configuredOrigin;
+/** Returns just the server origin, e.g. http://192.168.1.5:5000 */
+export const getServerBaseUrl = (): string => {
+    // Production: derive from VITE_API_URL by stripping /api
+    if (import.meta.env.VITE_API_URL) {
+        return import.meta.env.VITE_API_URL.replace(/\/api\/?$/, '');
     }
-
     if (import.meta.env.PROD) {
-        return PROD_BACKEND_ORIGIN;
+        return PROD_API_ORIGIN_FALLBACK;
     }
-
+    // Development: dynamic hostname detection
     const hostname = window.location.hostname;
     if (hostname === 'localhost' || hostname === '127.0.0.1') {
         return 'http://localhost:5000';
@@ -59,17 +43,17 @@ const resolveServerOrigin = (): string => {
     return `http://${hostname}:5000`;
 };
 
-/** Returns the API base URL with /api suffix, e.g. https://mana-sarathi-platform.onrender.com/api */
-export const getApiBaseUrl = (): string => {
-    return toApiBase(resolveServerOrigin());
-};
-
-/** Returns just the server origin, e.g. https://mana-sarathi-platform.onrender.com */
-export const getServerBaseUrl = (): string => {
-    return resolveServerOrigin();
-};
-
-/** Returns the WebSocket base URL, e.g. wss://mana-sarathi-platform.onrender.com */
+/** Returns the WebSocket base URL, e.g. ws://192.168.1.5:5000 */
 export const getWsBaseUrl = (): string => {
-    return resolveServerOrigin().replace(/^http/, 'ws');
+    if (import.meta.env.VITE_API_URL) {
+        return import.meta.env.VITE_API_URL.replace(/\/api\/?$/, '').replace(/^http/, 'ws');
+    }
+    if (import.meta.env.PROD) {
+        return PROD_API_ORIGIN_FALLBACK.replace(/^http/, 'ws');
+    }
+    const hostname = window.location.hostname;
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+        return 'ws://localhost:5000';
+    }
+    return `ws://${hostname}:5000`;
 };

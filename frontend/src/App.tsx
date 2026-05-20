@@ -1,123 +1,154 @@
 import { QueryClientProvider } from '@tanstack/react-query';
-import React, { Suspense, useCallback, useEffect, useRef, useState } from 'react';
-import { Toaster as SonnerToaster } from 'sonner';
-import { PageTransition } from './components/ui/motion-wrapper';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
+import { getServerBaseUrl, getApiBaseUrl } from './config/apiConfig';
 
+import { AdminDashboard } from './admin/AdminDashboard';
+import { TherapistLoginPage } from './therapist/TherapistLoginPage';
+import { TherapistDashboard } from './therapist/TherapistDashboard';
 import { AssessmentList, AssessmentFlow, CombinedAssessmentFlow, InsightsResults, OverallAssessmentInvite, OverallAssessmentSelection, OVERALL_ASSESSMENT_OPTION_IDS } from './components/features/assessment';
 import { AssessmentCompletionPayload } from './components/features/assessment/AssessmentFlow';
 import { AdminLoginPage, LandingPage, OAuthCallback, PasswordSetup, UserLoginPage } from './components/features/auth';
+import { Chatbot } from './components/features/chat';
+import { ContentLibrary, Practices } from './components/features/content';
+import { Dashboard } from './components/features/dashboard';
+import { GamesHub } from './components/features/games';
 import { OnboardingFlow } from './components/features/onboarding';
-import { PWAInstallPrompt } from './components/ui/pwa-install-prompt';
+import { PersonalizedPlan } from './components/features/plans';
+import { Progress, Profile } from './components/features/profile';
+import { HelpSafety } from './components/layout';
 import { ToastContainer } from './components/ui/ToastContainer';
-import { getServerBaseUrl } from './config/apiConfig';
+import { PWAInstallPrompt } from './components/ui/pwa-install-prompt';
 import { AdminAuthProvider, useAdminAuth } from './contexts/AdminAuthContext';
 import { ChatProvider } from './contexts/ChatContext';
 import { ToastProvider } from './contexts/ToastContext';
 import { useAssessmentHistory } from './hooks/useAssessments';
-import { queryClient, queryKeys } from './lib/queryClient';
-import { assessmentsApi, AssessmentHistoryEntry, AssessmentInsights, AssessmentSessionSummary } from './services/api';
+import { queryClient } from './lib/queryClient';
+import { assessmentsApi, AssessmentInsights, AssessmentSessionSummary } from './services/api';
 import { getCurrentUser, loginUser, registerUser, signOut, StoredUser, completeOnboarding, setupUserPassword } from './services/auth';
 import { useAuthStore } from './stores/authStore';
-import { TherapistLoginPage } from './therapist/TherapistLoginPage';
-import { useTherapistAuth } from './therapist/useTherapistAuth';
-import {
-  PAGE_ROUTES,
-  PRE_ONBOARDING_ALLOWED_PAGES,
-  PUBLIC_PAGES,
-  THERAPIST_PAGES,
-  normalizePath,
-  pathToPage,
-  resolveInitialPage,
-  type Page,
-} from './utils/appRouting';
 
-const AdminDashboard = React.lazy(() => import('./admin/AdminDashboard').then((module) => ({ default: module.AdminDashboard })));
-const ResponsiveChatbot = React.lazy(() => import('./components/features/chat').then((module) => ({ default: module.ResponsiveChatbot })));
-const ContentLibrary = React.lazy(() => import('./components/features/content').then((module) => ({ default: module.ContentLibrary })));
-const Practices = React.lazy(() => import('./components/features/content').then((module) => ({ default: module.Practices })));
-const Dashboard = React.lazy(() => import('./components/features/dashboard').then((module) => ({ default: module.Dashboard })));
-const GamesHub = React.lazy(() => import('./components/features/games').then((module) => ({ default: module.GamesHub })));
-const JournalPage = React.lazy(() => import('./components/features/journal').then((module) => ({ default: module.JournalPage })));
-const Progress = React.lazy(() => import('./components/features/profile').then((module) => ({ default: module.Progress })));
-const Profile = React.lazy(() => import('./components/features/profile').then((module) => ({ default: module.Profile })));
-const HelpSafety = React.lazy(() => import('./components/layout').then((module) => ({ default: module.HelpSafety })));
-const TherapistDashboard = React.lazy(() => import('./therapist/TherapistDashboard').then((module) => ({ default: module.TherapistDashboard })));
+type Page =
+  | 'landing'
+  | 'user-login'
+  | 'admin-login'
+  | 'onboarding'
+  | 'password-setup'
+  | 'dashboard'
+  | 'assessments'
+  | 'assessment-flow'
+  | 'combined-assessment-flow'
+  | 'assessment-invite'
+  | 'assessment-selection'
+  | 'insights'
+  | 'plan'
+  | 'chatbot'
+  | 'library'
+  | 'practices'
+  | 'games'
+  | 'progress'
+  | 'profile'
+  | 'help'
+  | 'oauth-callback'
+  | 'admin'
+  | 'therapist-login'
+  | 'therapist-portal';
 
-type AdminLoginDestinationChoice = 'user' | 'admin';
+type User = StoredUser;
 
-type PendingAdminDestinationChoice = {
-  user: StoredUser;
-  token: string;
-  credentials: { email: string; password: string };
-  normalizedEmail: string;
+const normalizePath = (path: string): string => {
+  if (!path) return '/';
+  if (path === '/') return '/';
+  return path.replace(/\/+$/, '') || '/';
 };
 
-const ADMIN_LOGIN_DESTINATION_STORAGE_KEY = 'mw-admin-login-destination-v1';
-
-const normalizeEmailForAdminDestination = (email: string): string => email.trim().toLowerCase();
-
-const readAdminDestinationChoices = (): Record<string, AdminLoginDestinationChoice> => {
-  if (typeof window === 'undefined') {
-    return {};
-  }
-
-  try {
-    const raw = localStorage.getItem(ADMIN_LOGIN_DESTINATION_STORAGE_KEY);
-    if (!raw) {
-      return {};
-    }
-
-    const parsed = JSON.parse(raw) as Record<string, string>;
-    if (!parsed || typeof parsed !== 'object') {
-      return {};
-    }
-
-    return Object.entries(parsed).reduce((acc, [email, destination]) => {
-      if (destination === 'user' || destination === 'admin') {
-        acc[email] = destination;
-      }
-      return acc;
-    }, {} as Record<string, AdminLoginDestinationChoice>);
-  } catch {
-    return {};
-  }
+const PAGE_ROUTES: Record<Page, string> = {
+  landing: '/',
+  'user-login': '/user_login',
+  'admin-login': '/admin_login',
+  onboarding: '/onboarding',
+  'password-setup': '/password-setup',
+  dashboard: '/dashboard',
+  assessments: '/assessments',
+  'assessment-flow': '/assessments/active',
+  'combined-assessment-flow': '/assessments/combined',
+  'assessment-invite': '/assessments/invite',
+  'assessment-selection': '/assessments/selection',
+  insights: '/insights',
+  plan: '/plan',
+  chatbot: '/chatbot',
+  library: '/library',
+  practices: '/practices',
+  games: '/games',
+  progress: '/progress',
+  profile: '/profile',
+  help: '/help',
+  'oauth-callback': '/auth/callback',
+  admin: '/admin',
+  'therapist-login': '/therapist_login',
+  'therapist-portal': '/therapist_portal'
 };
 
-const writeAdminDestinationChoices = (choices: Record<string, AdminLoginDestinationChoice>): void => {
-  if (typeof window === 'undefined') {
-    return;
+const PATH_TO_PAGE: Record<string, Page> = Object.entries(PAGE_ROUTES).reduce((acc, [page, route]) => {
+  acc[route] = page as Page;
+  return acc;
+}, {} as Record<string, Page>);
+
+const PUBLIC_PAGES = new Set<Page>(['landing', 'user-login', 'admin-login', 'therapist-login', 'oauth-callback']);
+const THERAPIST_PAGES = new Set<Page>(['therapist-login', 'therapist-portal']);
+
+const PRE_ONBOARDING_ALLOWED_PAGES = new Set<Page>([
+  'landing', // Allow non-onboarded users to return to landing page
+  'onboarding',
+  'assessment-invite',
+  'assessment-selection',
+  'combined-assessment-flow',
+  'assessment-flow',
+  'insights',
+  'password-setup'
+]);
+
+const pathToPage = (rawPath: string): Page => {
+  const normalized = normalizePath(rawPath);
+
+  if (normalized === '/therapist-login') {
+    return 'therapist-login';
   }
 
-  try {
-    localStorage.setItem(ADMIN_LOGIN_DESTINATION_STORAGE_KEY, JSON.stringify(choices));
-  } catch (error) {
-    console.warn('Unable to persist admin destination choice:', error);
-  }
-};
-
-const getRememberedAdminDestination = (normalizedEmail: string): AdminLoginDestinationChoice | null => {
-  const choices = readAdminDestinationChoices();
-  return choices[normalizedEmail] ?? null;
-};
-
-const setRememberedAdminDestination = (
-  normalizedEmail: string,
-  destination: AdminLoginDestinationChoice
-): void => {
-  const choices = readAdminDestinationChoices();
-  choices[normalizedEmail] = destination;
-  writeAdminDestinationChoices(choices);
-};
-
-const clearRememberedAdminDestination = (normalizedEmail: string): void => {
-  const choices = readAdminDestinationChoices();
-  if (!(normalizedEmail in choices)) {
-    return;
+  if (normalized === '/therapist-portal') {
+    return 'therapist-portal';
   }
 
-  delete choices[normalizedEmail];
-  writeAdminDestinationChoices(choices);
+  return PATH_TO_PAGE[normalized] ?? 'landing';
+};
+
+const resolveInitialPage = (user: User | null, requestedPage: Page, adminAuthenticated: boolean): Page => {
+  if (requestedPage === 'admin') {
+    return adminAuthenticated ? 'admin' : 'admin-login';
+  }
+
+  // Therapist portal pages are public (login) or session-gated (portal)
+  if (requestedPage === 'therapist-login' || requestedPage === 'therapist-portal') {
+    return requestedPage;
+  }
+
+  if (!user) {
+    return PUBLIC_PAGES.has(requestedPage) ? requestedPage : 'user-login';
+  }
+
+  if (!user.isOnboarded && !PRE_ONBOARDING_ALLOWED_PAGES.has(requestedPage)) {
+    return 'onboarding';
+  }
+
+  if (requestedPage === 'landing' || requestedPage === 'user-login' || requestedPage === 'admin-login') {
+    return user.isOnboarded ? 'dashboard' : 'onboarding';
+  }
+
+  if (requestedPage === 'oauth-callback') {
+    return user.isOnboarded ? 'dashboard' : 'onboarding';
+  }
+
+  return requestedPage;
 };
 
 const deriveScoresFromSummary = (summaries: AssessmentInsights['byType']): Record<string, number> => {
@@ -165,12 +196,6 @@ const DEFAULT_COMBINED_SELECTION = (() => {
   return defaults.length > 0 ? defaults : Array.from(OVERALL_ASSESSMENT_ID_SET);
 })();
 
-const RouteLoadingFallback = () => (
-  <div className="flex min-h-screen items-center justify-center bg-background text-muted-foreground">
-    Loading...
-  </div>
-);
-
 const DASHBOARD_TOUR_STORAGE_KEY = 'mw-dashboard-tour-pending';
 const PERSISTED_UI_PREFERENCE_KEYS = [
   'mw-accessibility-settings-v1',
@@ -188,11 +213,11 @@ function AppInner() {
   const logoutFromStore = useAuthStore((state) => state.logout);
 
   // Admin auth from context
-  const { admin: adminUser } = useAdminAuth();
+  const { admin: adminUser, adminAutoLogin } = useAdminAuth();
 
   const [loadingUser, setLoadingUser] = useState(true);
   const [authError, setAuthError] = useState<string | null>(null);
-  const [loginError, setLoginError] = useState<{ error: string; suggestion?: string; message?: string; verificationUrl?: string } | null>(null);
+  const [loginError, setLoginError] = useState<{ error: string; suggestion?: string; message?: string } | null>(null);
   const [currentAssessment, setCurrentAssessment] = useState<string | null>(null);
   const [selectedAssessmentTypes, setSelectedAssessmentTypes] = useState<string[]>([]);
 
@@ -207,32 +232,14 @@ function AppInner() {
     enabled: !!user && currentPage !== 'admin' && currentPage !== 'admin-login' && currentPage !== 'therapist-login' && currentPage !== 'therapist-portal'
   });
 
-  const {
-    session: therapistSession,
-    loading: therapistSessionLoading,
-    login: therapistPortalLogin,
-    logout: therapistPortalLogout,
-  } = useTherapistAuth();
-
+  // Therapist portal state
+  const [therapistSession, setTherapistSession] = useState<{ therapistId: string; therapistName: string } | null>(null);
   const [therapistLoginError, setTherapistLoginError] = useState<string | null>(null);
-  const [pendingAdminDestinationChoice, setPendingAdminDestinationChoice] = useState<PendingAdminDestinationChoice | null>(null);
 
   // Derive values from React Query
   const assessmentHistory = assessmentData?.history ?? [];
   const assessmentInsights = assessmentData?.insights ?? null;
   const assessmentError = assessmentQueryError?.message ?? null;
-
-  const primeAssessmentCache = useCallback(
-    (activeUserId: string | undefined, payload: { history: AssessmentHistoryEntry[]; insights: AssessmentInsights }) => {
-      if (!activeUserId) {
-        return;
-      }
-
-      queryClient.setQueryData(queryKeys.assessmentHistory(activeUserId), payload);
-      queryClient.setQueryData(queryKeys.assessmentInsights(activeUserId), payload.insights);
-    },
-    []
-  );
 
   // OLD STATE - Commented out, now using React Query above
   // const [assessmentHistory, setAssessmentHistory] = useState<AssessmentHistoryEntry[]>([]);
@@ -271,12 +278,6 @@ function AppInner() {
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
-
-  useEffect(() => {
-    if (loadingUser) {
-      return;
-    }
-  }, [loadingUser]);
 
   const syncAssessments = useCallback(
     async (activeUserId: string | null, updateUserScores = true) => {
@@ -346,10 +347,25 @@ function AppInner() {
   //   return undefined;
   // }, [currentPage, postAssessmentRedirect]);
 
-  const navigateTo = useCallback((page: Page, options?: { bypassAdminGuard?: boolean }) => {
-    // Admin route requires explicit admin session.
-    if (page === 'admin' && !options?.bypassAdminGuard && !adminUser) {
-      page = 'admin-login';
+  const navigateTo = useCallback(async (page: Page) => {
+    // Special handling for admin navigation
+    if (page === 'admin' && user && !adminUser) {
+      console.log('Attempting admin auto-login for user:', user.email);
+      try {
+        const success = await adminAutoLogin();
+        console.log('Admin auto-login result:', success);
+        if (success) {
+          console.log('Admin auto-login successful, proceeding to admin dashboard');
+          // Wait a bit for the session to be established
+          await new Promise(resolve => setTimeout(resolve, 500));
+        } else {
+          console.log('Admin auto-login failed, redirecting to admin login');
+          page = 'admin-login';
+        }
+      } catch (error) {
+        console.error('Admin auto-login error:', error);
+        page = 'admin-login';
+      }
     }
 
     if (page === 'insights') {
@@ -370,7 +386,7 @@ function AppInner() {
     if (targetPath && normalizePath(window.location.pathname) !== targetPath) {
       window.history.pushState({ page }, '', targetPath);
     }
-  }, [adminUser]);
+  }, [user, adminUser, adminAutoLogin]);
 
   // Keep auth/session state synchronized across browser tabs.
   useEffect(() => {
@@ -413,7 +429,7 @@ function AppInner() {
 
   const startGoogleOAuth = useCallback(() => {
     const frontendOrigin = encodeURIComponent(window.location.origin);
-    window.location.assign(`${getServerBaseUrl()}/api/auth/google?platform=web&frontend_origin=${frontendOrigin}`);
+    window.location.assign(`${getServerBaseUrl()}/api/auth/google?frontend_origin=${frontendOrigin}`);
   }, []);
 
   const startAssessment = (assessmentId: string, session?: AssessmentSessionSummary | null) => {
@@ -528,10 +544,8 @@ function AppInner() {
         throw new Error(response.error || 'Unable to save combined assessments');
       }
 
-      primeAssessmentCache(user.id, {
-        history: response.data.history,
-        insights: response.data.insights
-      });
+      // Refetch assessment data (React Query will update automatically)
+      await refetchAssessments();
 
       // Update session and selection state
       setActiveSession(response.data.session);
@@ -541,9 +555,11 @@ function AppInner() {
       setAssessmentSelectionDefaults(undefined);
 
       // Update user scores
-      const derivedScores = deriveScoresFromSummary(response.data.insights.byType);
-      const mergedScores = { ...user.assessmentScores, ...derivedScores };
-      updateUser({ assessmentScores: mergedScores });
+      if (user) {
+        const derivedScores = deriveScoresFromSummary(response.data.insights.byType);
+        const mergedScores = { ...user.assessmentScores, ...derivedScores };
+        updateUser({ assessmentScores: mergedScores });
+      }
 
       // Clear temporary state
       setSelectedAssessmentTypes([]);
@@ -582,18 +598,18 @@ function AppInner() {
         throw new Error(response.error || 'Unable to save assessment');
       }
 
-      primeAssessmentCache(user.id, {
-        history: response.data.history,
-        insights: response.data.insights
-      });
+      // Refetch assessment data (React Query will update automatically)
+      const refetchResult = await refetchAssessments();
 
       const sessionSummary = response.data.session ?? activeSession;
       setActiveSession(sessionSummary);
 
-      const derivedScores = deriveScoresFromSummary(response.data.insights.byType);
-      const previousScores = user.assessmentScores ?? {};
-      const mergedScores = { ...previousScores, ...derivedScores };
-      updateUser({ assessmentScores: mergedScores });
+      if (user && refetchResult.data) {
+        const derivedScores = deriveScoresFromSummary(refetchResult.data.insights.byType);
+        const previousScores = user.assessmentScores ?? {};
+        const mergedScores = { ...previousScores, ...derivedScores };
+        updateUser({ assessmentScores: mergedScores });
+      }
 
       if (sessionSummary && sessionSummary.status !== 'completed' && sessionSummary.pendingTypes.length > 0) {
         const nextAssessmentType = sessionSummary.pendingTypes[0];
@@ -614,11 +630,13 @@ function AppInner() {
     }
   };
 
-  const signUp = async (userData: { email: string; password: string }) => {
+  const signUp = async (userData: { name: string; email: string; password: string }) => {
     try {
       setAuthError(null);
+      console.log('Starting registration process for:', userData);
 
       const result = await registerUser(userData);
+      console.log('Registration successful:', result);
 
       // Set user data with token and route to onboarding
       setUser({
@@ -629,6 +647,7 @@ function AppInner() {
         clinicianSharing: false
       }, result.token);
 
+      console.log('Routing new user to onboarding');
       navigateTo('onboarding');
 
     } catch (error) {
@@ -650,44 +669,10 @@ function AppInner() {
     try {
       setLoginError(null);
       setAuthError(null);
-      setPendingAdminDestinationChoice(null);
+      console.log('Attempting login for:', credentials.email);
       const result = await loginUser(credentials);
       if (result) {
-        const normalizedEmail = normalizeEmailForAdminDestination(credentials.email);
-
-        const isAdminAccount = await adminAuth.checkIsUserAdmin(result.token);
-        if (isAdminAccount) {
-          const rememberedDestination = getRememberedAdminDestination(normalizedEmail);
-
-          if (rememberedDestination === 'user') {
-            setUser(result.user, result.token);
-            navigateTo(result.user.isOnboarded ? 'dashboard' : 'onboarding');
-            return;
-          }
-
-          if (rememberedDestination === 'admin') {
-            signOut();
-            logoutFromStore();
-            try {
-              await adminLogin(credentials);
-              navigateTo('admin', { bypassAdminGuard: true });
-              return;
-            } catch (error) {
-              clearRememberedAdminDestination(normalizedEmail);
-              console.error('Remembered admin destination failed, showing manual choice:', error);
-            }
-          }
-
-          signOut();
-          setPendingAdminDestinationChoice({ user: result.user, token: result.token, credentials, normalizedEmail });
-          setLoginError({
-            error: 'This account has both user and admin access.',
-            suggestion: 'choose_admin_or_user',
-            message: 'Choose where you want to continue: user dashboard or admin dashboard.'
-          });
-          return;
-        }
-
+        console.log('Login successful:', result);
         setUser(result.user, result.token);
         navigateTo(result.user.isOnboarded ? 'dashboard' : 'onboarding');
       } else {
@@ -699,7 +684,7 @@ function AppInner() {
     } catch (error: unknown) {
       console.error('Login error:', error);
       if (error && typeof error === 'object' && 'response' in error) {
-        const axiosError = error as { response?: { data?: { error?: string; suggestion?: string; message?: string; verificationUrl?: string } } };
+        const axiosError = error as { response?: { data?: { error?: string; suggestion?: string; message?: string } } };
         const errorData = axiosError.response?.data;
         if (errorData?.suggestion === 'create_account') {
           setLoginError({
@@ -721,7 +706,6 @@ function AppInner() {
       } else {
         setAuthError(error instanceof Error ? error.message : 'Login failed');
       }
-      setPendingAdminDestinationChoice(null);
     }
   };
 
@@ -736,7 +720,6 @@ function AppInner() {
 
     signOut();
     logoutFromStore(); // Clear all auth state (user, isAuthenticated, isLoading, error)
-    queryClient.removeQueries({ queryKey: ['dashboard'] });
 
     preservedPreferences.forEach((value, key) => {
       localStorage.setItem(key, value);
@@ -751,58 +734,14 @@ function AppInner() {
   };
 
   const adminAuth = useAdminAuth();
-  const { adminLogin } = adminAuth;
-
-  const continueAdminAccountAsUser = useCallback((rememberChoice = false) => {
-    if (!pendingAdminDestinationChoice) {
-      return;
-    }
-
-    const { user: chosenUser, token, normalizedEmail } = pendingAdminDestinationChoice;
-    if (rememberChoice) {
-      setRememberedAdminDestination(normalizedEmail, 'user');
-    }
-
-    setPendingAdminDestinationChoice(null);
-    setLoginError(null);
-    setAuthError(null);
-    setUser(chosenUser, token);
-    navigateTo(chosenUser.isOnboarded ? 'dashboard' : 'onboarding');
-  }, [navigateTo, pendingAdminDestinationChoice, setUser]);
-
-  const continueAdminAccountAsAdmin = useCallback(async (rememberChoice = false) => {
-    if (!pendingAdminDestinationChoice) {
-      return;
-    }
-
-    const { credentials, normalizedEmail } = pendingAdminDestinationChoice;
-    if (rememberChoice) {
-      setRememberedAdminDestination(normalizedEmail, 'admin');
-    }
-
-    setPendingAdminDestinationChoice(null);
-    setLoginError(null);
-    setAuthError(null);
-    signOut();
-    logoutFromStore();
-
-    try {
-      await adminLogin(credentials);
-      navigateTo('admin', { bypassAdminGuard: true });
-    } catch (error) {
-      if (rememberChoice) {
-        clearRememberedAdminDestination(normalizedEmail);
-      }
-      const message = error instanceof Error ? error.message : 'Admin login failed';
-      setAuthError(message);
-      navigateTo('admin-login');
-    }
-  }, [adminLogin, logoutFromStore, navigateTo, pendingAdminDestinationChoice]);
+  const { admin, adminLogin } = adminAuth;
 
   const handleAdminLogin = async (credentials: { email: string; password: string }) => {
     try {
+      console.log('App.tsx: Starting admin login process');
       await adminLogin(credentials);
-      navigateTo('admin', { bypassAdminGuard: true });
+      console.log('App.tsx: Admin login successful, redirecting to admin dashboard');
+      navigateTo('admin');
     } catch (error) {
       console.error('App.tsx: Admin login failed:', error);
       // The error will be handled by the AdminAuthContext
@@ -813,38 +752,59 @@ function AppInner() {
   const handleTherapistLogin = async (credentials: { email: string; password: string }) => {
     try {
       setTherapistLoginError(null);
-      await therapistPortalLogin(credentials.email, credentials.password);
+      const res = await fetch(`${getApiBaseUrl()}/therapist-portal/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(credentials)
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setTherapistLoginError(data.error || 'Login failed');
+        return;
+      }
+      // Store therapist JWT token for cross-domain auth
+      if (data.token) {
+        localStorage.setItem('therapistToken', data.token);
+      }
+      setTherapistSession({ therapistId: data.therapistId, therapistName: data.therapistName });
       navigateTo('therapist-portal');
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'Login failed';
-      setTherapistLoginError(message);
+    } catch (e: any) {
+      setTherapistLoginError(e.message || 'Login failed');
     }
   };
 
   const handleTherapistLogout = async () => {
-    await therapistPortalLogout();
+    try {
+      const therapistToken = localStorage.getItem('therapistToken');
+      await fetch(`${getApiBaseUrl()}/therapist-portal/logout`, {
+        method: 'POST',
+        headers: therapistToken ? { Authorization: `Bearer ${therapistToken}` } : {}
+      });
+    } catch (_) { }
+    localStorage.removeItem('therapistToken');
+    setTherapistSession(null);
     navigateTo('therapist-login');
   };
 
+  // Check therapist session on mount if on therapist-portal page
   useEffect(() => {
-    if (therapistSessionLoading) {
-      return;
-    }
-
     if (currentPage === 'therapist-portal' && !therapistSession) {
-      navigateTo('therapist-login');
+      const therapistToken = localStorage.getItem('therapistToken');
+      if (!therapistToken) {
+        navigateTo('therapist-login');
+        return;
+      }
+      fetch(`${getApiBaseUrl()}/therapist-portal/session`, {
+        headers: { Authorization: `Bearer ${therapistToken}` }
+      })
+        .then(r => r.ok ? r.json() : Promise.reject())
+        .then(data => setTherapistSession({ therapistId: data.therapistId, therapistName: data.therapistName }))
+        .catch(() => {
+          localStorage.removeItem('therapistToken');
+          navigateTo('therapist-login');
+        });
     }
-  }, [currentPage, navigateTo, therapistSession, therapistSessionLoading]);
-
-  useEffect(() => {
-    if (therapistSessionLoading) {
-      return;
-    }
-
-    if (currentPage === 'therapist-login' && therapistSession) {
-      navigateTo('therapist-portal');
-    }
-  }, [currentPage, navigateTo, therapistSession, therapistSessionLoading]);
+  }, [currentPage]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleOAuthSuccess = (userData: {
     id: string;
@@ -872,9 +832,12 @@ function AppInner() {
     createdAt?: string;
     updatedAt?: string;
   }) => {
+    console.log('OAuth Success Data:', userData);
+
     // CRITICAL: Store token in localStorage FIRST (before setUser)
     // This ensures the token is available for immediate API calls
     if (userData.token) {
+      console.log('Storing OAuth token in localStorage');
       localStorage.setItem('token', userData.token);
     }
 
@@ -897,7 +860,6 @@ function AppInner() {
       approach: userData.approach as 'western' | 'eastern' | 'hybrid' | undefined,
       emergencyContact: userData.emergencyContact,
       emergencyPhone: userData.emergencyPhone,
-      hasPassword: userData.hasPassword,
       createdAt: userData.createdAt || new Date().toISOString(),
       updatedAt: userData.updatedAt || new Date().toISOString()
     }, userData.token);
@@ -908,15 +870,28 @@ function AppInner() {
     // Clear URL parameters
     window.history.replaceState({}, document.title, '/');
 
+    // Determine flow based on user status
+    console.log('User status check:', {
+      needsPassword: userData.needsPassword,
+      needsSetup: userData.needsSetup,
+      isOnboarded: userData.isOnboarded,
+      hasPassword: userData.hasPassword,
+      justCreated: userData.justCreated,
+      tokenStored: !!localStorage.getItem('token')
+    });
+
     // Simplified routing logic:
     // - New Google users (justCreated) -> password setup
     // - Existing users without onboarding -> onboarding
     // - Existing users with onboarding -> dashboard
-    if (userData.needsPassword || userData.hasPassword === false || userData.justCreated) {
+    if (userData.justCreated) {
+      console.log('Routing new Google user to password setup');
       navigateTo('password-setup');
     } else if (!userData.isOnboarded) {
+      console.log('Routing returning user to onboarding (incomplete)');
       navigateTo('onboarding');
     } else {
+      console.log('Routing returning user to dashboard (onboarded)');
       navigateTo('dashboard');
     }
   };
@@ -938,34 +913,35 @@ function AppInner() {
     language?: string;
     emergencyContact?: string;
     emergencyPhone?: string;
-    dataConsent?: boolean;
-    clinicianSharing?: boolean;
   }) => {
+    console.log('completeOnboardingFlow called with:', profileData);
+    console.log('Current token in localStorage:', localStorage.getItem('token'));
+
     try {
+      console.log('Completing onboarding with data:', profileData);
+      console.log('Current user before onboarding:', user);
+
       if (profileData.approach) {
+        console.log('Making API call to complete onboarding...');
         // Send all profile data to backend
         const updatedUser = await completeOnboarding(profileData.approach, profileData);
+        console.log('API response received:', updatedUser);
         if (updatedUser) {
-          setUser({
-            ...updatedUser,
-            dataConsent:
-              typeof profileData.dataConsent === 'boolean'
-                ? profileData.dataConsent
-                : updatedUser.dataConsent,
-            clinicianSharing:
-              typeof profileData.clinicianSharing === 'boolean'
-                ? profileData.clinicianSharing
-                : updatedUser.clinicianSharing,
-          });
+          console.log('Onboarding completed, updated user:', updatedUser);
+          setUser(updatedUser);
           updateDashboardTourPending(true);
+        } else {
+          console.log('No updated user returned from API');
         }
       } else {
+        console.log('No approach selected, skipping API call');
         if (user) {
           updateUser({ isOnboarded: true });
         }
         updateDashboardTourPending(true);
       }
 
+      console.log('Onboarding complete - routing to overall assessment invite');
       navigateTo('assessment-invite');
 
     } catch (error) {
@@ -981,6 +957,7 @@ function AppInner() {
   const completePasswordSetup = async (password: string) => {
     try {
       setAuthError(null);
+      console.log('Setting up user password...');
 
       // Verify we have a user and token before attempting password setup
       if (!user) {
@@ -994,13 +971,16 @@ function AppInner() {
 
       const updatedUser = await setupUserPassword(password);
       if (updatedUser) {
+        console.log('Password setup successful:', updatedUser);
         // Update user with new password status
         setUser({ ...updatedUser, hasPassword: true });
 
         // Check if user still needs onboarding after password setup
         if (!updatedUser.isOnboarded) {
+          console.log('User needs onboarding - routing to onboarding');
           navigateTo('onboarding');
         } else {
+          console.log('User is fully onboarded - routing to dashboard');
           navigateTo('dashboard');
         }
       } else {
@@ -1013,6 +993,7 @@ function AppInner() {
 
       // If token is missing, redirect back to login
       if (errorMessage.includes('token') || errorMessage.includes('Authentication')) {
+        console.log('Token issue detected, redirecting to login');
         logout(); // Clear all auth state
         navigateTo('user-login');
       }
@@ -1036,22 +1017,14 @@ function AppInner() {
 
     const checkOAuthCallback = () => {
       const urlParams = new URLSearchParams(window.location.search);
-      const path = normalizePath(window.location.pathname);
-      const errorParam = (urlParams.get('error') || '').toLowerCase();
-      const hasTokenParam = urlParams.has('token');
-      const hasUserDataParam = urlParams.has('user_data');
-      const hasOAuthErrorParam = errorParam.startsWith('oauth_');
-      const hasOAuthRoutingHints = urlParams.has('redirect') || urlParams.has('needs_setup');
-
-      // Legacy fallback: some deployments may drop the callback path but keep OAuth query params.
-      const looksLikeLegacyOAuthCallback =
-        (hasTokenParam && (hasOAuthRoutingHints || hasUserDataParam)) ||
-        (hasUserDataParam && hasOAuthRoutingHints) ||
-        (hasOAuthErrorParam && !localStorage.getItem('token'));
+      const path = window.location.pathname;
 
       if (
         path === PAGE_ROUTES['oauth-callback'] ||
-        looksLikeLegacyOAuthCallback
+        urlParams.has('token') ||
+        urlParams.has('error') ||
+        urlParams.has('redirect') ||
+        urlParams.has('needs_setup')
       ) {
         applyPage('oauth-callback', true);
         return true;
@@ -1071,12 +1044,12 @@ function AppInner() {
 
         if (existingUser) {
           setUser(existingUser);
-          const targetPage = resolveInitialPage(existingUser, requestedPage, Boolean(adminUser));
+          const targetPage = resolveInitialPage(existingUser, requestedPage, Boolean(admin || adminUser));
           const replace = targetPage !== requestedPage;
           applyPage(targetPage, replace);
         } else {
           setUser(null);
-          const targetPage = resolveInitialPage(null, requestedPage, Boolean(adminUser));
+          const targetPage = resolveInitialPage(null, requestedPage, Boolean(admin || adminUser));
           const replace = targetPage !== requestedPage;
           applyPage(targetPage, replace);
         }
@@ -1090,7 +1063,7 @@ function AppInner() {
 
     loadUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [adminUser]); // setUser is stable (from Zustand) and doesn't need to be in dependencies
+  }, [admin, adminUser]); // setUser is stable (from Zustand) and doesn't need to be in dependencies
 
   useEffect(() => {
     if (loadingUser) {
@@ -1101,22 +1074,12 @@ function AppInner() {
       return;
     }
 
-    if (adminUser && currentPage === 'admin-login') {
-      navigateTo('admin', { bypassAdminGuard: true });
-      return;
-    }
-
     if (!user) {
-      if (currentPage === 'admin' && !adminUser) {
+      if (currentPage === 'admin') {
         navigateTo('admin-login');
-      } else if (!PUBLIC_PAGES.has(currentPage) && currentPage !== 'admin') {
+      } else if (!PUBLIC_PAGES.has(currentPage)) {
         navigateTo('user-login');
       }
-      return;
-    }
-
-    if (user.hasPassword === false && currentPage !== 'password-setup') {
-      navigateTo('password-setup');
       return;
     }
 
@@ -1125,11 +1088,12 @@ function AppInner() {
       return;
     }
 
-    // Admin route requires a live admin session.
-    if (currentPage === 'admin' && !adminUser) {
+    // Admin navigation is now handled in navigateTo with auto-login
+    // This check only runs if auto-login already failed
+    if (currentPage === 'admin' && !admin && !adminUser) {
       navigateTo('admin-login');
     }
-  }, [user, loadingUser, currentPage, adminUser, navigateTo]);
+  }, [user, loadingUser, currentPage, admin, adminUser, navigateTo]);
 
   const renderCurrentPage = () => {
     switch (currentPage) {
@@ -1140,8 +1104,6 @@ function AppInner() {
             onSignUp={signUp}
             authError={authError}
             loginError={loginError}
-            onChooseLoginAsUser={continueAdminAccountAsUser}
-            onChooseLoginAsAdmin={continueAdminAccountAsAdmin}
             onNavigateHome={() => navigateTo('landing')}
             onNavigateAdmin={() => navigateTo('admin-login')}
             startOAuth={startGoogleOAuth}
@@ -1158,18 +1120,7 @@ function AppInner() {
           />
         );
       case 'landing':
-        return (
-          <LandingPage
-            onSignUp={signUp}
-            onLogin={login}
-            onAdminLogin={handleAdminLogin}
-            authError={authError}
-            loginError={loginError}
-            onChooseLoginAsUser={continueAdminAccountAsUser}
-            onChooseLoginAsAdmin={continueAdminAccountAsAdmin}
-            onNavigate={(page) => navigateTo(page as Page)}
-          />
-        );
+        return <LandingPage onSignUp={signUp} onLogin={login} onAdminLogin={handleAdminLogin} authError={authError} loginError={loginError} onNavigate={(page) => navigateTo(page as Page)} />;
       case 'oauth-callback':
         return <OAuthCallback onAuthSuccess={handleOAuthSuccess} onAuthError={handleOAuthError} />;
       case 'password-setup':
@@ -1186,6 +1137,7 @@ function AppInner() {
             user={user}
             onExit={() => {
               // Save & Exit: keep user logged in, go to landing page
+              console.log('OnboardingFlow onExit called - navigating to landing');
               navigateTo('landing');
             }}
             onBack={() => {
@@ -1223,7 +1175,7 @@ function AppInner() {
         return (
           <OverallAssessmentInvite
             onDecision={handleAssessmentInviteDecision}
-            userName={[user?.firstName, user?.lastName].filter(Boolean).join(' ') || user?.name}
+            userName={user?.firstName || user?.name}
           />
         );
       case 'assessment-selection':
@@ -1287,29 +1239,13 @@ function AppInner() {
           />
         );
       case 'plan':
-        return (
-          <div className="min-h-screen bg-background flex items-center justify-center px-4">
-            <div className="w-full max-w-xl rounded-xl border bg-card p-8 text-center space-y-4">
-              <h1 className="text-2xl font-semibold">Personalized Plan</h1>
-              <p className="text-muted-foreground text-lg">Coming soon...</p>
-              <button
-                type="button"
-                className="inline-flex items-center justify-center rounded-md border px-4 py-2 text-sm font-medium hover:bg-muted"
-                onClick={() => navigateTo('dashboard')}
-              >
-                Back to Dashboard
-              </button>
-            </div>
-          </div>
-        );
+        return <PersonalizedPlan user={user} onNavigate={navigateTo} />;
       case 'chatbot':
-        return <ResponsiveChatbot user={user} onNavigate={navigateTo} />;
+        return <Chatbot user={user} onNavigate={navigateTo} />;
       case 'library':
         return <ContentLibrary onNavigate={navigateTo} user={user} />;
       case 'practices':
         return <Practices onNavigate={navigateTo} />;
-      case 'journal':
-        return <JournalPage user={user} onNavigate={navigateTo} />;
       case 'games':
         return <GamesHub />;
       case 'progress':
@@ -1319,20 +1255,8 @@ function AppInner() {
       case 'help':
         return <HelpSafety onNavigate={navigateTo} userRegion={user?.region} />;
       case 'admin':
-        return adminUser ? (
-          <AdminDashboard />
-        ) : (
-          <LandingPage
-            onSignUp={signUp}
-            onLogin={login}
-            onAdminLogin={handleAdminLogin}
-            authError={authError}
-            loginError={loginError}
-            onChooseLoginAsUser={continueAdminAccountAsUser}
-            onChooseLoginAsAdmin={continueAdminAccountAsAdmin}
-            onNavigate={(page) => navigateTo(page as Page)}
-          />
-        );
+        // Show admin dashboard if admin session exists (either old 'admin' or new 'adminUser')
+        return (admin || adminUser) ? <AdminDashboard /> : <LandingPage onSignUp={signUp} onLogin={login} onAdminLogin={handleAdminLogin} authError={authError} loginError={loginError} onNavigate={(page) => navigateTo(page as Page)} />;
       case 'therapist-login':
         return (
           <TherapistLoginPage
@@ -1349,33 +1273,18 @@ function AppInner() {
             therapistName={therapistSession.therapistName}
           />
         ) : (
-          <div className="flex min-h-screen items-center justify-center px-4 text-center text-muted-foreground">Loading therapist portal...</div>
+          <div className="flex items-center justify-center h-screen text-muted-foreground">Loading therapist portal...</div>
         );
       default:
-        return (
-          <LandingPage
-            onSignUp={signUp}
-            onLogin={login}
-            onAdminLogin={handleAdminLogin}
-            authError={authError}
-            loginError={loginError}
-            onChooseLoginAsUser={continueAdminAccountAsUser}
-            onChooseLoginAsAdmin={continueAdminAccountAsAdmin}
-            onNavigate={(page) => navigateTo(page as Page)}
-          />
-        );
+        return <LandingPage onSignUp={signUp} onLogin={login} onAdminLogin={handleAdminLogin} authError={authError} loginError={loginError} onNavigate={(page) => navigateTo(page as Page)} />;
     }
   };
   return (
     <div className="min-h-screen bg-background">
       {loadingUser ? (
-        <div className="flex min-h-screen items-center justify-center px-4 text-center text-muted-foreground">Loading...</div>
+        <div className="flex items-center justify-center h-screen text-muted-foreground">Loading...</div>
       ) : (
-        <PageTransition key={currentPage} variant="fade">
-          <Suspense fallback={<RouteLoadingFallback />}>
-            {renderCurrentPage()}
-          </Suspense>
-        </PageTransition>
+        renderCurrentPage()
       )}
     </div>
   );
@@ -1389,7 +1298,6 @@ export default function App() {
           <ChatProvider>
             <AppInner />
             <ToastContainer />
-            <SonnerToaster richColors position="top-right" closeButton />
             <PWAInstallPrompt />
           </ChatProvider>
         </AdminAuthProvider>

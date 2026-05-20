@@ -6,7 +6,6 @@
  */
 
 import { getApiBaseUrl } from '../config/apiConfig';
-import { fetchWithRetry, requestDeduplicator } from '../utils/networkRetry';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -14,7 +13,6 @@ export interface StoredUser {
   id: string;
   name: string;
   email: string;
-  isEmailVerified?: boolean;
   firstName?: string;
   lastName?: string;
   profilePhoto?: string;
@@ -32,35 +30,14 @@ export interface StoredUser {
   hasPassword?: boolean;
   isGoogleUser?: boolean;
   securityQuestion?: string | null;
-  isPremium?: boolean;
   createdAt?: string;
   updatedAt?: string;
 }
-
-type AuthServiceError = Error & {
-  response?: { data?: unknown };
-  suggestLogin?: boolean;
-  email?: string;
-  status?: number;
-  error?: string;
-};
-
-export type RegisterResult = { user: StoredUser; token: string };
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 const getToken = (): string | null =>
   localStorage.getItem('token');
-
-/**
- * NEW: Extract and store refreshed token from response headers if available
- */
-const extractAndStoreRefreshedToken = (response: Response): void => {
-  const newToken = response.headers.get('X-New-Token');
-  if (newToken && newToken.trim()) {
-    localStorage.setItem('token', newToken);
-  }
-};
 
 const authHeaders = (): Record<string, string> => {
   const token = getToken();
@@ -80,13 +57,9 @@ export async function getCurrentUser(): Promise<StoredUser | null> {
   if (!token) return null;
 
   try {
-    // NEW: Use retry logic for resilience
-    const response = await fetchWithRetry(`${getApiBaseUrl()}/auth/me`, {
+    const response = await fetch(`${getApiBaseUrl()}/auth/me`, {
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
     });
-
-    // NEW: Extract refreshed token if available
-    extractAndStoreRefreshedToken(response);
 
     if (!response.ok) {
       if (response.status === 401) {
@@ -110,22 +83,16 @@ export async function loginUser(credentials: {
   email: string;
   password: string;
 }): Promise<{ user: StoredUser; token: string }> {
-  // NEW: Use deduplication to prevent multiple concurrent login requests
-  const dedupeKey = `login:${credentials.email}`;
+  const response = await fetch(`${getApiBaseUrl()}/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(credentials),
+  });
 
-  const fetcher = async (): Promise<Response> => {
-    return fetchWithRetry(`${getApiBaseUrl()}/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(credentials),
-    });
-  };
-
-  const response = await requestDeduplicator.dedupedFetch(dedupeKey, fetcher);
   const data = await response.json();
 
   if (!response.ok) {
-    const err = new Error(data?.error || 'Invalid credentials') as AuthServiceError;
+    const err: any = new Error(data?.error || 'Invalid credentials');
     err.response = { data };
     throw err;
   }
@@ -134,9 +101,7 @@ export async function loginUser(credentials: {
     throw new Error('Invalid response from server');
   }
 
-  // NEW: Extract refreshed token if available
-  extractAndStoreRefreshedToken(response);
-
+  localStorage.setItem('token', data.data.token);
   return { user: data.data.user as StoredUser, token: data.data.token };
 }
 
@@ -145,10 +110,11 @@ export async function loginUser(credentials: {
  * Returns `{ user, token }` on success; throws on failure.
  */
 export async function registerUser(userData: {
+  name: string;
   email: string;
   password: string;
-}): Promise<RegisterResult> {
-  const response = await fetchWithRetry(`${getApiBaseUrl()}/auth/register`, {
+}): Promise<{ user: StoredUser; token: string }> {
+  const response = await fetch(`${getApiBaseUrl()}/auth/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(userData),
@@ -157,29 +123,12 @@ export async function registerUser(userData: {
   const data = await response.json();
 
   if (!response.ok) {
-    const firstValidationMessage = (() => {
-      const validationErrors = data?.errors;
-      if (!validationErrors || typeof validationErrors !== 'object') return null;
-
-      for (const fieldErrors of Object.values(validationErrors as Record<string, unknown>)) {
-        if (!Array.isArray(fieldErrors)) continue;
-        const firstError = fieldErrors.find(
-          (entry): entry is string => typeof entry === 'string' && entry.trim().length > 0
-        );
-        if (firstError) return firstError;
-      }
-
-      return null;
-    })();
-
-    const errorMessage = firstValidationMessage || data?.error || 'Registration failed';
-    const err = new Error(errorMessage) as AuthServiceError;
-    err.error = errorMessage;
+    const err: any = new Error(data?.error || 'Registration failed');
     if (data?.error?.toLowerCase().includes('already exists') || response.status === 409) {
-      err.suggestLogin = true;
-      err.email = userData.email;
+      (err as any).suggestLogin = true;
+      (err as any).email = userData.email;
     }
-    err.status = response.status;
+    (err as any).status = response.status;
     throw err;
   }
 
@@ -187,29 +136,8 @@ export async function registerUser(userData: {
     throw new Error('Invalid response from server');
   }
 
-  // NEW: Extract refreshed token if available
-  extractAndStoreRefreshedToken(response);
-
+  localStorage.setItem('token', data.data.token);
   return { user: data.data.user as StoredUser, token: data.data.token };
-}
-
-export async function resendEmailVerification(email: string): Promise<{ message: string; verificationUrl?: string }> {
-  const response = await fetchWithRetry(`${getApiBaseUrl()}/auth/resend-verification`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email }),
-  });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data?.error || 'Unable to resend verification email');
-  }
-
-  return {
-    message: data?.data?.message || 'If an account exists for this email, a verification link has been sent.',
-    verificationUrl: typeof data?.data?.verificationUrl === 'string' ? data.data.verificationUrl : undefined,
-  };
 }
 
 /**
@@ -218,7 +146,6 @@ export async function resendEmailVerification(email: string): Promise<{ message:
 export function signOut(): void {
   localStorage.removeItem('token');
   localStorage.removeItem('user');
-  requestDeduplicator.clear();
 }
 
 /**
@@ -236,8 +163,6 @@ export async function completeOnboarding(
     language?: string;
     emergencyContact?: string;
     emergencyPhone?: string;
-    dataConsent?: boolean;
-    clinicianSharing?: boolean;
   }
 ): Promise<StoredUser | null> {
   const response = await fetch(`${getApiBaseUrl()}/users/complete-onboarding`, {
