@@ -8,73 +8,83 @@ import type { Express } from 'express';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 // --- Prisma mock ---
-const mockAssessmentDefinitions = [
-    {
-        id: 'anxiety_assessment',
-        name: 'Anxiety Assessment',
-        type: 'Advanced',
-        category: 'mental_health',
-        description: 'Measures anxiety levels',
-        timeEstimate: '5-10 min',
-        isActive: true,
-        visibleInMainList: true,
-        questions: [
-            { id: 'q1', text: 'How often do you feel nervous?', order: 1, responseType: 'likert', options: [] },
-        ],
-    },
-];
+const { mockPrisma, findManyDefMock, findManyResultMock, createResultMock } = vi.hoisted(() => {
+    const mockAssessmentDefinitions = [
+        {
+            id: 'anxiety_assessment',
+            name: 'Anxiety Assessment',
+            type: 'Advanced',
+            category: 'mental_health',
+            description: 'Measures anxiety levels',
+            timeEstimate: '5-10 min',
+            isActive: true,
+            visibleInMainList: true,
+            questions: [
+                { id: 'q1', text: 'How often do you feel nervous?', order: 1, responseType: 'likert', options: [] },
+            ],
+        },
+    ];
 
-const mockAssessmentResult = {
-    id: 'result1',
-    userId: 'user1',
-    assessmentType: 'anxiety_assessment',
-    score: 12,
-    responses: '{}',
-    completedAt: new Date('2026-02-15'),
-};
+    const mockAssessmentResult = {
+        id: 'result1',
+        userId: 'user1',
+        assessmentType: 'anxiety_assessment',
+        score: 12,
+        responses: '{}',
+        completedAt: new Date('2026-02-15'),
+    };
 
-const findManyDefMock = vi.fn(() => Promise.resolve(mockAssessmentDefinitions));
-const findManyResultMock = vi.fn(() => Promise.resolve([mockAssessmentResult]));
-const createResultMock = vi.fn((args: any) =>
-    Promise.resolve({ id: 'result-new', ...args.data, completedAt: new Date() })
-);
-const findUniqueInsightMock = vi.fn(() => Promise.resolve(null));
-const upsertInsightMock = vi.fn(() => Promise.resolve({}));
+    const findManyDefMock = vi.fn(() => Promise.resolve(mockAssessmentDefinitions));
+    const findManyResultMock = vi.fn(() => Promise.resolve([mockAssessmentResult]));
+    const createResultMock = vi.fn((args: any) =>
+        Promise.resolve({ id: 'result-new', ...args.data, completedAt: new Date() })
+    );
+    const findUniqueInsightMock = vi.fn(() => Promise.resolve(null));
+    const upsertInsightMock = vi.fn(() => Promise.resolve({}));
+
+    return {
+        mockPrisma: {
+            assessmentDefinition: {
+                findMany: findManyDefMock,
+                findFirst: vi.fn(() => Promise.resolve(mockAssessmentDefinitions[0])),
+            },
+            assessmentResult: {
+                findMany: findManyResultMock,
+                create: createResultMock,
+                count: vi.fn(() => Promise.resolve(1)),
+                findFirst: vi.fn(() => Promise.resolve(mockAssessmentResult)),
+            },
+            assessmentSession: {
+                findFirst: vi.fn(() => Promise.resolve(null)),
+                create: vi.fn((args: any) => Promise.resolve({ id: 'session1', ...args.data })),
+                update: vi.fn(() => Promise.resolve({})),
+            },
+            assessmentInsight: {
+                findUnique: findUniqueInsightMock,
+                upsert: upsertInsightMock,
+            },
+            user: {
+                findUnique: vi.fn(() =>
+                    Promise.resolve({ id: 'user1', firstName: 'Test', name: 'Test User' })
+                ),
+            },
+            $queryRaw: vi.fn(() => Promise.resolve([{ ok: 1 }])),
+            $executeRawUnsafe: vi.fn(() => Promise.resolve(1)),
+        },
+        findManyDefMock,
+        findManyResultMock,
+        createResultMock,
+    };
+});
 
 vi.mock('@prisma/client', () => ({
-    PrismaClient: vi.fn(() => ({
-        assessmentDefinition: {
-            findMany: findManyDefMock,
-            findFirst: vi.fn(() => Promise.resolve(mockAssessmentDefinitions[0])),
-        },
-        assessmentResult: {
-            findMany: findManyResultMock,
-            create: createResultMock,
-            count: vi.fn(() => Promise.resolve(1)),
-        },
-        assessmentSession: {
-            findFirst: vi.fn(() => Promise.resolve(null)),
-            create: vi.fn((args: any) => Promise.resolve({ id: 'session1', ...args.data })),
-            update: vi.fn(() => Promise.resolve({})),
-        },
-        assessmentInsight: {
-            findUnique: findUniqueInsightMock,
-            upsert: upsertInsightMock,
-        },
-        user: {
-            findUnique: vi.fn(() =>
-                Promise.resolve({ id: 'user1', firstName: 'Test', name: 'Test User' })
-            ),
-        },
-        $queryRaw: vi.fn(() => Promise.resolve([{ ok: 1 }])),
-    })),
+    PrismaClient: vi.fn(() => mockPrisma),
 }));
 
-vi.mock('../src/config/database', () => {
-    const { PrismaClient } = require('@prisma/client');
-    const prisma = new PrismaClient();
-    return { prisma, default: prisma };
-});
+vi.mock('../src/config/database', () => ({
+    prisma: mockPrisma,
+    default: mockPrisma,
+}));
 
 vi.mock('../src/middleware/auth', () => ({
     authenticate: (req: any, _res: any, next: any) => {

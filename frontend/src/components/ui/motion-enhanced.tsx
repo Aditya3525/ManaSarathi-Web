@@ -14,7 +14,9 @@ import { cn } from './utils';
  * Motion-Enhanced Card Component
  * Soft Editorial Wellness style with hover effects
  */
-interface MotionCardProps extends React.ComponentProps<'div'> {
+type MotionOmitKeys = 'onDrag' | 'onDragStart' | 'onDragEnd' | 'onAnimationStart' | 'onAnimationEnd' | 'onAnimationIteration' | 'onTransitionEnd' | 'style';
+
+interface MotionCardProps extends Omit<React.ComponentProps<'div'>, MotionOmitKeys> {
   hoverable?: boolean;
   delay?: number;
 }
@@ -23,7 +25,7 @@ export const MotionCard = React.forwardRef<HTMLDivElement, MotionCardProps>(
   ({ className, hoverable = true, delay = 0, children, ...props }, ref) => {
     return (
       <motion.div
-        ref={ref}
+        ref={ref as any}
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{
@@ -46,16 +48,17 @@ MotionCard.displayName = 'MotionCard';
 /**
  * Motion-Enhanced Button with Spring Animation
  */
-interface MotionButtonProps extends React.ComponentProps<typeof Button> {
+interface MotionButtonProps extends Omit<React.ComponentProps<typeof Button>, MotionOmitKeys> {
   isLoading?: boolean;
 }
+
+const MotionButtonInner = motion(Button);
 
 export const MotionButton = React.forwardRef<HTMLButtonElement, MotionButtonProps>(
   ({ isLoading = false, children, disabled, ...props }, ref) => {
     return (
-      <motion.button
-        ref={ref}
-        asChild
+      <MotionButtonInner
+        ref={ref as any}
         whileHover={{ scale: !disabled ? 1.02 : 1 }}
         whileTap={{ scale: !disabled ? 0.98 : 1 }}
         transition={{
@@ -64,24 +67,23 @@ export const MotionButton = React.forwardRef<HTMLButtonElement, MotionButtonProp
           damping: 17,
         }}
         disabled={disabled || isLoading}
+        {...props}
       >
-        <Button {...props} disabled={disabled || isLoading}>
-          {isLoading ? (
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{
-                duration: 1,
-                repeat: Infinity,
-                ease: 'linear',
-              }}
-              className="inline-block mr-2"
-            >
-              ⟳
-            </motion.div>
-          ) : null}
-          {children}
-        </Button>
-      </motion.button>
+        {isLoading ? (
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{
+              duration: 1,
+              repeat: Infinity,
+              ease: 'linear',
+            }}
+            className="inline-block mr-2"
+          >
+            ⟳
+          </motion.div>
+        ) : null}
+        {children}
+      </MotionButtonInner>
     );
   }
 );

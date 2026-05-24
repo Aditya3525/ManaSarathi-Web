@@ -121,6 +121,7 @@ export function PageTransition({
 interface StaggerContainerProps {
   children: React.ReactNode;
   staggerChildren?: number;
+  staggerDelay?: number;
   delayChildren?: number;
   className?: string;
 }
@@ -128,9 +129,11 @@ interface StaggerContainerProps {
 export function StaggerContainer({
   children,
   staggerChildren = 0.1,
+  staggerDelay,
   delayChildren = 0,
   className,
 }: StaggerContainerProps) {
+  const actualStagger = staggerDelay !== undefined ? staggerDelay : staggerChildren;
   return (
     <motion.div
       initial="hidden"
@@ -138,7 +141,7 @@ export function StaggerContainer({
       variants={{
         visible: {
           transition: {
-            staggerChildren,
+            staggerChildren: actualStagger,
             delayChildren,
           },
         },

@@ -133,17 +133,17 @@ export function ConversationHistorySidebar({
   };
 
   return (
-    <div className={`flex h-full min-w-0 flex-col bg-background border-r ${className}`}>
+    <div className={`flex h-full min-w-0 flex-col bg-slate-50/80 dark:bg-slate-950/80 backdrop-blur-md border-r border-border/40 ${className}`}>
       {/* Header with New Chat button */}
-      <div className="border-b space-y-3 p-4">
+      <div className="space-y-4 p-4">
         <div className="flex items-center justify-between">
-          <h2 className="min-w-0 text-sm font-semibold text-foreground">Conversations</h2>
+          <h2 className="min-w-0 text-sm font-semibold tracking-tight text-slate-800 dark:text-slate-200">History</h2>
           {showCloseButton && onCloseSidebar ? (
             <Button
               type="button"
               variant="ghost"
               size="icon"
-              className="h-8 w-8 flex-shrink-0"
+              className="h-8 w-8 flex-shrink-0 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-full"
               aria-label="Minimize sidebar"
               onClick={onCloseSidebar}
             >
@@ -154,8 +154,7 @@ export function ConversationHistorySidebar({
 
         <Button
           onClick={handleNewChat}
-            className="w-full min-w-0"
-          variant="default"
+          className="w-full bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-semibold shadow-sm hover:shadow-md hover:shadow-teal-500/5 hover:scale-[1.01] active:scale-[0.99] transition-all duration-200 rounded-xl border-0 h-10"
           size="sm"
         >
           <Plus className="h-4 w-4 mr-2" />
@@ -165,45 +164,39 @@ export function ConversationHistorySidebar({
         {/* Search Input */}
         <div className="relative">
           <Search 
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground cursor-pointer" 
-            onClick={(e) => {
-              const input = e.currentTarget.parentElement?.querySelector('input');
-              input?.focus();
-              input?.select();
-            }}
+            className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400/80 pointer-events-none" 
           />
           <Input
             type="text"
             placeholder="Search conversations..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pr-12 h-9"
+            className="pl-9 pr-4 h-9 bg-slate-200/50 dark:bg-slate-900/60 border-0 focus-visible:ring-1 focus-visible:ring-teal-500/30 rounded-xl text-sm placeholder:text-slate-400/70"
           />
         </div>
       </div>
 
       {/* Conversation List */}
       <ScrollArea className="min-h-0 flex-1">
-        <div className="p-2">
+        <div className="px-2 pb-4">
           {showLoadingState ? (
             // Loading skeleton
             <div className="space-y-2">
               <div className="px-3 py-2 text-xs text-muted-foreground flex items-center gap-2">
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                <Loader2 className="h-3.5 w-3.5 animate-spin text-teal-500" />
                 Loading conversations...
               </div>
               {[1, 2, 3, 4, 5].map((i) => (
-                <div key={i} className="px-3 py-2">
+                <div key={i} className="px-3 py-2 bg-card/25 rounded-lg border border-border/20 mb-1 animate-pulse">
                   <Skeleton className="h-4 w-3/4 mb-2" />
                   <Skeleton className="h-3 w-full" />
-                  <Skeleton className="h-3 w-1/2 mt-1" />
                 </div>
               ))}
             </div>
           ) : showRetryingState ? (
             // Retry state when initial retrieval failed
             <div className="flex flex-col items-center justify-center py-8 px-4 text-center">
-              <AlertCircle className="h-12 w-12 text-amber-500 mb-3" />
+              <AlertCircle className="h-12 w-12 text-amber-500 mb-3 animate-pulse" />
               <p className="text-sm text-muted-foreground">
                 Loading conversations...
               </p>
@@ -214,7 +207,7 @@ export function ConversationHistorySidebar({
                 type="button"
                 variant="outline"
                 size="sm"
-                className="mt-3"
+                className="mt-3 rounded-xl hover:bg-primary/5 transition-all"
                 onClick={() => {
                   void refetch();
                 }}
@@ -225,12 +218,12 @@ export function ConversationHistorySidebar({
             </div>
           ) : displayedConversations.length === 0 ? (
             // Empty state
-            <div className="flex flex-col items-center justify-center py-8 px-4 text-center">
-              <FolderOpen className="h-12 w-12 text-muted-foreground/50 mb-3" />
-              <p className="text-sm font-medium text-muted-foreground">
-                {searchQuery.trim() ? 'No conversations found' : 'No conversations yet'}
+            <div className="flex flex-col items-center justify-center py-10 px-4 text-center">
+              <FolderOpen className="h-10 w-10 text-muted-foreground/30 mb-3" />
+              <p className="text-sm font-medium text-slate-500">
+                {searchQuery.trim() ? 'No conversations found' : 'No history yet'}
               </p>
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="text-xs text-muted-foreground mt-1.5">
                 {searchQuery.trim()
                   ? 'Try a different search term'
                   : 'Start a new chat to begin'}
@@ -241,7 +234,8 @@ export function ConversationHistorySidebar({
             <div className="space-y-4">
               {groupedConversations.map(([group, convs]) => (
                 <div key={group}>
-                  <h3 className="text-xs font-semibold text-muted-foreground uppercase px-3 mb-2">
+                  <h3 className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider px-3 mb-2 flex items-center gap-1.5">
+                    <span className="w-1 h-1 rounded-full bg-teal-500/40" />
                     {group}
                   </h3>
                   <div className="space-y-1">

@@ -217,7 +217,7 @@ export class EnhancedRecommendationService {
     const areas = new Set<string>();
 
     // From assessments
-    context.user.assessmentResults.forEach((result) => {
+    (context.user.assessmentResults || []).forEach((result) => {
       const type = result.type.toLowerCase();
       if (result.trend === 'declining' || result.score >= 60) {
         areas.add(type);
@@ -335,10 +335,11 @@ export class EnhancedRecommendationService {
     approach: ApproachMode,
     focusAreas: string[]
   ): Promise<EnhancedRecommendationItem[]> {
-    const consumedIds = Array.from(new Set(engagementHistory.map((entry) => entry.contentId).filter(Boolean)));
+    const history = engagementHistory || [];
+    const consumedIds = Array.from(new Set(history.map((entry) => entry.contentId).filter(Boolean)));
     const highRatedIds = Array.from(
       new Set(
-        engagementHistory
+        history
           .filter((entry) => (entry.rating || 0) >= 4 || (entry.effectiveness || 0) >= 7)
           .map((entry) => entry.contentId)
           .filter(Boolean)
@@ -527,11 +528,12 @@ export class EnhancedRecommendationService {
     completedIds: string[]
   ): Promise<EnhancedRecommendationItem[]> {
     const normalizedFocusAreas = this.normalizeFocusAreas(focusAreas);
+    const completed = completedIds || [];
 
     const candidates = await prisma.content.findMany({
       where: {
         isPublished: true,
-        id: { notIn: completedIds },
+        id: { notIn: completed },
         approach: { in: [approach, 'hybrid'] }
       },
       take: 80,

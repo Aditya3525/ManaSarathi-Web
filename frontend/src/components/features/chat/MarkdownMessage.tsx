@@ -61,7 +61,24 @@ export const MarkdownMessage: React.FC<MarkdownMessageProps> = ({
     }
   }, [currentIndex, content, typewriterSpeed, enableTypewriter, isTypingComplete, onTypewriterComplete]);
 
-  const contentToDisplay = enableTypewriter ? displayedContent : content;
+  // Helper to ensure markdown headings and bullet points have proper newlines and structure
+  const formatMarkdownSpacing = (text: string): string => {
+    if (!text) return '';
+    return text
+      // Strip bullet points preceding headings (e.g., "* ### Heading" -> "### Heading")
+      .replace(/^\s*[-*•]\s*(#{1,6}\s)/gm, '$1')
+      // Ensure headings (e.g., ### Heading) always start on a new line (and double newline if not at start)
+      .replace(/(?<!\n)(#{1,6}\s)/g, '\n$1')
+      .replace(/(?<!\n\n)(#{1,6}\s)/g, (match, p1, offset) => offset === 0 ? match : '\n' + match)
+      // Ensure bullet points (e.g., - list item) start on a new line
+      .replace(/(?<!\n)([-*•]\s)/g, '\n$1')
+      // Ensure numbered lists start on a new line
+      .replace(/(?<!\n)(\d+\.\s)/g, '\n$1')
+      // Clean up multiple sequential newlines
+      .replace(/\n{3,}/g, '\n\n');
+  };
+
+  const contentToDisplay = formatMarkdownSpacing(enableTypewriter ? displayedContent : content);
 
   return (
     <div className={`markdown-content min-w-0 break-words text-sm leading-relaxed ${className}`}>
@@ -121,17 +138,17 @@ export const MarkdownMessage: React.FC<MarkdownMessageProps> = ({
         
         // Headings
         h1: ({ children }) => (
-          <h1 className="text-xl font-bold mb-2 mt-4 first:mt-0">
+          <h1 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-2 mt-4 first:mt-0 tracking-tight">
             {children}
           </h1>
         ),
         h2: ({ children }) => (
-          <h2 className="text-lg font-bold mb-2 mt-3 first:mt-0">
+          <h2 className="text-base font-semibold text-slate-800 dark:text-slate-200 mb-2 mt-3 first:mt-0 tracking-tight">
             {children}
           </h2>
         ),
         h3: ({ children }) => (
-          <h3 className="text-base font-semibold mb-2 mt-2 first:mt-0">
+          <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1 mt-2 first:mt-0">
             {children}
           </h3>
         ),

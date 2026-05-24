@@ -6,30 +6,9 @@
 
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
+import type { Page } from '../utils/appRouting';
 
 type Theme = 'light' | 'dark' | 'system';
-type Page = 
-  | 'landing'
-  | 'user-login'
-  | 'admin-login'
-  | 'onboarding'
-  | 'password-setup'
-  | 'dashboard'
-  | 'assessments'
-  | 'assessment-flow'
-  | 'combined-assessment-flow'
-  | 'assessment-invite'
-  | 'assessment-selection'
-  | 'insights'
-  | 'plan'
-  | 'chatbot'
-  | 'library'
-  | 'practices'
-  | 'progress'
-  | 'profile'
-  | 'help'
-  | 'oauth-callback'
-  | 'admin';
 
 interface Modal {
   id: string;

@@ -74,19 +74,19 @@ export const MessageActions: React.FC<MessageActionsProps> = ({
   };
 
   return (
-    <div className="flex items-center gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100 transition-opacity duration-200">
+    <div className="flex items-center gap-0.5 bg-card dark:bg-slate-900 border border-border/40 rounded-full p-0.5 shadow-sm opacity-100 md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100 transition-all duration-200 hover:shadow-md">
       {/* Copy Button */}
       <Button
         variant="ghost"
         size="sm"
         onClick={handleCopy}
-        className="h-7 w-7 p-0 hover:bg-gray-100 dark:hover:bg-gray-700"
+        className="h-7 w-7 p-0 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-colors shadow-none border-0"
         title="Copy message"
       >
         {copied ? (
           <Check className="h-3.5 w-3.5 text-green-600 dark:text-green-400" />
         ) : (
-          <Copy className="h-3.5 w-3.5 text-gray-600 dark:text-gray-400" />
+          <Copy className="h-3.5 w-3.5" />
         )}
       </Button>
 
@@ -96,10 +96,10 @@ export const MessageActions: React.FC<MessageActionsProps> = ({
           variant="ghost"
           size="sm"
           onClick={() => onSpeak(content)}
-          className="h-7 w-7 p-0 hover:bg-gray-100 dark:hover:bg-gray-700"
+          className="h-7 w-7 p-0 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-colors shadow-none border-0"
           title="Read aloud"
         >
-          <Volume2 className="h-3.5 w-3.5 text-gray-600 dark:text-gray-400" />
+          <Volume2 className="h-3.5 w-3.5" />
         </Button>
       )}
 
@@ -109,8 +109,8 @@ export const MessageActions: React.FC<MessageActionsProps> = ({
           variant="ghost"
           size="sm"
           onClick={handleLike}
-          className={`h-7 w-7 p-0 hover:bg-gray-100 dark:hover:bg-gray-700 ${
-            feedback === 'liked' ? 'bg-green-50 dark:bg-green-900/20' : ''
+          className={`h-7 w-7 p-0 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-colors shadow-none border-0 ${
+            feedback === 'liked' ? 'bg-green-500/10 text-green-600 dark:bg-green-950/20' : ''
           }`}
           title="This was helpful"
         >
@@ -118,7 +118,7 @@ export const MessageActions: React.FC<MessageActionsProps> = ({
             className={`h-3.5 w-3.5 ${
               feedback === 'liked'
                 ? 'text-green-600 dark:text-green-400 fill-current'
-                : 'text-gray-600 dark:text-gray-400'
+                : ''
             }`}
           />
         </Button>
@@ -130,8 +130,8 @@ export const MessageActions: React.FC<MessageActionsProps> = ({
           variant="ghost"
           size="sm"
           onClick={handleDislike}
-          className={`h-7 w-7 p-0 hover:bg-gray-100 dark:hover:bg-gray-700 ${
-            feedback === 'disliked' ? 'bg-red-50 dark:bg-red-900/20' : ''
+          className={`h-7 w-7 p-0 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-colors shadow-none border-0 ${
+            feedback === 'disliked' ? 'bg-red-500/10 text-red-600 dark:bg-red-950/20' : ''
           }`}
           title="This wasn't helpful"
         >
@@ -139,7 +139,7 @@ export const MessageActions: React.FC<MessageActionsProps> = ({
             className={`h-3.5 w-3.5 ${
               feedback === 'disliked'
                 ? 'text-red-600 dark:text-red-400 fill-current'
-                : 'text-gray-600 dark:text-gray-400'
+                : ''
             }`}
           />
         </Button>
@@ -151,10 +151,10 @@ export const MessageActions: React.FC<MessageActionsProps> = ({
           variant="ghost"
           size="sm"
           onClick={handleRegenerate}
-          className="h-7 w-7 p-0 hover:bg-gray-100 dark:hover:bg-gray-700"
+          className="h-7 w-7 p-0 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-colors shadow-none border-0"
           title="Regenerate response"
         >
-          <RefreshCw className="h-3.5 w-3.5 text-gray-600 dark:text-gray-400" />
+          <RefreshCw className="h-3.5 w-3.5" />
         </Button>
       )}
     </div>

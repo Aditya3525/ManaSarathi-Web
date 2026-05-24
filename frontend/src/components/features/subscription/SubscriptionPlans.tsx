@@ -226,7 +226,21 @@ export const SubscriptionPlans: React.FC<{ userIsPremium?: boolean }> = ({ userI
       <div className="mt-16 text-center">
         <p className="text-muted-foreground text-sm">
           Secure payment via Stripe. Cancel anytime. <br className="sm:hidden" />
-          Need a financial hardship discount? <a href="#" className="text-primary hover:underline">Contact us</a>.
+          Need a financial hardship discount?{' '}
+          <button
+            type="button"
+            onClick={() =>
+              push({
+                type: 'info',
+                title: 'Financial Hardship Discount',
+                description: 'Hardship discounts are handled via support. Please open a support ticket under the Help & Safety tab.',
+              })
+            }
+            className="text-primary hover:underline cursor-pointer bg-transparent border-none p-0 inline font-medium"
+          >
+            Contact us
+          </button>
+          .
         </p>
       </div>
     </div>

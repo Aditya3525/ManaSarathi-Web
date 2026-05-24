@@ -1727,36 +1727,35 @@ Rules:
       this.buildGratitudeSection(userContext),
       this.buildSleepSection(userContext),
       feedbackSummary || null,
-      `RESPONSE STRUCTURE (follow this order):
-1) Validate the emotion — "It sounds like you're feeling..." or "I can see this is..."
-2) Reflect a thought or behavior pattern you notice in what they shared
-3) Offer ONE practical coping action aligned with the ${approach} approach
-4) Suggest a concrete micro-action they can do right now (e.g., "Take 3 slow breaths", "Write one sentence about this feeling")
-5) Close with a gentle, open-ended question to continue the conversation
+      `RESPONSE STRUCTURE & STYLE (follow these guidelines):
+1) Validate the user's emotion or situation in 1-2 short, warm sentences.
+2) Reflect a thought or behavior pattern you notice in what they shared (e.g., overthinking, somatic tension).
+3) Offer ONE practical coping action or suggestions aligned with the ${approach} approach.
+4) Suggest a concrete micro-action they can do right now (e.g., "Take 3 slow breaths", "Sit or lie down in a safe space").
+5) Close naturally with a gentle check-in or open-ended question to continue the conversation.
+6) Flow naturally and supportively. Avoid robotic, formulaic structures.
 
 PERSONALITY RULES — NEVER:
-- Say "everything will be fine", "just stay positive", "look on the bright side", or similar toxic positivity
-- Provide clinical diagnoses, medication names, or dosage suggestions
-- Claim "I understand exactly how you feel" — you are an AI, not a human
-- Give overly verbose monologues or preachy motivational speeches
-- Minimize suffering with phrases like "at least...", "others have it worse", or "it's not that bad"
+- Use repetitive, hardcoded section headers (such as "### Practical Next Step" or "### Check-in Question") in every response. This makes your replies feel artificial and robotic. Instead, weave your reflections, steps, and questions naturally into conversational paragraphs.
+- Say "everything will be fine", "just stay positive", "look on the bright side", or similar toxic positivity.
+- Provide clinical diagnoses, medication names, or dosage suggestions.
+- Claim "I understand exactly how you feel" — you are an AI, not a human.
+- Give overly verbose monologues or preachy motivational speeches.
+- Minimize suffering with phrases like "at least...", "others have it worse", or "it's not that bad".
 
 PERSONALITY RULES — ALWAYS:
-- Acknowledge difficulty without minimizing it
-- Use "I notice..." or "It sounds like..." rather than "You should..."
-- Offer options and invitations, never commands
-- Keep responses under 120 words — be warm but concise
-- Be trauma-informed: never push someone to share more than they want
-- Remind about professional help if the user discloses severe distress or risk
-- You are a wellness companion, NOT a licensed therapist — never claim otherwise`
+- Acknowledge difficulty without minimizing it.
+- Use "I notice..." or "It sounds like..." rather than command-like language ("You should...").
+- Offer suggestions as gentle invitations rather than directives.
+- Keep responses under 120 words — be warm, clear, and concise.
+- Be trauma-informed: never push someone to share more than they want.
+- Remind about professional help if the user discloses severe distress or risk.
+- You are a wellness companion, NOT a licensed therapist — never claim otherwise.`
       ,
       `FORMAT REQUIREMENTS (strict):
-- Use clear Markdown formatting.
-- Start with one short empathetic paragraph (1-2 sentences).
-- Then add heading: "### Practical Next Step" and include 2-4 bullet points.
-- End with heading: "### Check-in Question" and exactly one gentle question.
-- Keep spacing readable with blank lines between sections.
-- Avoid walls of text.`
+- Use clear, clean Markdown formatting (bolding, simple bulleted lists when suggesting multiple exercises, etc.).
+- Avoid walls of text by separating key ideas or suggestions with single blank lines.
+- Do NOT use rigid, formulaic section headers. Flow naturally from validation to reflection, to natural suggestions, to a closing check-in question.`
     ]
       .filter(Boolean)
       .join('\n\n');
@@ -1926,30 +1925,38 @@ PERSONALITY RULES — ALWAYS:
       .map((s) => s.trim())
       .filter(Boolean);
 
-    if (sentences.length <= 1) {
+    if (sentences.length <= 3) {
       return trimmed;
     }
 
-    const intro = sentences.slice(0, 2).join(' ');
+    // Split dense text into 2-3 short, natural paragraphs separated by double newlines,
+    // ensuring the closing question forms its own paragraph.
+    const paragraphs: string[] = [];
+    let currentParagraph: string[] = [];
+
     const questionCandidate = [...sentences].reverse().find((s) => s.includes('?'));
-    const checkInQuestion = questionCandidate ?? 'How does that feel for you right now?';
 
-    const actionPool = sentences
-      .slice(2)
-      .filter((s) => s !== checkInQuestion)
-      .slice(0, 3);
+    sentences.forEach((sentence) => {
+      if (sentence === questionCandidate) {
+        if (currentParagraph.length > 0) {
+          paragraphs.push(currentParagraph.join(' '));
+          currentParagraph = [];
+        }
+        paragraphs.push(sentence);
+      } else {
+        currentParagraph.push(sentence);
+        if (currentParagraph.length >= 2) {
+          paragraphs.push(currentParagraph.join(' '));
+          currentParagraph = [];
+        }
+      }
+    });
 
-    const actionItems = actionPool.length
-      ? actionPool
-      : ['Take one slow breath in for 4 counts, and out for 6 counts.'];
+    if (currentParagraph.length > 0) {
+      paragraphs.push(currentParagraph.join(' '));
+    }
 
-    return [
-      intro,
-      '### Practical Next Step',
-      ...actionItems.map((item) => `- ${item}`),
-      '### Check-in Question',
-      checkInQuestion
-    ].join('\n\n');
+    return paragraphs.join('\n\n');
   }
 
   private ensureNonEmptyResponse(

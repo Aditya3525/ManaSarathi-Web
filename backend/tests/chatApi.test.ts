@@ -25,6 +25,10 @@ vi.mock('@prisma/client', () => ({
             create: createMessageMock,
             findMany: findManyMessagesMock,
             findFirst: vi.fn(() => Promise.resolve(null)),
+            count: vi.fn(() => Promise.resolve(0)),
+        },
+        crisisEvent: {
+            create: vi.fn((args: any) => Promise.resolve({ id: 'crisis1', ...args.data, detectedAt: new Date() })),
         },
         conversation: {
             create: createConversationMock,

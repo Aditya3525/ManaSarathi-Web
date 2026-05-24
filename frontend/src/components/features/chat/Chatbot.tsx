@@ -13,7 +13,7 @@ import {
   Download,
   LifeBuoy
 } from 'lucide-react';
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useAccessibility } from '../../../contexts/AccessibilityContext';
@@ -131,6 +131,262 @@ const buildAssessmentDiscussPrompt = (context: AssessmentShareContext): string =
   lines.push('Please explain what this means and give me a practical plan I can follow today.');
   return lines.join('\n');
 };
+
+interface MessagesListProps {
+  messages: Message[];
+  isTyping: boolean;
+  currentlyTypingMessageId: string | null;
+  conversationStarters: string[];
+  messageFeedback: Record<string, 'liked' | 'disliked' | null>;
+  feedbackMessageId: string | null;
+  setFeedbackMessageId: React.Dispatch<React.SetStateAction<string | null>>;
+  handleTypewriterComplete: () => void;
+  handleSuggestionClick: (suggestion: string) => void;
+  handleLike: (messageId: string) => Promise<void>;
+  handleDislike: (messageId: string) => void;
+  handleRegenerate: (messageId: string) => Promise<void>;
+  speakText: (text: string) => void;
+  handleFeedbackSubmit: (messageId: string, rating: 'positive' | 'negative', notes?: string) => Promise<void>;
+  onNavigate: (page: string) => void;
+  messagesEndRef: React.RefObject<HTMLDivElement | null>;
+}
+
+const MessagesList = React.memo(({
+  messages,
+  isTyping,
+  currentlyTypingMessageId,
+  conversationStarters,
+  messageFeedback,
+  feedbackMessageId,
+  setFeedbackMessageId,
+  handleTypewriterComplete,
+  handleSuggestionClick,
+  handleLike,
+  handleDislike,
+  handleRegenerate,
+  speakText,
+  handleFeedbackSubmit,
+  onNavigate,
+  messagesEndRef,
+}: MessagesListProps) => {
+  const renderMessageBubble = (message: Message) => {
+    const isUser = message.type === 'user';
+    const isSystem = message.type === 'system';
+    const exerciseMeta = !isUser && !isSystem ? parseExerciseCardMeta(message.metadata) : null;
+    const assessmentPrompt = !isUser && !isSystem
+      ? (message.assessmentPrompt ?? parseAssessmentPromptMeta(message.metadata))
+      : null;
+
+    const renderExerciseCard = (meta: ExerciseCardMeta) => {
+      switch (meta.exerciseCard) {
+        case 'breathing-animation':
+          return (
+            <BreathingAnimation
+              title={meta.title}
+              pattern={meta.pattern}
+              rounds={meta.rounds}
+            />
+          );
+        case 'grounding-checklist':
+          return <GroundingChecklist title={meta.title} steps={meta.steps} />;
+        case 'cbt-thought-record':
+          return <CBTThoughtRecord title={meta.title} steps={meta.cbtSteps} />;
+        case 'body-scan-visual':
+        case 'worry-dump-timer':
+          return (
+            <MarkdownMessage
+              content={message.content}
+              enableTypewriter={message.enableTypewriter && message.id === currentlyTypingMessageId}
+              typewriterSpeed={20}
+              onTypewriterComplete={handleTypewriterComplete}
+            />
+          );
+        default:
+          return (
+            <MarkdownMessage
+              content={message.content}
+              enableTypewriter={message.enableTypewriter && message.id === currentlyTypingMessageId}
+              typewriterSpeed={20}
+              onTypewriterComplete={handleTypewriterComplete}
+            />
+          );
+      }
+    };
+
+    return (
+      <div className={`flex gap-3.5 ${isUser ? 'justify-end' : 'justify-start'} mb-5 group message-enter`}>
+        {!isUser && (
+          <div className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm border border-border/20 ${
+            isSystem ? 'bg-amber-100 dark:bg-amber-950/30' : 'bg-gradient-to-tr from-teal-50 to-emerald-50 dark:from-teal-950/20 dark:to-emerald-950/20'
+          }`}>
+            {isSystem ? (
+              <AlertTriangle className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+            ) : (
+              <span className="text-xl leading-none" role="img" aria-label="Manasarathi">🪷</span>
+            )}
+          </div>
+        )}
+        
+        <div className="max-w-[78%]">
+          <div
+            className={exerciseMeta
+              ? 'rounded-2xl p-0 overflow-hidden shadow-md'
+              : `rounded-2xl px-4 py-3.5 ${
+                  isUser
+                    ? 'bg-gradient-to-br from-teal-600 to-teal-700 text-white ml-auto rounded-2xl rounded-tr-none shadow-sm'
+                    : isSystem
+                      ? 'bg-amber-500/10 border border-amber-500/20 text-amber-900 dark:text-amber-200 rounded-xl px-4 py-2 text-center text-xs'
+                      : 'bg-card border border-border/40 text-slate-800 dark:text-slate-100 rounded-2xl rounded-tl-none shadow-sm hover:shadow-md transition-shadow'
+                }`
+            }
+          >
+            {exerciseMeta ? (
+              <div className="min-w-[280px] max-w-[420px]">
+                {renderExerciseCard(exerciseMeta)}
+              </div>
+            ) : (
+              <MarkdownMessage
+                content={message.content}
+                enableTypewriter={message.enableTypewriter && message.id === currentlyTypingMessageId}
+                typewriterSpeed={20}
+                onTypewriterComplete={handleTypewriterComplete}
+              />
+            )}
+          </div>
+
+          {assessmentPrompt && (
+            <div className="mt-3 rounded-xl border border-primary/30 bg-primary/5 p-4 space-y-3 shadow-sm">
+              <p className="text-sm text-foreground font-medium">{assessmentPrompt.prompt}</p>
+              {typeof assessmentPrompt.daysSinceLastAssessment === 'number' && (
+                <p className="text-xs text-muted-foreground">
+                  Last anxiety assessment was {assessmentPrompt.daysSinceLastAssessment} day(s) ago.
+                </p>
+              )}
+              <Button size="sm" className="rounded-full shadow-sm" onClick={() => onNavigate('assessments')}>
+                {assessmentPrompt.ctaLabel}
+              </Button>
+            </div>
+          )}
+          
+          <div className={`flex items-center gap-2.5 mt-1.5 text-xs text-muted-foreground ${
+            isUser ? 'justify-end' : 'justify-start'
+          }`}>
+            <span className="opacity-80">{message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+            
+            {/* Message Actions - Only show for bot messages */}
+            {!isUser && !isSystem && (
+              <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                <MessageActions
+                  messageId={message.id}
+                  content={message.content}
+                  onLike={handleLike}
+                  onDislike={handleDislike}
+                  onRegenerate={handleRegenerate}
+                  onSpeak={speakText}
+                  feedback={messageFeedback[message.id] || null}
+                />
+              </div>
+            )}
+          </div>
+
+          {!isUser && !isSystem && feedbackMessageId === message.id && (
+            <div className="mt-2 bg-muted/40 border rounded-xl p-3 shadow-sm">
+              <InlineFeedback
+                messageId={message.id}
+                onSubmit={handleFeedbackSubmit}
+                onDismiss={() => setFeedbackMessageId(null)}
+              />
+            </div>
+          )}
+
+          {/* Suggestions */}
+          {message.suggestions && message.suggestions.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 mt-3">
+              {message.suggestions.map((suggestion, index) => (
+                <Button
+                  key={index}
+                  variant="outline"
+                  size="sm"
+                  className="text-xs rounded-full border-border/50 hover:bg-primary/5 hover:border-primary/40 hover:text-primary transition-all duration-200"
+                  onClick={() => handleSuggestionClick(suggestion)}
+                >
+                  {suggestion}
+                </Button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {isUser && (
+          <div className="w-9 h-9 bg-gradient-to-tr from-teal-500 to-emerald-500 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm border border-teal-600/10">
+            <User className="h-5 w-5 text-white" />
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  return (
+    <div className="flex-1 overflow-y-auto p-4 lg:p-6 space-y-6 bg-slate-50/30 dark:bg-slate-950/10">
+      {messages.length === 0 ? (
+        <EmptyState 
+          onStarterClick={handleSuggestionClick}
+          starters={conversationStarters.length > 0 ? conversationStarters : undefined}
+        />
+      ) : (
+        <>
+          <StaggerContainer staggerDelay={0.06}>
+            {messages.map((message) => (
+              <StaggerItem key={message.id}>
+                {renderMessageBubble(message)}
+              </StaggerItem>
+            ))}
+          </StaggerContainer>
+
+          {/* Conversation Starters - Show when just initial greeting */}
+          {messages.length === 1 && conversationStarters.length > 0 && (
+            <div className="mt-8 max-w-2xl mx-auto bg-card/50 backdrop-blur-sm border rounded-2xl p-5 shadow-sm">
+              <p className="text-sm font-medium text-slate-600 dark:text-slate-400 mb-4 text-center">
+                Select a topic below to begin checking in:
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <StaggerContainer staggerDelay={0.05}>
+                  {conversationStarters.map((starter, index) => (
+                    <StaggerItem key={index}>
+                      <Button
+                        variant="outline"
+                        className="w-full h-auto py-3 px-4 text-left justify-start text-sm rounded-xl hover:bg-teal-500/5 hover:border-teal-500/40 hover:text-teal-600 transition-all duration-200 border-border/60 shadow-sm"
+                        onClick={() => handleSuggestionClick(starter)}
+                      >
+                        <span className="mr-2 text-teal-500">✦</span>
+                        {starter}
+                      </Button>
+                    </StaggerItem>
+                  ))}
+                </StaggerContainer>
+              </div>
+            </div>
+          )}
+        </>
+      )}
+      
+      {/* Typing Indicator */}
+      {isTyping && (
+        <div className="flex items-center gap-3 px-4 py-3 bg-card border border-border/50 rounded-2xl w-fit max-w-[80%] shadow-sm animate-pulse message-enter">
+          <div className="w-6 h-6 rounded-full flex items-center justify-center bg-gradient-to-tr from-teal-50 to-emerald-50 dark:from-teal-950/20 dark:to-emerald-950/20 border border-teal-500/10">
+            <span className="text-xs leading-none" role="img" aria-label="Lotus logo">🪷</span>
+          </div>
+          <span className="text-sm text-slate-500 dark:text-slate-400 italic">
+            ManaSarathi is reflecting...
+          </span>
+        </div>
+      )}
+      
+      <div ref={messagesEndRef} />
+    </div>
+  );
+});
+MessagesList.displayName = 'MessagesList';
 
 export function Chatbot({ user, onNavigate, isModal = false, onClose }: ChatbotProps) {
   const { t } = useTranslation();
@@ -316,7 +572,7 @@ export function Chatbot({ user, onNavigate, isModal = false, onClose }: ChatbotP
     }
   };
 
-  const speakText = (text: string) => {
+  const speakText = useCallback((text: string) => {
     if (!synthRef.current) {
       console.warn('Speech synthesis not supported');
       return;
@@ -335,16 +591,16 @@ export function Chatbot({ user, onNavigate, isModal = false, onClose }: ChatbotP
     utterance.onerror = () => setIsSpeaking(false);
 
     synthRef.current.speak(utterance);
-  };
+  }, []);
 
-  const stopSpeaking = () => {
+  const stopSpeaking = useCallback(() => {
     if (synthRef.current) {
       synthRef.current.cancel();
       setIsSpeaking(false);
     }
-  };
+  }, []);
 
-  const applyChatPayload = (
+  const applyChatPayload = useCallback((
     messagePayload: ChatSendMessageResponse,
     options?: {
       enableTypewriter?: boolean;
@@ -414,9 +670,9 @@ export function Chatbot({ user, onNavigate, isModal = false, onClose }: ChatbotP
     if (voiceEnabled) {
       speakText(resolvedContent);
     }
-  };
+  }, [currentConversationId, voiceEnabled, speakText]);
 
-  const sendMessageContent = async (
+  const sendMessageContent = useCallback(async (
     content: string,
     options?: { showUserMessage?: boolean; conversationId?: string }
   ) => {
@@ -545,14 +801,14 @@ export function Chatbot({ user, onNavigate, isModal = false, onClose }: ChatbotP
       setIsTyping(false);
       isRequestInFlightRef.current = false;
     }
-  };
+  }, [currentConversationId, accessibilitySettings.simpleLanguage, voiceEnabled, speakText, applyChatPayload]);
 
-  const handleSendMessage = async () => {
+  const handleSendMessage = useCallback(async () => {
     if (isTyping || isRequestInFlightRef.current) {
       return;
     }
     await sendMessageContent(inputValue);
-  };
+  }, [inputValue, isTyping, sendMessageContent]);
 
   sendMessageContentRef.current = sendMessageContent;
 
@@ -574,11 +830,11 @@ export function Chatbot({ user, onNavigate, isModal = false, onClose }: ChatbotP
     void sendMessageContentRef.current?.(buildAssessmentDiscussPrompt(context));
   }, [messages.length, isTyping]);
 
-  const handleSuggestionClick = (suggestion: string) => {
+  const handleSuggestionClick = useCallback((suggestion: string) => {
     setInputValue(suggestion);
-  };
+  }, []);
 
-  const handleLike = async (messageId: string) => {
+  const handleLike = useCallback(async (messageId: string) => {
     setMessageFeedback(prev => ({
       ...prev,
       [messageId]: 'liked'
@@ -590,9 +846,9 @@ export function Chatbot({ user, onNavigate, isModal = false, onClose }: ChatbotP
       console.error('Failed to submit like feedback:', error);
       setMessageFeedback(prev => ({ ...prev, [messageId]: null }));
     }
-  };
+  }, []);
 
-  const handleFeedbackSubmit = async (
+  const handleFeedbackSubmit = useCallback(async (
     messageId: string,
     rating: 'positive' | 'negative',
     notes?: string,
@@ -628,45 +884,39 @@ export function Chatbot({ user, onNavigate, isModal = false, onClose }: ChatbotP
     } finally {
       setFeedbackMessageId(null);
     }
-  };
+  }, [handleLike]);
 
-  const handleDislike = (messageId: string) => {
+  const handleDislike = useCallback((messageId: string) => {
     setFeedbackMessageId((prev) => (prev === messageId ? null : messageId));
-  };
+  }, []);
 
-  const handleRegenerate = async (messageId: string) => {
-    // Find the message to regenerate
+  const handleRegenerate = useCallback(async (messageId: string) => {
     const messageIndex = messages.findIndex(m => m.id === messageId);
     if (messageIndex === -1) return;
 
-    // Get the last user message before this bot message
     const userMessages = messages.slice(0, messageIndex).filter(m => m.type === 'user');
     if (userMessages.length === 0) return;
 
     const lastUserMessage = userMessages[userMessages.length - 1];
 
-    // Remove the old bot message
     setMessages(prev => prev.filter(m => m.id !== messageId));
 
-    // Resend the user message in the same conversation to regenerate assistant output.
     await sendMessageContent(lastUserMessage.content, {
       showUserMessage: false,
       conversationId: currentConversationId || undefined
     });
-  };
+  }, [messages, currentConversationId, sendMessageContent]);
 
-  const handleGetExercises = () => {
-    // Navigate to exercises page
+  const handleGetExercises = useCallback(() => {
     onNavigate('exercises');
-  };
+  }, [onNavigate]);
 
-  const handleGetSummary = async () => {
-    // Request a conversation summary from the AI
+  const handleGetSummary = useCallback(async () => {
     const summaryRequest = 'Can you provide a brief summary of our conversation so far and any key insights or recommendations?';
     await sendMessageContent(summaryRequest);
-  };
+  }, [sendMessageContent]);
 
-  const handleBookmark = () => {
+  const handleBookmark = useCallback(() => {
     const bookmark = {
       id: currentConversationId || `local-${Date.now()}`,
       title: messages.find((message) => message.type === 'user')?.content.slice(0, 80) || 'Untitled conversation',
@@ -694,12 +944,10 @@ export function Chatbot({ user, onNavigate, isModal = false, onClose }: ChatbotP
       timestamp: new Date()
     };
     setMessages(prev => [...prev, systemMessage]);
-  };
+  }, [currentConversationId, messages]);
 
-  const handleExport = () => {
-    // Only allow export if there's an active conversation
+  const handleExport = useCallback(() => {
     if (!currentConversationId) {
-      // Fallback: Export current messages as text (for new chats not yet saved)
       const conversationText = messages
         .map(m => {
           const sender = m.type === 'user' ? 'You' : m.type === 'bot' ? 'AI Assistant' : 'System';
@@ -720,11 +968,10 @@ export function Chatbot({ user, onNavigate, isModal = false, onClose }: ChatbotP
       return;
     }
 
-    // Open export dialog for saved conversations
     setShowExportDialog(true);
-  };
+  }, [currentConversationId, messages]);
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyPress = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       if (isTyping || isRequestInFlightRef.current) {
@@ -732,20 +979,17 @@ export function Chatbot({ user, onNavigate, isModal = false, onClose }: ChatbotP
       }
       handleSendMessage();
     }
-  };
+  }, [isTyping, handleSendMessage]);
 
-  const handleTypewriterComplete = () => {
+  const handleTypewriterComplete = useCallback(() => {
     setCurrentlyTypingMessageId(null);
-    // Optionally trigger voice output here if needed
-  };
+  }, []);
 
-  const handleSelectConversation = async (conversationId: string | null) => {
+  const handleSelectConversation = useCallback(async (conversationId: string | null) => {
     if (conversationId === null) {
-      // Start a new conversation
       setCurrentConversationId(null);
       setMessages([]);
       setShowMobileSidebar(false);
-      // Reset to initial greeting
       const greeting: Message = {
         id: '1',
         type: 'bot',
@@ -755,11 +999,9 @@ export function Chatbot({ user, onNavigate, isModal = false, onClose }: ChatbotP
       };
       setMessages([greeting]);
     } else {
-      // Load existing conversation
       setCurrentConversationId(conversationId);
       setShowMobileSidebar(false);
       
-      // Show loading state
       const loadingMessage: Message = {
         id: 'loading',
         type: 'system',
@@ -768,11 +1010,9 @@ export function Chatbot({ user, onNavigate, isModal = false, onClose }: ChatbotP
       };
       setMessages([loadingMessage]);
       
-      // Fetch conversation messages from API
       try {
         const response = await conversationsApi.getConversation(conversationId);
         if (response.success && response.data?.messages) {
-          // Convert API messages to UI Message format
           const loadedMessages: Message[] = response.data.messages.map((msg) => ({
             id: msg.id,
             type: msg.type as 'user' | 'bot' | 'system',
@@ -788,7 +1028,6 @@ export function Chatbot({ user, onNavigate, isModal = false, onClose }: ChatbotP
           
           setMessages(loadedMessages);
         } else {
-          // Show error message
           const errorMessage: Message = {
             id: 'error',
             type: 'system',
@@ -808,167 +1047,12 @@ export function Chatbot({ user, onNavigate, isModal = false, onClose }: ChatbotP
         setMessages([errorMessage]);
       }
     }
-  };
-
-  const MessageBubble = ({ message }: { message: Message }) => {
-    const isUser = message.type === 'user';
-    const isSystem = message.type === 'system';
-    const exerciseMeta = !isUser && !isSystem ? parseExerciseCardMeta(message.metadata) : null;
-    const assessmentPrompt = !isUser && !isSystem
-      ? (message.assessmentPrompt ?? parseAssessmentPromptMeta(message.metadata))
-      : null;
-
-    const renderExerciseCard = (meta: ExerciseCardMeta) => {
-      switch (meta.exerciseCard) {
-        case 'breathing-animation':
-          return (
-            <BreathingAnimation
-              title={meta.title}
-              pattern={meta.pattern}
-              rounds={meta.rounds}
-            />
-          );
-        case 'grounding-checklist':
-          return <GroundingChecklist title={meta.title} steps={meta.steps} />;
-        case 'cbt-thought-record':
-          return <CBTThoughtRecord title={meta.title} steps={meta.cbtSteps} />;
-        case 'body-scan-visual':
-        case 'worry-dump-timer':
-          return (
-            <MarkdownMessage
-              content={message.content}
-              enableTypewriter={message.enableTypewriter && message.id === currentlyTypingMessageId}
-              typewriterSpeed={20}
-              onTypewriterComplete={handleTypewriterComplete}
-            />
-          );
-        default:
-          return (
-            <MarkdownMessage
-              content={message.content}
-              enableTypewriter={message.enableTypewriter && message.id === currentlyTypingMessageId}
-              typewriterSpeed={20}
-              onTypewriterComplete={handleTypewriterComplete}
-            />
-          );
-      }
-    };
-
-    return (
-      <div className={`flex gap-3 ${isUser ? 'justify-end' : 'justify-start'} mb-4 group message-enter`}>
-        {!isUser && (
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-            isSystem ? 'bg-amber-100' : 'bg-primary/10'
-          }`}>
-            {isSystem ? (
-              <AlertTriangle className="h-4 w-4 text-amber-600" />
-            ) : (
-              <span className="text-xl" role="img" aria-label="Manasarathi">🪷</span>
-            )}
-          </div>
-        )}
-        
-        <div className={`max-w-[80%] ${isUser ? 'order-1' : 'order-2'}`}>
-          <div
-            className={exerciseMeta
-              ? 'rounded-2xl p-0 overflow-hidden'
-              : `rounded-2xl px-4 py-3 ${
-                isUser
-                  ? 'bg-primary text-primary-foreground ml-auto'
-                  : isSystem
-                    ? 'bg-amber-50 border border-amber-200 text-amber-800'
-                    : 'bg-muted'
-              }`
-            }
-          >
-            {exerciseMeta ? (
-              <div className="min-w-[280px] max-w-[420px]">
-                {renderExerciseCard(exerciseMeta)}
-              </div>
-            ) : (
-              <MarkdownMessage
-                content={message.content}
-                enableTypewriter={message.enableTypewriter && message.id === currentlyTypingMessageId}
-                typewriterSpeed={20}
-                onTypewriterComplete={handleTypewriterComplete}
-              />
-            )}
-          </div>
-
-          {assessmentPrompt && (
-            <div className="mt-3 rounded-lg border border-primary/30 bg-primary/5 p-3 space-y-2">
-              <p className="text-sm text-foreground">{assessmentPrompt.prompt}</p>
-              {typeof assessmentPrompt.daysSinceLastAssessment === 'number' && (
-                <p className="text-xs text-muted-foreground">
-                  Last anxiety assessment was {assessmentPrompt.daysSinceLastAssessment} day(s) ago.
-                </p>
-              )}
-              <Button size="sm" onClick={() => onNavigate('assessments')}>
-                {assessmentPrompt.ctaLabel}
-              </Button>
-            </div>
-          )}
-          
-          <div className={`flex items-center gap-2 mt-1 text-xs text-muted-foreground ${
-            isUser ? 'justify-end' : 'justify-start'
-          }`}>
-            <span>{message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-            
-            {/* Message Actions - Only show for bot messages */}
-            {!isUser && !isSystem && (
-              <MessageActions
-                messageId={message.id}
-                content={message.content}
-                onLike={handleLike}
-                onDislike={handleDislike}
-                onRegenerate={handleRegenerate}
-                onSpeak={speakText}
-                feedback={messageFeedback[message.id] || null}
-              />
-            )}
-          </div>
-
-          {!isUser && !isSystem && feedbackMessageId === message.id && (
-            <InlineFeedback
-              messageId={message.id}
-              onSubmit={(messageId, rating, notes) => {
-                void handleFeedbackSubmit(messageId, rating, notes);
-              }}
-              onDismiss={() => setFeedbackMessageId(null)}
-            />
-          )}
-
-          {/* Suggestions */}
-          {message.suggestions && (
-            <div className="flex flex-wrap gap-2 mt-3">
-              {message.suggestions.map((suggestion, index) => (
-                <Button
-                  key={index}
-                  variant="outline"
-                  size="sm"
-                  className="text-xs"
-                  onClick={() => handleSuggestionClick(suggestion)}
-                >
-                  {suggestion}
-                </Button>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {isUser && (
-          <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
-            <User className="h-4 w-4 text-primary-foreground" />
-          </div>
-        )}
-      </div>
-    );
-  };
+  }, [user, conversationStarters]);
 
   const chatContent = (
-    <div className="flex flex-col h-full overflow-hidden">
-      {/* Header - Fixed */}
-      <div className={`flex-shrink-0 border-b p-4 ${isModal ? '' : 'bg-gradient-to-r from-primary/10 to-accent/10'}`}>
+    <div className="flex flex-col h-full overflow-hidden bg-background">
+      {/* Header - Fixed (modern glassmorphism style) */}
+      <div className={`flex-shrink-0 border-b border-border/40 backdrop-blur-md bg-background/85 px-4 py-3.5 z-10 shadow-sm`}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             {!isModal && (
@@ -977,17 +1061,17 @@ export function Chatbot({ user, onNavigate, isModal = false, onClose }: ChatbotP
                 <Button 
                   variant="ghost" 
                   size="sm"
-                  className="lg:hidden"
+                  className="lg:hidden h-9 w-9 p-0 hover:bg-slate-100 dark:hover:bg-slate-900 rounded-full"
                   onClick={() => setShowMobileSidebar(true)}
                 >
-                  <Menu className="h-4 w-4" />
+                  <Menu className="h-5 w-5 text-muted-foreground" />
                 </Button>
                 
                 {/* Back Button - Hidden on Mobile */}
                 <Button 
                   variant="ghost" 
                   size="sm"
-                  className="hidden lg:flex"
+                  className="hidden lg:flex h-9 rounded-full px-4 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors"
                   onClick={() => onNavigate('dashboard')}
                 >
                   <ArrowLeft className="h-4 w-4 mr-2" />
@@ -995,17 +1079,20 @@ export function Chatbot({ user, onNavigate, isModal = false, onClose }: ChatbotP
                 </Button>
               </>
             )}
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
-                <MessageCircle className="h-4 w-4 text-primary" />
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 bg-gradient-to-tr from-teal-500/10 to-emerald-500/10 rounded-full flex items-center justify-center border border-teal-500/20 shadow-inner">
+                <MessageCircle className="h-5 w-5 text-teal-600 dark:text-teal-400" />
               </div>
               <div>
-                <h1 className="font-semibold">{t('chat.title')}</h1>
-                <p className="text-xs text-muted-foreground">{t('chat.subtitle')}</p>
+                <h1 className="font-semibold text-sm md:text-base leading-tight tracking-tight text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
+                  {t('chat.title')}
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block animate-pulse" title="Ready to support" />
+                </h1>
+                <p className="text-xs text-muted-foreground leading-normal">{t('chat.subtitle')}</p>
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
             {/* Voice Toggle Button */}
             <Button 
               variant={voiceEnabled ? "default" : "ghost"} 
@@ -1015,28 +1102,29 @@ export function Chatbot({ user, onNavigate, isModal = false, onClose }: ChatbotP
                 setVoiceEnabled(!voiceEnabled);
               }}
               title={voiceEnabled ? "Voice replies ON - Click to disable" : "Voice replies OFF - Click to enable"}
-              className={voiceEnabled ? "bg-primary text-primary-foreground" : ""}
+              className={`h-9 rounded-full px-3 hover:scale-105 active:scale-95 transition-all duration-150 ${voiceEnabled ? "bg-teal-600 text-white hover:bg-teal-700 shadow-sm" : "hover:bg-slate-100 dark:hover:bg-slate-900"}`}
             >
-              {voiceEnabled ? "🔊" : "🔇"}
+              <span className="mr-1 text-sm">{voiceEnabled ? "🔊" : "🔇"}</span>
+              <span className="text-xs font-medium hidden sm:inline">{voiceEnabled ? "Voice ON" : "Muted"}</span>
             </Button>
             {isModal && onClose && (
-              <Button variant="ghost" size="sm" onClick={onClose}>
-                <X className="h-4 w-4" />
+              <Button variant="ghost" size="sm" className="h-9 w-9 p-0 rounded-full" onClick={onClose}>
+                <X className="h-5 w-5" />
               </Button>
             )}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm">
-                  <MoreHorizontal className="h-4 w-4" />
+                <Button variant="ghost" size="sm" className="h-9 w-9 p-0 rounded-full">
+                  <MoreHorizontal className="h-5 w-5" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setShowExportDialog(true)}>
+              <DropdownMenuContent align="end" className="rounded-xl shadow-md border-border/40">
+                <DropdownMenuItem onClick={handleExport} className="rounded-lg">
                   <Download className="h-4 w-4 mr-2" />
                   {t('chat.exportChat')}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => onNavigate('help')}>
+                <DropdownMenuItem onClick={() => onNavigate('help')} className="rounded-lg text-red-600 focus:text-red-700 dark:focus:text-red-400">
                   <LifeBuoy className="h-4 w-4 mr-2" />
                   {t('chat.crisisResources')}
                 </DropdownMenuItem>
@@ -1046,61 +1134,25 @@ export function Chatbot({ user, onNavigate, isModal = false, onClose }: ChatbotP
         </div>
       </div>
 
-      {/* Messages - Scrollable */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {messages.length === 0 ? (
-          <EmptyState 
-            onStarterClick={(starter) => void sendMessageContent(starter)}
-            starters={conversationStarters.length > 0 ? conversationStarters : undefined}
-          />
-        ) : (
-          <>
-            <StaggerContainer staggerDelay={0.1}>
-              {messages.map((message) => (
-                <StaggerItem key={message.id}>
-                  <MessageBubble message={message} />
-                </StaggerItem>
-              ))}
-            </StaggerContainer>
-
-            {/* Conversation Starters - Show when just initial greeting */}
-            {messages.length === 1 && conversationStarters.length > 0 && (
-              <div className="mt-6">
-                <p className="text-sm text-muted-foreground mb-3 text-center">
-                  Or choose a topic to get started:
-                </p>
-                <div className="grid grid-cols-2 gap-2">
-                  <StaggerContainer staggerDelay={0.08}>
-                    {conversationStarters.map((starter, index) => (
-                      <StaggerItem key={index}>
-                        <Button
-                          variant="outline"
-                          className="h-auto py-3 px-4 text-left justify-start text-sm hover:bg-primary/5 hover:border-primary/50 transition-all"
-                          onClick={() => handleSuggestionClick(starter)}
-                        >
-                          {starter}
-                        </Button>
-                      </StaggerItem>
-                    ))}
-                  </StaggerContainer>
-                </div>
-              </div>
-            )}
-          </>
-        )}
-        
-        {/* Typing Indicator */}
-        {isTyping && (
-          <div className="flex items-center gap-2 px-3 py-2 message-enter">
-            <span className="text-lg animate-breathe" role="img" aria-label="Thinking">🪷</span>
-            <span className="text-sm text-muted-foreground italic">
-              Manasarathi is reflecting...
-            </span>
-          </div>
-        )}
-        
-        <div ref={messagesEndRef} />
-      </div>
+      {/* Messages viewport - Memoized to prevent input blinking */}
+      <MessagesList
+        messages={messages}
+        isTyping={isTyping}
+        currentlyTypingMessageId={currentlyTypingMessageId}
+        conversationStarters={conversationStarters}
+        messageFeedback={messageFeedback}
+        feedbackMessageId={feedbackMessageId}
+        setFeedbackMessageId={setFeedbackMessageId}
+        handleTypewriterComplete={handleTypewriterComplete}
+        handleSuggestionClick={handleSuggestionClick}
+        handleLike={handleLike}
+        handleDislike={handleDislike}
+        handleRegenerate={handleRegenerate}
+        speakText={speakText}
+        handleFeedbackSubmit={handleFeedbackSubmit}
+        onNavigate={onNavigate}
+        messagesEndRef={messagesEndRef}
+      />
 
       {/* Quick Actions Bar */}
       <QuickActionsBar
@@ -1110,69 +1162,70 @@ export function Chatbot({ user, onNavigate, isModal = false, onClose }: ChatbotP
         onExport={handleExport}
       />
 
-      {/* Input - Fixed Footer */}
-      <div className="flex-shrink-0 border-t p-4 bg-background">
-        <div className="flex gap-2">
-          <div className="flex-1 relative">
+      {/* Input Composer - Modern floating card style */}
+      <div className="flex-shrink-0 px-4 pb-6 pt-2 bg-gradient-to-t from-background via-background/95 to-transparent">
+        <div className="max-w-3xl mx-auto flex gap-2.5 items-center bg-card border border-border/60 hover:border-teal-500/40 rounded-3xl shadow-md hover:shadow-lg focus-within:shadow-lg focus-within:border-teal-500/60 p-2 transition-all duration-200">
+          <div className="flex-1 relative flex items-center pl-2">
             <Input
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={handleKeyPress}
               placeholder={t('chat.placeholder')}
-              className="pr-20"
+              className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 px-1 py-1.5 h-auto text-sm placeholder:text-slate-400/80 bg-transparent flex-1"
             />
-            <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1">
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className={`h-6 w-6 p-0 ${isSpeaking ? 'bg-blue-100' : ''}`}
-                onClick={() => {
-                  if (isSpeaking) {
-                    stopSpeaking();
-                  } else {
-                    // Find the last bot message and speak it
-                    const lastBotMessage = [...messages].reverse().find(m => m.type === 'bot');
-                    if (lastBotMessage) {
-                      speakText(lastBotMessage.content);
-                    }
-                  }
-                }}
-                title={isSpeaking ? "Stop speaking" : "Read last message aloud"}
-              >
-                {isSpeaking ? (
-                  <div className="h-4 w-4 relative">
-                    <div className="absolute inset-0 animate-pulse bg-blue-500 rounded-full opacity-50" />
-                    <div className="relative h-full w-full flex items-center justify-center text-sm">
-                      ⏹️
-                    </div>
-                  </div>
-                ) : (
-                  <span className="text-sm">🔊</span>
-                )}
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className={`h-6 w-6 p-0 ${isListening ? 'bg-red-100 text-red-600' : ''}`}
-                onClick={toggleVoiceInput}
-                title={isListening ? "Stop listening" : "Voice input"}
-                disabled={!voiceInputSupported}
-              >
-                <Mic className={`h-4 w-4 ${isListening ? 'animate-pulse' : ''}`} />
-              </Button>
-            </div>
           </div>
-          <Button 
-            onClick={handleSendMessage}
-            disabled={!inputValue.trim() || isTyping}
-            size="sm"
-          >
-            {isTyping ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Send className="h-4 w-4" />
-            )}
-          </Button>
+          
+          <div className="flex items-center gap-1">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className={`h-8 w-8 p-0 rounded-full transition-transform active:scale-95 ${isSpeaking ? 'bg-teal-500/10 text-teal-600' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-900'}`}
+              onClick={() => {
+                if (isSpeaking) {
+                  stopSpeaking();
+                } else {
+                  const lastBotMessage = [...messages].reverse().find(m => m.type === 'bot');
+                  if (lastBotMessage) {
+                    speakText(lastBotMessage.content);
+                  }
+                }
+              }}
+              title={isSpeaking ? "Stop speaking" : "Read last message aloud"}
+            >
+              {isSpeaking ? (
+                <div className="h-4 w-4 relative flex items-center justify-center">
+                  <div className="absolute inset-0 animate-ping bg-teal-500 rounded-full opacity-60" />
+                  <span className="text-xs relative">⏹️</span>
+                </div>
+              ) : (
+                <span className="text-sm">🔊</span>
+              )}
+            </Button>
+            
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className={`h-8 w-8 p-0 rounded-full transition-all active:scale-95 ${isListening ? 'bg-red-50 text-red-600 dark:bg-red-950/20' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-900'}`}
+              onClick={toggleVoiceInput}
+              title={isListening ? "Stop listening" : "Voice input"}
+              disabled={!voiceInputSupported}
+            >
+              <Mic className={`h-5 w-5 ${isListening ? 'animate-pulse text-red-500' : ''}`} />
+            </Button>
+
+            <Button 
+              onClick={handleSendMessage}
+              disabled={!inputValue.trim() || isTyping}
+              size="sm"
+              className="h-8 w-8 p-0 rounded-full bg-teal-600 text-white hover:bg-teal-700 hover:scale-105 transition-all shadow-sm flex items-center justify-center"
+            >
+              {isTyping ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Send className="h-3.5 w-3.5" />
+              )}
+            </Button>
+          </div>
         </div>
       </div>
     </div>

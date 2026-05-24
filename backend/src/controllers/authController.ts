@@ -242,6 +242,7 @@ export const register = async (req: Request, res: Response) => {
         name,
         email: email.toLowerCase(),
         password: hashedPassword,
+        isEmailVerified: true,
       }
     });
 
@@ -283,18 +284,28 @@ export const login = async (req: Request, res: Response) => {
       where: { email: email.toLowerCase() },
     });
 
+    const expectedPayload = {
+      success: false,
+      error: 'Invalid email or password.',
+      suggestion: 'check_credentials',
+      message: 'Please check your credentials and try again.',
+    };
+
     if (!user) {
-      throw new UnauthorizedError('Invalid credentials');
+      res.status(401).json(expectedPayload);
+      return;
     }
 
     // Check password
     if (!user.password) {
-      throw new UnauthorizedError('Invalid credentials');
+      res.status(401).json(expectedPayload);
+      return;
     }
     
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      throw new UnauthorizedError('Invalid credentials');
+      res.status(401).json(expectedPayload);
+      return;
     }
 
     // Generate token

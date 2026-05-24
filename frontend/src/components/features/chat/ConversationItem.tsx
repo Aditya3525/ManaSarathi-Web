@@ -89,9 +89,9 @@ export function ConversationItem({
   return (
     <div
       className={`
-        group relative cursor-pointer rounded-lg px-3 py-2
-        transition-all duration-200 hover:bg-accent/50
-        ${isActive ? 'bg-accent text-accent-foreground' : ''}
+        group relative cursor-pointer rounded-xl px-3 py-2.5 mx-1 mb-1 border border-transparent
+        transition-all duration-200 hover:bg-slate-200/40 dark:hover:bg-slate-900/40
+        ${isActive ? 'bg-teal-500/10 dark:bg-teal-500/20 text-teal-800 dark:text-teal-300 border-l-2 border-l-teal-500 rounded-l-none pl-2.5 shadow-sm' : 'text-slate-700 dark:text-slate-300'}
       `}
       onClick={onClick}
       role="button"
@@ -103,28 +103,28 @@ export function ConversationItem({
         }
       }}
     >
-      <div className="flex min-w-0 items-start justify-between gap-2">
+      <div className="flex min-w-0 items-center justify-between gap-2">
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
-            <h4 className="text-sm font-medium truncate">
-              {conversation.title || 'Untitled Conversation'}
+          <div className="flex items-center justify-between gap-2">
+            <h4 className={`text-sm truncate leading-tight ${isActive ? 'font-semibold text-slate-900 dark:text-slate-100' : 'font-medium text-slate-800 dark:text-slate-200'}`}>
+              {conversation.title || 'Untitled'}
             </h4>
             {conversation.messageCount > 0 && (
-              <span className="text-xs text-muted-foreground shrink-0">
+              <span className="text-[10px] font-semibold text-slate-500 bg-slate-200/40 dark:bg-slate-800/60 shrink-0 px-2 py-0.5 rounded-full">
                 {conversation.messageCount}
               </span>
             )}
           </div>
           
           {conversation.lastMessage && (
-            <p className="text-xs text-muted-foreground truncate mt-0.5">
+            <p className="text-xs text-slate-400 dark:text-slate-500 truncate mt-1">
               {conversation.lastMessage}
             </p>
           )}
           
-          <p className="text-xs text-muted-foreground/70 mt-1">
-            {formatTimestamp(conversation.lastMessageAt)}
-          </p>
+          <div className="flex items-center justify-between mt-1 text-[10px] text-slate-400 dark:text-slate-500">
+            <span>{formatTimestamp(conversation.lastMessageAt)}</span>
+          </div>
         </div>
 
         <DropdownMenu>
@@ -132,14 +132,15 @@ export function ConversationItem({
             <Button
               variant="ghost"
               size="sm"
-              className="h-8 w-8 shrink-0 bg-muted/50 p-0 hover:bg-muted"
+              className="h-7 w-7 shrink-0 bg-transparent hover:bg-slate-200 dark:hover:bg-slate-800 p-0 text-slate-400 hover:text-slate-800 dark:hover:text-slate-100 rounded-lg md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-150 shadow-none border-0"
               onClick={(e) => e.stopPropagation()}
             >
-              <MoreHorizontal className="h-5 w-5" />
+              <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-[min(12rem,calc(100vw-2rem))]">
+          <DropdownMenuContent align="end" className="w-[min(12rem,calc(100vw-2rem))] rounded-xl shadow-md border-border/40">
             <DropdownMenuItem
+              className="rounded-lg"
               onClick={(e) => {
                 e.stopPropagation();
                 setIsEditing(true);
@@ -148,8 +149,9 @@ export function ConversationItem({
               <Edit2 className="h-4 w-4 mr-2" />
               Rename
             </DropdownMenuItem>
-
+ 
             <DropdownMenuItem
+              className="rounded-lg"
               onClick={(e) => {
                 e.stopPropagation();
                 setShowExportDialog(true);
@@ -162,6 +164,7 @@ export function ConversationItem({
             <DropdownMenuSeparator />
             
             <DropdownMenuItem
+              className="rounded-lg"
               onClick={(e) => {
                 e.stopPropagation();
                 if (confirm('Hide this conversation from sidebar? (You can restore it later)')) {
@@ -174,7 +177,7 @@ export function ConversationItem({
             </DropdownMenuItem>
             
             <DropdownMenuItem
-              className="text-destructive focus:text-destructive focus:bg-destructive/10"
+              className="text-destructive focus:text-destructive focus:bg-destructive/10 rounded-lg"
               onClick={(e) => {
                 e.stopPropagation();
                 if (confirm('⚠️ PERMANENTLY delete this conversation?\n\nThis will remove all messages forever and cannot be undone!')) {
