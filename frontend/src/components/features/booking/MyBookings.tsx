@@ -4,7 +4,6 @@ import {
     Clock,
     User,
     X,
-    Loader2,
     CalendarCheck,
     Video,
     Phone,
@@ -13,6 +12,8 @@ import {
     RefreshCw,
 } from 'lucide-react';
 import React from 'react';
+
+import { LoadingSpinner } from '../../ui/loading-spinner';
 
 import { useToast } from '../../../contexts/ToastContext';
 import { therapistApi } from '../../../services/helpSafetyApi';
@@ -119,7 +120,7 @@ export function MyBookings() {
     if (isLoading) {
         return (
             <div className="flex items-center justify-center py-12">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                <LoadingSpinner size="lg" className="text-primary" />
             </div>
         );
     }
@@ -247,7 +248,7 @@ export function MyBookings() {
                                             disabled={cancelMutation.isPending}
                                         >
                                             {cancelMutation.isPending ? (
-                                                <Loader2 className="h-3 w-3 animate-spin" />
+                                                <LoadingSpinner size="xs" />
                                             ) : (
                                                 <>
                                                     <X className="h-3 w-3 mr-1" />

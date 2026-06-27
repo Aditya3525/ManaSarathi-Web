@@ -186,7 +186,7 @@ export const ConversationSummaryWidget: React.FC<ConversationSummaryWidgetProps>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Key Metrics Grid */}
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {/* Messages Sent */}
           <div className="space-y-1">
             <div className="flex items-center gap-2 text-gray-500">
@@ -267,6 +267,51 @@ export const ConversationSummaryWidget: React.FC<ConversationSummaryWidgetProps>
                 </li>
               ))}
             </ul>
+          </div>
+        )}
+
+        {/* Important Moments */}
+        {(summary as any).importantMoments && (summary as any).importantMoments.length > 0 && (
+          <div className="space-y-2 pt-2 border-t text-left">
+            <h4 className="text-sm font-semibold text-gray-700">Key Milestones & Breakthroughs</h4>
+            <div className="space-y-2">
+              {(summary as any).importantMoments.slice(0, 3).map((moment: any, index: number) => {
+                const dateStr = new Date(moment.timestamp).toLocaleDateString(undefined, {
+                  month: 'short',
+                  day: 'numeric'
+                });
+                
+                const impactColors = {
+                  high: 'bg-red-50 text-red-700 border-red-200',
+                  medium: 'bg-orange-50 text-orange-700 border-orange-200',
+                  low: 'bg-blue-50 text-blue-700 border-blue-200'
+                };
+                
+                const impactColor = impactColors[moment.emotionalImpact as 'high' | 'medium' | 'low'] || impactColors.low;
+
+                return (
+                  <div key={moment.id || index} className="p-2.5 bg-slate-50 border rounded-lg space-y-1 hover:bg-slate-100/80 transition-colors">
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="font-semibold text-slate-700">{moment.topic}</span>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[10px] text-slate-400">{dateStr}</span>
+                        <span className={`px-1 py-0.2 border rounded text-[9px] font-bold uppercase tracking-wider ${impactColor}`}>
+                          {moment.emotionalImpact}
+                        </span>
+                      </div>
+                    </div>
+                    <p className="text-xs text-slate-800 font-medium">
+                      {moment.summary}
+                    </p>
+                    {moment.userMessage && (
+                      <p className="text-[10px] text-slate-400 truncate">
+                        &ldquo;{moment.userMessage}&rdquo;
+                      </p>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         )}
 

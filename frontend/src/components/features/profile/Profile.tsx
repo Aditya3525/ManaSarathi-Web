@@ -180,12 +180,12 @@ export function Profile({ user, onNavigate, setUser, onLogout }: ProfileProps) {
     colors: { light: string[]; dark: string[] } 
   }> = [
     { 
-      value: 'default', 
-      label: 'Default Teal', 
-      description: 'Calming teal and cyan theme for mental clarity',
+      value: 'forest', 
+      label: 'Default Wellness (Forest Zen)', 
+      description: 'Grounding greens and earth tones for natural balance',
       colors: {
-        light: ['#319795', '#81e6d9', '#e2e8f0'],
-        dark: ['#4BA3C3', '#6EE7B7', '#A78BFA']
+        light: ['#059669', '#6ee7b7', '#d1fae5'],
+        dark: ['#34d399', '#10b981', '#065f46']
       }
     },
     { 
@@ -195,15 +195,6 @@ export function Profile({ user, onNavigate, setUser, onLogout }: ProfileProps) {
       colors: {
         light: ['#0891b2', '#67e8f9', '#e0f2fe'],
         dark: ['#22d3ee', '#06b6d4', '#0c4a6e']
-      }
-    },
-    { 
-      value: 'forest', 
-      label: 'Forest Zen', 
-      description: 'Grounding greens and earth tones for natural balance',
-      colors: {
-        light: ['#059669', '#6ee7b7', '#d1fae5'],
-        dark: ['#34d399', '#10b981', '#065f46']
       }
     },
     { 
@@ -606,7 +597,7 @@ export function Profile({ user, onNavigate, setUser, onLogout }: ProfileProps) {
     <div className="min-h-screen bg-background page-enter">
       {/* Mobile/Tablet/Desktop Header - Responsive */}
       <div className="bg-gradient-to-r from-primary/10 to-accent/10 p-4 md:p-6">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           {/* Mobile: Compact header with back button */}
           {device.isMobile ? (
             <>
@@ -626,7 +617,7 @@ export function Profile({ user, onNavigate, setUser, onLogout }: ProfileProps) {
                   {avatarInitials}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h1 className="text-xl font-semibold truncate text-foreground">
+                  <h1 className="text-2xl font-bold text-foreground truncate">
                     {profileDisplayName}
                   </h1>
                   <p className="text-sm text-muted-foreground truncate">{user?.email}</p>
@@ -652,7 +643,7 @@ export function Profile({ user, onNavigate, setUser, onLogout }: ProfileProps) {
                   {avatarInitials}
                 </div>
                 <div>
-                  <h1 className="text-3xl text-foreground">{profileDisplayName}</h1>
+                  <h1 className="text-3xl font-bold text-foreground">{profileDisplayName}</h1>
                   <p className="text-muted-foreground">{user?.email}</p>
                 </div>
               </div>
@@ -661,7 +652,7 @@ export function Profile({ user, onNavigate, setUser, onLogout }: ProfileProps) {
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto p-4 md:p-6">
+      <div className="max-w-6xl mx-auto p-4 md:p-6">
         <Tabs defaultValue="personal" className="space-y-4 md:space-y-6">
           {/* Mobile: Horizontal scrollable tabs / Desktop: Full grid */}
           <div className={device.isMobile ? "overflow-x-auto -mx-4 px-4" : ""}>
@@ -1589,7 +1580,7 @@ export function Profile({ user, onNavigate, setUser, onLogout }: ProfileProps) {
                 {/* Section Checkboxes */}
                 <div>
                   <Label className="text-sm font-medium mb-2 block">Data Sections</Label>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {([
                       { key: 'profile', label: 'Profile & Settings', icon: '👤' },
                       { key: 'assessments', label: 'Assessments', icon: '📋' },
@@ -1973,7 +1964,7 @@ export function Profile({ user, onNavigate, setUser, onLogout }: ProfileProps) {
         {/* Mobile: Sticky Save Button (shown only when editing Personal tab) */}
         {device.isMobile && isEditing && (
           <div className="fixed bottom-0 left-0 right-0 bg-background border-t shadow-lg p-4 pb-safe z-40">
-            <div className="flex gap-2 max-w-4xl mx-auto">
+            <div className="flex gap-2 max-w-6xl mx-auto">
               <Button 
                 onClick={handleSaveProfile} 
                 disabled={isSaving}

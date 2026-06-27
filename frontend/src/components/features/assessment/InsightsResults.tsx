@@ -13,8 +13,9 @@ import {
   TrendingUp
 } from 'lucide-react';
 import jsPDF from 'jspdf';
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 
+import { getApiBaseUrl } from '../../../config/apiConfig';
 import {
   AssessmentHistoryEntry,
   AssessmentInsights
@@ -117,7 +118,11 @@ const sanitizeFileName = (value: string): string =>
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '') || 'insights-report';
 
-const BASIC_OVERALL_ASSESSMENT_SET = new Set(OVERALL_ASSESSMENT_OPTION_IDS);
+const BASIC_OVERALL_ASSESSMENT_SET = new Set([
+  'basic_overall',
+  'basicoverall',
+  ...OVERALL_ASSESSMENT_OPTION_IDS
+]);
 const normalizeTypeKey = (value: string): string => value.toLowerCase().replace(/[^a-z0-9]/g, '');
 const BASIC_OVERALL_NORMALIZED_SET = new Set(Array.from(BASIC_OVERALL_ASSESSMENT_SET).map(normalizeTypeKey));
 
@@ -210,6 +215,53 @@ export function InsightsResults({ insights, history, onNavigate, isLoading, erro
   const { push } = useToast();
   const [discussDialogOpen, setDiscussDialogOpen] = useState(false);
   const [isExportingReport, setIsExportingReport] = useState(false);
+
+  const [personalRecs, setPersonalRecs] = useState<any[]>([]);
+  const [recsLoading, setRecsLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchPersonalRecs = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+      setRecsLoading(true);
+      try {
+        const response = await fetch(`${getApiBaseUrl()}/recommendations/personalized`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        if (response.ok) {
+          const resJson = await response.json();
+          const items = resJson.data?.items || resJson.recommendations || [];
+          setPersonalRecs(items);
+        }
+      } catch (err) {
+        console.error('Failed to fetch personal recommendations in InsightsResults:', err);
+      } finally {
+        setRecsLoading(false);
+      }
+    };
+    fetchPersonalRecs();
+  }, []);
+
+  const handleRecommendationClick = (rec: any) => {
+    if (typeof window === 'undefined') return;
+
+    if (rec.type === 'practice') {
+      const payload = { id: rec.id, title: rec.title };
+      window.sessionStorage.setItem('mw-practice-autostart', JSON.stringify(payload));
+      window.sessionStorage.setItem('practices_search', rec.title);
+      onNavigate('practices');
+    } else if (rec.type === 'content' || rec.type === 'crisis-resource') {
+      const payload = { id: rec.id, title: rec.title };
+      window.sessionStorage.setItem('mw-content-autoopen', JSON.stringify(payload));
+      window.sessionStorage.setItem('content_library_search', rec.title);
+      onNavigate('library');
+    } else {
+      onNavigate('practices');
+    }
+  };
 
   const hasInsights = insights && Object.keys(insights.byType).length > 0;
   const focusSet = useMemo(() => getFocusMatchSet(focusAssessmentType), [focusAssessmentType]);
@@ -692,7 +744,13 @@ export function InsightsResults({ insights, history, onNavigate, isLoading, erro
                 <CardHeader className="space-y-2">
                   <CardTitle className="flex items-center justify-between gap-2">
                     <span>{friendlyLabel(type)}</span>
-                    <Badge variant="secondary" className={getScoreColor(summary.latestScore)}>
+                    <Badge 
+                      variant="secondary" 
+                      className={summary.trend === 'baseline' 
+                        ? 'text-slate-500 bg-slate-100 border-slate-200 hover:bg-slate-100 dark:text-slate-400 dark:bg-slate-800 dark:border-slate-700' 
+                        : getScoreColor(summary.latestScore)
+                      }
+                    >
                       {trendLabelForType(type, summary.trend)}
                     </Badge>
                   </CardTitle>
@@ -757,7 +815,13 @@ export function InsightsResults({ insights, history, onNavigate, isLoading, erro
                           <h3 className="font-semibold">{friendlyLabel(type)}</h3>
                           <p className="text-xs text-muted-foreground">{summary.interpretation}</p>
                         </div>
-                        <Badge variant="secondary" className={getScoreColor(summary.latestScore)}>
+                        <Badge 
+                          variant="secondary" 
+                          className={summary.trend === 'baseline' 
+                            ? 'text-slate-500 bg-slate-100 border-slate-200 hover:bg-slate-100 dark:text-slate-400 dark:bg-slate-800 dark:border-slate-700' 
+                            : getScoreColor(summary.latestScore)
+                          }
+                        >
                           {trendLabelForType(type, summary.trend)}
                         </Badge>
                       </div>
@@ -811,7 +875,7 @@ export function InsightsResults({ insights, history, onNavigate, isLoading, erro
               </div>
             )}
 
-            {recommendations.length > 0 && (
+            {(personalRecs.length > 0 || recommendations.length > 0) && (
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -820,33 +884,76 @@ export function InsightsResults({ insights, history, onNavigate, isLoading, erro
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <p className="text-muted-foreground">
+                  <p className="text-muted-foreground text-sm">
                     Based on your momentum, try these gentle next steps:
                   </p>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    {recommendations.map((rec) => (
-                      <Card key={rec.description} className="border hover:border-primary/20 transition-colors">
-                        <CardContent className="p-4 space-y-3">
-                          <div className="flex items-center gap-3">
-                            <div className="p-2 bg-primary/10 rounded-lg text-primary">
-                              {getRecommendationIcon(rec.type)}
-                            </div>
-                            <div className="flex-1">
-                              <h4 className="font-medium">{rec.title}</h4>
-                              <p className="text-sm text-muted-foreground">{rec.description}</p>
-                            </div>
-                          </div>
-                          <Button
-                            size="sm"
-                            className="w-full"
-                            onClick={() => onNavigate('practices')}
-                          >
-                            {rec.type === 'immediate' ? 'Start Now' : 'Explore Practice'}
-                          </Button>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
+                  
+                  {recsLoading ? (
+                    <div className="flex items-center justify-center p-8 text-sm text-muted-foreground animate-pulse">
+                      Tailoring personalized recommendations...
+                    </div>
+                  ) : (
+                    <div className="grid md:grid-cols-2 gap-4">
+                      {personalRecs.length > 0
+                        ? personalRecs.slice(0, 4).map((rec, index) => {
+                            const isPractice = rec.type === 'practice';
+                            return (
+                              <Card key={rec.id || index} className="border hover:border-primary/20 transition-all hover:scale-[1.01]">
+                                <CardContent className="p-4 flex flex-col justify-between h-full space-y-4">
+                                  <div className="space-y-3">
+                                    <div className="flex items-start gap-3">
+                                      <div className="p-2 bg-primary/10 rounded-lg text-primary shrink-0">
+                                        {isPractice ? <Heart className="h-4 w-4" /> : <Sparkles className="h-4 w-4" />}
+                                      </div>
+                                      <div className="space-y-1">
+                                        <h4 className="font-semibold text-sm leading-snug">{rec.title}</h4>
+                                        {rec.reason && (
+                                          <p className="text-xs text-primary/80 font-medium">
+                                            💡 {rec.reason}
+                                          </p>
+                                        )}
+                                        <p className="text-xs text-muted-foreground line-clamp-2">
+                                          {rec.description}
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <Button
+                                    size="sm"
+                                    className="w-full"
+                                    onClick={() => handleRecommendationClick(rec)}
+                                  >
+                                    {isPractice ? 'Start Practice' : 'Read Article'}
+                                  </Button>
+                                </CardContent>
+                              </Card>
+                            );
+                          })
+                        : recommendations.map((rec, index) => (
+                            <Card key={index} className="border hover:border-primary/20 transition-colors">
+                              <CardContent className="p-4 space-y-3">
+                                <div className="flex items-center gap-3">
+                                  <div className="p-2 bg-primary/10 rounded-lg text-primary">
+                                    {getRecommendationIcon(rec.type)}
+                                  </div>
+                                  <div className="flex-1">
+                                    <h4 className="font-medium">{rec.title}</h4>
+                                    <p className="text-sm text-muted-foreground">{rec.description}</p>
+                                  </div>
+                                </div>
+                                <Button
+                                  size="sm"
+                                  className="w-full"
+                                  onClick={() => onNavigate('practices')}
+                                >
+                                  {rec.type === 'immediate' ? 'Start Now' : 'Explore Practice'}
+                                </Button>
+                              </CardContent>
+                            </Card>
+                          ))
+                      }
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             )}
@@ -880,7 +987,11 @@ export function InsightsResults({ insights, history, onNavigate, isLoading, erro
                             <div key={snapshot.id} className="space-y-3 rounded-lg border p-4">
                               <div className="flex items-start justify-between gap-4">
                                 <div>
-                                  <p className="text-sm font-medium text-muted-foreground">Combined wellbeing snapshot</p>
+                                  <p className="text-sm font-medium text-muted-foreground">
+                                    {snapshot.assessments.length === 1 && (snapshot.assessments[0].assessmentType === 'basic_overall' || snapshot.assessments[0].assessmentType === 'basicoverall')
+                                      ? 'Baseline Wellness Screening'
+                                      : 'Combined wellbeing snapshot'}
+                                  </p>
                                   <p className="text-xs text-muted-foreground">
                                     Completed {formatRelativeTime(snapshot.completedAt)}
                                   </p>
@@ -897,14 +1008,16 @@ export function InsightsResults({ insights, history, onNavigate, isLoading, erro
                                   )}
                                 </div>
                               </div>
-                              <div className="grid gap-2 sm:grid-cols-2">
-                                {snapshot.assessments.map((entry) => (
-                                  <div key={`${snapshot.id}-${entry.assessmentType}`} className="flex items-center justify-between rounded-md bg-muted/50 px-3 py-2 text-xs">
-                                    <span className="font-medium text-muted-foreground">{friendlyLabel(entry.assessmentType)}</span>
-                                    <span className="font-semibold text-primary">{Math.round(entry.score)}%</span>
-                                  </div>
-                                ))}
-                              </div>
+                              {snapshot.assessments.length > 1 && (
+                                <div className="grid gap-2 sm:grid-cols-2">
+                                  {snapshot.assessments.map((entry) => (
+                                    <div key={`${snapshot.id}-${entry.assessmentType}`} className="flex items-center justify-between rounded-md bg-muted/50 px-3 py-2 text-xs">
+                                      <span className="font-medium text-muted-foreground">{friendlyLabel(entry.assessmentType)}</span>
+                                      <span className="font-semibold text-primary">{Math.round(entry.score)}%</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
                             </div>
                           ))}
                         </div>

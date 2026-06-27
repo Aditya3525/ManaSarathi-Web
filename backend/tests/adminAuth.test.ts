@@ -4,6 +4,7 @@ import type { Express } from 'express';
 import { PrismaClient } from '@prisma/client';
 import fs from 'fs';
 import path from 'path';
+import bcrypt from 'bcryptjs';
 
 const resolveDatabaseUrl = (): string | null => {
   const raw = process.env.DATABASE_URL?.trim();
@@ -50,13 +51,17 @@ maybeDescribe('Admin auth session flow', () => {
     const module = await import('../src/server');
     app = module.default;
 
-    // Ensure admin user exists with no password (so default demo password works)
+    // Ensure admin user exists with correct password
+    const hashedPassword = await bcrypt.hash('admin123', 10);
     const user = await prisma.user.upsert({
       where: { email: adminEmail },
-      update: {},
+      update: {
+        password: hashedPassword,
+      },
       create: {
         email: adminEmail,
         name: 'Test Admin',
+        password: hashedPassword,
         isOnboarded: true,
         dataConsent: true,
       },

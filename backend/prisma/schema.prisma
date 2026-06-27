@@ -487,6 +487,7 @@ model AssessmentDefinition {
   category     String
   description  String?
   timeEstimate String? @map("time_estimate")
+  timeframe    String? @map("timeframe")
   isActive     Boolean @default(true) @map("is_active")
   isBasicOverallOnly Boolean @default(false) @map("is_basic_overall_only") // Flag for basic overall assessment questions
   visibleInMainList  Boolean @default(true) @map("visible_in_main_list") // Show in Mental Wellness Assessment section

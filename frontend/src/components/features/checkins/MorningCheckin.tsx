@@ -73,7 +73,7 @@ export function MorningCheckin({ onComplete }: MorningCheckinProps) {
   };
 
   return (
-    <Card className="border-amber-200/60 bg-gradient-to-br from-amber-50/80 via-orange-50/30 to-sky-50/50 dark:from-amber-950/20 dark:via-background dark:to-sky-950/10 shadow-[var(--shadow-soft)] page-enter">
+    <Card className="border-amber-200/60 bg-gradient-to-br from-amber-50/80 via-orange-50/30 to-sky-50/50 dark:bg-card dark:border-border dark:bg-none shadow-[var(--shadow-soft)] page-enter">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-base md:text-lg">
           <Sunrise className="h-5 w-5 text-amber-500" />

@@ -38,9 +38,27 @@ export const getCrisisResources = async (req: Request, res: Response) => {
 		const country = typeof req.query.country === 'string' ? req.query.country.trim() : undefined;
 		const includeInactive = String(req.query.includeInactive ?? '').toLowerCase() === 'true';
 
+		let mappedCountry: string | undefined = undefined;
+		if (country) {
+			const normalized = country.toLowerCase().trim();
+			if (normalized === 'us' || normalized === 'united states' || normalized === 'north america' || normalized === 'usa') {
+				mappedCountry = 'US';
+			} else if (normalized === 'in' || normalized === 'india') {
+				mappedCountry = 'IN';
+			} else if (normalized === 'uk' || normalized === 'united kingdom' || normalized === 'gb' || normalized === 'great britain') {
+				mappedCountry = 'UK';
+			} else if (normalized === 'ca' || normalized === 'canada') {
+				mappedCountry = 'CA';
+			} else if (normalized === 'au' || normalized === 'australia') {
+				mappedCountry = 'AU';
+			} else {
+				mappedCountry = 'GLOBAL';
+			}
+		}
+
 		const resources = await prisma.crisisResource.findMany({
 			where: {
-				...(country ? { country } : {}),
+				...(mappedCountry ? { country: { in: [mappedCountry, 'GLOBAL'] } } : {}),
 				...(includeInactive ? {} : { isActive: true })
 			},
 			orderBy: [{ order: 'asc' }, { createdAt: 'desc' }]

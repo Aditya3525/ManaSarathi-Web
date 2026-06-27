@@ -402,6 +402,38 @@ export function LandingPage({
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      {/* Global CSS overrides to elevate the premium, luxurious style of the whole page */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        .font-serif {
+          font-family: 'Playfair Display', 'Didot', 'Georgia', serif !important;
+        }
+        
+        /* Premium transitions and shadow elevations */
+        .premium-card-transition {
+          transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1) !important;
+        }
+
+        .premium-card-transition:hover {
+          transform: translateY(-2px) !important;
+        }
+
+        /* Customize scrollbars */
+        ::-webkit-scrollbar {
+          width: 8px;
+          height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+          background: var(--background);
+        }
+        ::-webkit-scrollbar-thumb {
+          background: var(--muted-foreground);
+          border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+          background: var(--primary);
+        }
+      ` }} />
+
       {/* Skip to content link for accessibility */}
       <a
         href="#main-content"
@@ -413,23 +445,23 @@ export function LandingPage({
       {/* Responsive Sticky Header */}
       <header
         className={`
-          sticky top-0 z-50 border-b bg-background/95 backdrop-blur transition-shadow supports-[backdrop-filter]:bg-background/75
-          ${isHeaderSticky ? 'shadow-md' : ''}
+          sticky top-0 z-50 border-b border-border/40 bg-background/90 backdrop-blur transition-shadow supports-[backdrop-filter]:bg-background/80
+          ${isHeaderSticky ? 'shadow-sm' : ''}
         `}
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 md:py-4">
           {/* Logo */}
-          <div className="flex items-center gap-2 sm:gap-3">
-            <Badge variant="secondary" className="rounded-full border border-primary/20 bg-primary/10 px-2 py-1 text-xs font-semibold uppercase tracking-wide text-primary sm:px-3">
-              ManaSarathi
-            </Badge>
-            <span className="hidden text-xs text-muted-foreground sm:text-sm lg:inline-flex">
-              Guided support for calmer days
+          <div className="flex items-center gap-3 cursor-pointer" onClick={() => onNavigate?.('landing')}>
+            <div className="relative flex items-center justify-center w-8 h-8 rounded-full border border-primary/20 bg-gradient-to-tr from-primary/10 to-primary/20 shadow-sm">
+              <span className="text-sm font-serif font-semibold text-primary">M</span>
+            </div>
+            <span className="text-lg font-serif tracking-widest text-foreground font-semibold uppercase">
+              MANA<span className="text-primary font-normal">SARATHI</span>
             </span>
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden items-center gap-6 text-sm text-muted-foreground lg:flex">
+          <nav className="hidden items-center gap-8 text-sm font-medium tracking-wide text-muted-foreground lg:flex">
             <a href="#how-it-works" className="transition-colors hover:text-primary">
               How it works
             </a>
@@ -460,18 +492,18 @@ export function LandingPage({
 
             {/* Mobile: Compact Start Button */}
             <Button
-              className="h-9 px-3 text-sm font-medium sm:h-10 sm:px-4 lg:hidden"
+              className="h-9 px-4 text-xs font-semibold rounded-full sm:h-10 sm:px-5 lg:hidden"
               onClick={() => openModal('start')}
             >
               Start free
             </Button>
 
             {/* Desktop: Full Buttons */}
-            <div className="hidden items-center gap-3 lg:flex">
-              <Button variant="ghost" className="text-sm font-medium" onClick={() => openModal('login')}>
+            <div className="hidden items-center gap-4 lg:flex">
+              <Button variant="ghost" className="text-sm font-medium rounded-full hover:text-primary transition-colors" onClick={() => openModal('login')}>
                 Log in
               </Button>
-              <Button className="text-sm font-medium" onClick={() => openModal('start')}>
+              <Button className="text-sm font-semibold rounded-full px-5" onClick={() => openModal('start')}>
                 Start for free
               </Button>
             </div>
@@ -604,46 +636,46 @@ export function LandingPage({
 
             {/* Tablet+: Card Grid */}
             <div className="hidden gap-6 md:grid md:gap-8 lg:grid-cols-3">
-              <Card className="group relative overflow-hidden border-2 shadow-md transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:-translate-y-1 focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2">
+              <Card className="group relative overflow-hidden rounded-2xl border border-border/50 bg-background/50 backdrop-blur-sm shadow-sm transition-all duration-300 hover:border-primary/35 hover:shadow-md hover:-translate-y-0.5">
                 <CardContent className="space-y-4 p-6 text-center md:p-8">
-                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 transition-transform duration-300 group-hover:scale-110">
-                    <Brain className="h-8 w-8 text-primary" aria-hidden="true" />
+                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-primary/5 border border-primary/10 transition-transform duration-300 group-hover:scale-105">
+                    <Brain className="h-6 w-6 text-primary" aria-hidden="true" />
                   </div>
-                  <div className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold shadow-md">
+                  <div className="absolute right-4 top-4 flex h-6 w-6 items-center justify-center rounded-full border border-primary/20 bg-primary/5 text-xs font-serif font-semibold text-primary shadow-sm">
                     1
                   </div>
-                  <h3 className="text-xl font-bold text-foreground">Assess</h3>
-                  <p className="text-base text-foreground/70">
+                  <h3 className="text-lg font-semibold text-foreground tracking-wide">Assess</h3>
+                  <p className="text-sm font-light leading-relaxed text-muted-foreground">
                     Take science-based assessments to understand your anxiety, stress levels, and personality strengths.
                   </p>
                 </CardContent>
               </Card>
 
-              <Card className="group relative overflow-hidden border-2 shadow-md transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:-translate-y-1 focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2">
+              <Card className="group relative overflow-hidden rounded-2xl border border-border/50 bg-background/50 backdrop-blur-sm shadow-sm transition-all duration-300 hover:border-primary/35 hover:shadow-md hover:-translate-y-0.5">
                 <CardContent className="space-y-4 p-6 text-center md:p-8">
-                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 transition-transform duration-300 group-hover:scale-110">
-                    <Sparkles className="h-8 w-8 text-primary" aria-hidden="true" />
+                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-primary/5 border border-primary/10 transition-transform duration-300 group-hover:scale-105">
+                    <Sparkles className="h-6 w-6 text-primary" aria-hidden="true" />
                   </div>
-                  <div className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold shadow-md">
+                  <div className="absolute right-4 top-4 flex h-6 w-6 items-center justify-center rounded-full border border-primary/20 bg-primary/5 text-xs font-serif font-semibold text-primary shadow-sm">
                     2
                   </div>
-                  <h3 className="text-xl font-bold text-foreground">Understand</h3>
-                  <p className="text-base text-foreground/70">
+                  <h3 className="text-lg font-semibold text-foreground tracking-wide">Understand</h3>
+                  <p className="text-sm font-light leading-relaxed text-muted-foreground">
                     Receive clear, personalized insights and recommendations based on your wellbeing profile.
                   </p>
                 </CardContent>
               </Card>
 
-              <Card className="group relative overflow-hidden border-2 shadow-md transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:-translate-y-1 focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2">
+              <Card className="group relative overflow-hidden rounded-2xl border border-border/50 bg-background/50 backdrop-blur-sm shadow-sm transition-all duration-300 hover:border-primary/35 hover:shadow-md hover:-translate-y-0.5">
                 <CardContent className="space-y-4 p-6 text-center md:p-8">
-                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 transition-transform duration-300 group-hover:scale-110">
-                    <Target className="h-8 w-8 text-primary" aria-hidden="true" />
+                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-primary/5 border border-primary/10 transition-transform duration-300 group-hover:scale-105">
+                    <Target className="h-6 w-6 text-primary" aria-hidden="true" />
                   </div>
-                  <div className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold shadow-md">
+                  <div className="absolute right-4 top-4 flex h-6 w-6 items-center justify-center rounded-full border border-primary/20 bg-primary/5 text-xs font-serif font-semibold text-primary shadow-sm">
                     3
                   </div>
-                  <h3 className="text-xl font-bold text-foreground">Act</h3>
-                  <p className="text-base text-foreground/70">
+                  <h3 className="text-lg font-semibold text-foreground tracking-wide">Act</h3>
+                  <p className="text-sm font-light leading-relaxed text-muted-foreground">
                     Follow your personalized plan combining therapy, meditation, and mindfulness practices with AI guidance.
                   </p>
                 </CardContent>
@@ -653,13 +685,13 @@ export function LandingPage({
         </section>
 
         {/* Features Section - Enhanced Cards with Hover */}
-        <section id="features" className="px-4 py-12 sm:px-6 md:py-16 lg:py-24" aria-labelledby="features-heading">
+        <section id="features" className="px-4 py-20 sm:px-6 md:py-24" aria-labelledby="features-heading">
           <div className="mx-auto max-w-7xl">
-            <div className="mb-8 space-y-3 text-center md:mb-12 md:space-y-4 lg:mb-16">
-              <h2 id="features-heading" className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl lg:text-4xl">
+            <div className="mb-12 space-y-3 text-center md:mb-16 md:space-y-4">
+              <h2 id="features-heading" className="text-2xl font-light tracking-tight text-foreground sm:text-3xl lg:text-4xl">
                 Complete wellbeing support
               </h2>
-              <p className="mx-auto max-w-2xl text-base font-medium text-foreground/70 sm:text-lg md:text-xl">
+              <p className="mx-auto max-w-2xl text-sm font-light text-muted-foreground sm:text-base md:text-lg">
                 Everything you need for your wellbeing journey in one compassionate platform
               </p>
             </div>
@@ -675,54 +707,30 @@ export function LandingPage({
                 {featureHighlights.map(({ icon: Icon, title, description, ctaLabel }, index) => (
                   <Card
                     key={title}
-                    className="group min-w-[88vw] flex-shrink-0 snap-center border-2 shadow-md transition-all duration-300 hover:border-primary/30 hover:shadow-lg focus-within:ring-2 focus-within:ring-primary"
+                    className="group min-w-[88vw] flex-shrink-0 snap-center rounded-2xl border border-border/50 bg-background/50 backdrop-blur-sm shadow-sm transition-all duration-300 hover:border-primary/25 focus-within:ring-2 focus-within:ring-primary"
                     role="group"
                     aria-roledescription="slide"
                     aria-label={`Feature ${index + 1} of ${featureHighlights.length}: ${title}`}
                   >
                     <CardContent className="space-y-3 p-6">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 transition-transform duration-300 group-hover:scale-110">
-                        <Icon className="h-6 w-6 text-primary" aria-hidden="true" />
+                      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/5 border border-primary/10 transition-transform duration-300 group-hover:scale-105">
+                        <Icon className="h-5 w-5 text-primary" aria-hidden="true" />
                       </div>
-                      <h3 className="text-lg font-bold text-foreground">{title}</h3>
-                      <p className="text-base leading-relaxed text-foreground/70">{description}</p>
+                      <h3 className="text-base font-semibold text-foreground tracking-wide">{title}</h3>
+                      <p className="text-sm font-light leading-relaxed text-muted-foreground">{description}</p>
                       <button
                         type="button"
                         onClick={() => handleFeatureLearnMore(title)}
-                        className="mt-2 inline-flex items-center gap-1 text-sm font-semibold text-primary transition-colors hover:text-primary/80"
+                        className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-primary transition-colors hover:text-primary/80"
                       >
-                        {ctaLabel} <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                        {ctaLabel} <ArrowRight className="h-3 w-3" aria-hidden="true" />
                       </button>
                     </CardContent>
                   </Card>
                 ))}
               </div>
 
-              {/* Progress Indicators */}
-              <div className="mt-6 space-y-3">
-                <p className="text-center text-xs font-medium text-muted-foreground">
-                  Feature {activeFeaturesIndex + 1} of {featureHighlights.length}
-                </p>
-                <div className="flex justify-center gap-2" role="tablist" aria-label="Features pagination">
-                  {featureHighlights.map((feature, index) => (
-                    <button
-                      key={feature.title}
-                      type="button"
-                      role="tab"
-                      aria-selected={activeFeaturesIndex === index}
-                      aria-label={`View ${feature.title}`}
-                      onClick={() => scrollToFeature(index)}
-                      className={`h-2 rounded-full transition-all duration-300 ${activeFeaturesIndex === index
-                        ? 'w-8 bg-primary'
-                        : 'w-2 bg-muted-foreground/30 hover:bg-muted-foreground/50'
-                        }`}
-                    />
-                  ))}
-                </div>
-                <div className="sr-only" role="status" aria-live="polite" aria-atomic="true">
-                  Showing feature {activeFeaturesIndex + 1}: {featureHighlights[activeFeaturesIndex]?.title}
-                </div>
-              </div>
+
             </div>
 
             {/* Tablet: 2x2 Grid */}
@@ -730,20 +738,20 @@ export function LandingPage({
               {featureHighlights.map(({ icon: Icon, title, description, ctaLabel }) => (
                 <Card
                   key={title}
-                  className="group border-2 shadow-md transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:-translate-y-1 focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2"
+                  className="group rounded-2xl border border-border/50 bg-background/50 backdrop-blur-sm shadow-sm transition-all duration-300 hover:border-primary/35 hover:shadow-md hover:-translate-y-0.5"
                 >
                   <CardContent className="space-y-4 p-6">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 transition-transform duration-300 group-hover:scale-110">
-                      <Icon className="h-6 w-6 text-primary" aria-hidden="true" />
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/5 border border-primary/10 transition-transform duration-300 group-hover:scale-105">
+                      <Icon className="h-5 w-5 text-primary" aria-hidden="true" />
                     </div>
-                    <h3 className="text-lg font-bold text-foreground">{title}</h3>
-                    <p className="text-base text-foreground/70">{description}</p>
+                    <h3 className="text-base font-semibold text-foreground tracking-wide">{title}</h3>
+                    <p className="text-sm font-light leading-relaxed text-muted-foreground">{description}</p>
                     <button
                       type="button"
                       onClick={() => handleFeatureLearnMore(title)}
-                      className="inline-flex items-center gap-1 text-sm font-semibold text-primary transition-colors hover:text-primary/80"
+                      className="inline-flex items-center gap-1 text-xs font-semibold text-primary transition-colors hover:text-primary/80"
                     >
-                      {ctaLabel} <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                      {ctaLabel} <ArrowRight className="h-3 w-3" aria-hidden="true" />
                     </button>
                   </CardContent>
                 </Card>
@@ -755,20 +763,20 @@ export function LandingPage({
               {featureHighlights.map(({ icon: Icon, title, description, ctaLabel }) => (
                 <Card
                   key={title}
-                  className="group border-2 shadow-md transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:-translate-y-1 focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2"
+                  className="group rounded-2xl border border-border/50 bg-background/50 backdrop-blur-sm shadow-sm transition-all duration-300 hover:border-primary/35 hover:shadow-md hover:-translate-y-0.5"
                 >
                   <CardContent className="space-y-4 p-6">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 transition-transform duration-300 group-hover:scale-110">
-                      <Icon className="h-6 w-6 text-primary" aria-hidden="true" />
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/5 border border-primary/10 transition-transform duration-300 group-hover:scale-105">
+                      <Icon className="h-5 w-5 text-primary" aria-hidden="true" />
                     </div>
-                    <h3 className="text-lg font-bold text-foreground">{title}</h3>
-                    <p className="text-base text-foreground/70">{description}</p>
+                    <h3 className="text-base font-semibold text-foreground tracking-wide">{title}</h3>
+                    <p className="text-sm font-light leading-relaxed text-muted-foreground">{description}</p>
                     <button
                       type="button"
                       onClick={() => handleFeatureLearnMore(title)}
-                      className="inline-flex items-center gap-1 text-sm font-semibold text-primary transition-colors hover:text-primary/80"
+                      className="inline-flex items-center gap-1 text-xs font-semibold text-primary transition-colors hover:text-primary/80"
                     >
-                      {ctaLabel} <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                      {ctaLabel} <ArrowRight className="h-3 w-3" aria-hidden="true" />
                     </button>
                   </CardContent>
                 </Card>
@@ -777,24 +785,26 @@ export function LandingPage({
           </div>
         </section>
 
-        <section className="bg-muted/20 px-6 py-16 lg:py-24">
+        <section className="bg-muted/10 px-6 py-20 md:py-24">
           <div className="mx-auto max-w-7xl space-y-12">
             <div className="space-y-3 text-center">
-              <h2 className="text-3xl lg:text-4xl">Why people choose ManaSarathi</h2>
-              <p className="mx-auto max-w-3xl text-lg text-muted-foreground">
-                Built alongside psychologists, coaches, and neurodiverse advocates to support modern wellbeing needs.
+              <h2 className="text-2xl font-light text-foreground sm:text-3xl lg:text-4xl">
+                Why people choose <span className="font-serif italic text-primary">ManaSarathi</span>
+              </h2>
+              <p className="mx-auto max-w-2xl text-sm font-light text-muted-foreground sm:text-base">
+                Built alongside psychologists, coaches, and advocates to support modern wellbeing needs.
               </p>
             </div>
 
             <div className="grid gap-6 md:grid-cols-2">
               {differentiators.map(({ icon: Icon, title, description }) => (
-                <Card key={title} className="h-full border border-primary/10 bg-background/80 shadow-sm">
+                <Card key={title} className="h-full rounded-2xl border border-border/50 bg-background/50 shadow-sm transition-all duration-300 hover:border-primary/25">
                   <CardContent className="space-y-3 p-6">
-                    <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                    <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-primary/5 border border-primary/10 text-primary">
                       <Icon className="h-5 w-5" />
                     </span>
-                    <h3 className="text-lg font-semibold">{title}</h3>
-                    <p className="text-sm text-muted-foreground">{description}</p>
+                    <h3 className="text-base font-semibold tracking-wide">{title}</h3>
+                    <p className="text-sm font-light leading-relaxed text-muted-foreground">{description}</p>
                   </CardContent>
                 </Card>
               ))}
@@ -804,36 +814,36 @@ export function LandingPage({
 
         <TestimonialsSection />
 
-        <section className="bg-muted/30 px-6 py-16 lg:py-24">
+        <section className="bg-muted/10 px-6 py-20 md:py-24">
           <div className="mx-auto max-w-6xl grid gap-8 lg:grid-cols-[1.2fr_1fr]">
-            <Card className="border border-primary/10 bg-background/90 shadow-sm">
-              <CardHeader>
-                <CardTitle className="text-2xl">Security and care you can trust</CardTitle>
-                <CardDescription>
+            <Card className="rounded-2xl border border-border/50 bg-background/50 shadow-sm">
+              <CardHeader className="space-y-1.5">
+                <CardTitle className="text-xl font-medium tracking-tight">Security and care you can trust</CardTitle>
+                <CardDescription className="text-sm font-light text-muted-foreground">
                   We go beyond compliance to keep your data secure and to respond with human care when moments get tough.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="grid gap-4 text-sm text-muted-foreground md:grid-cols-2">
-                <div className="space-y-2">
-                  <h4 className="flex items-center gap-2 text-base font-semibold text-foreground">
+              <CardContent className="grid gap-6 text-sm text-muted-foreground md:grid-cols-2 pt-2">
+                <div className="space-y-1.5">
+                  <h4 className="flex items-center gap-2 text-sm font-semibold text-foreground tracking-wide">
                     <Shield className="h-4 w-4 text-primary" /> Privacy-first architecture
                   </h4>
-                  <p>HIPAA-ready, SOC 2 aligned infrastructure with encryption in transit and at rest.</p>
+                  <p className="font-light leading-relaxed">HIPAA-ready, SOC 2 aligned infrastructure with encryption in transit and at rest.</p>
                 </div>
-                <div className="space-y-2">
-                  <h4 className="flex items-center gap-2 text-base font-semibold text-foreground">
+                <div className="space-y-1.5">
+                  <h4 className="flex items-center gap-2 text-sm font-semibold text-foreground tracking-wide">
                     <CheckCircle className="h-4 w-4 text-primary" /> Clinical review board
                   </h4>
-                  <p>Content created with licensed therapists, mindfulness teachers, and DEI advisors.</p>
+                  <p className="font-light leading-relaxed">Content created with licensed therapists, mindfulness teachers, and DEI advisors.</p>
                 </div>
-                <div className="space-y-2">
-                  <h4 className="flex items-center gap-2 text-base font-semibold text-foreground">
+                <div className="space-y-1.5">
+                  <h4 className="flex items-center gap-2 text-sm font-semibold text-foreground tracking-wide">
                     <Users className="h-4 w-4 text-primary" /> Escalation-ready support
                   </h4>
-                  <p>Integrated crisis resources and optional handoff to emergency contacts or clinicians.</p>
+                  <p className="font-light leading-relaxed">Integrated crisis resources and optional handoff to emergency contacts or clinicians.</p>
                 </div>
-                <div className="space-y-2">
-                  <h4 className="flex items-center gap-2 text-base font-semibold text-foreground">
+                <div className="space-y-1.5">
+                  <h4 className="flex items-center gap-2 text-sm font-semibold text-foreground tracking-wide">
                     <Lock className="h-4 w-4 text-primary" /> Fine-grained consent
                   </h4>
                   <p>Control exactly what you share, with whom, and for how long.</p>
@@ -849,7 +859,7 @@ export function LandingPage({
                     Support for therapists, coaches, schools, and workplaces looking to bring preventative mental wellness to their communities.
                   </p>
                 </div>
-                <Button variant="outline" className="border-primary text-primary" onClick={() => openModal('start')}>
+                <Button variant="outline" className="rounded-full border-primary text-primary hover:bg-primary/5" onClick={() => openModal('start')}>
                   Talk to our team
                 </Button>
               </CardContent>
@@ -857,13 +867,13 @@ export function LandingPage({
           </div>
         </section>
 
-        <section id="faq" className="px-6 py-16 lg:py-24" aria-labelledby="faq-heading">
+        <section id="faq" className="px-6 py-20 md:py-24" aria-labelledby="faq-heading">
           <div className="mx-auto max-w-4xl space-y-6 sm:space-y-8">
             <div className="px-4 text-center sm:px-0">
-              <h2 id="faq-heading" className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl lg:text-4xl">
+              <h2 id="faq-heading" className="text-2xl font-light tracking-tight text-foreground sm:text-3xl lg:text-4xl">
                 Frequently asked questions
               </h2>
-              <p className="mt-3 text-base font-medium text-foreground/70 sm:text-lg">
+              <p className="mt-3 text-sm font-light text-muted-foreground sm:text-base">
                 Still wondering if ManaSarathi is right for you? We&apos;ve got answers.
               </p>
             </div>
@@ -871,7 +881,7 @@ export function LandingPage({
             <Accordion
               type="single"
               collapsible
-              className="rounded-xl border border-border/60 bg-background shadow-sm"
+              className="rounded-2xl border border-border/60 bg-background/50 shadow-sm overflow-hidden"
             >
               {faqs.map(({ question, answer }, index) => (
                 <AccordionItem
@@ -880,14 +890,14 @@ export function LandingPage({
                   className="border-b border-border/40 last:border-b-0"
                 >
                   <AccordionTrigger
-                    className="px-4 py-4 text-left text-base font-semibold text-foreground transition-colors hover:text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 sm:px-6 sm:text-lg [&[data-state=open]]:text-primary"
+                    className="px-4 py-4 text-left text-sm sm:text-base font-semibold text-foreground transition-colors hover:text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 sm:px-6 [&[data-state=open]]:text-primary"
                     aria-controls={`faq-content-${index}`}
                   >
                     {question}
                   </AccordionTrigger>
                   <AccordionContent
                     id={`faq-content-${index}`}
-                    className="px-4 pb-4 text-base leading-relaxed text-foreground/70 sm:px-6"
+                    className="px-4 pb-4 text-sm font-light leading-relaxed text-muted-foreground sm:px-6"
                   >
                     {answer}
                   </AccordionContent>
@@ -897,21 +907,21 @@ export function LandingPage({
           </div>
         </section>
 
-        <section className="px-4 pb-12 sm:px-6 sm:pb-16" aria-labelledby="cta-heading">
-          <Card className="mx-auto max-w-5xl overflow-hidden border-none bg-gradient-to-br from-primary/15 via-primary/5 to-accent/10 shadow-lg">
-            <div className="grid gap-6 p-6 text-center sm:p-8 sm:text-left md:grid-cols-[1.5fr_1fr] md:items-center lg:p-10">
+        <section className="px-4 pb-16 sm:px-6 sm:pb-20" aria-labelledby="cta-heading">
+          <Card className="mx-auto max-w-5xl overflow-hidden rounded-3xl border border-primary/15 bg-gradient-to-br from-primary/10 via-primary/5 to-accent/5 shadow-md">
+            <div className="grid gap-6 p-8 text-center sm:p-10 sm:text-left md:grid-cols-[1.5fr_1fr] md:items-center lg:p-12">
               <div className="space-y-3 sm:space-y-4">
-                <h2 id="cta-heading" className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl lg:text-4xl">
-                  Ready to feel more grounded?
+                <h2 id="cta-heading" className="text-2xl font-light tracking-tight text-foreground sm:text-3xl lg:text-4xl">
+                  Ready to feel more <span className="font-serif italic text-primary">grounded</span>?
                 </h2>
-                <p className="text-base font-medium text-foreground/70 sm:text-lg">
+                <p className="text-sm sm:text-base font-light text-muted-foreground">
                   Start your tailored journey in minutes with assessments, AI coaching, and practices selected just for you.
                 </p>
               </div>
               <div className="flex flex-col justify-center gap-3 md:items-end">
                 <Button
                   size="lg"
-                  className="h-12 w-full rounded-xl bg-primary text-base font-semibold text-primary-foreground shadow-lg transition-all duration-200 hover:bg-primary/90 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 md:w-auto md:px-8"
+                  className="h-12 w-full rounded-full bg-primary text-base font-semibold text-primary-foreground shadow-md transition-all duration-200 hover:bg-primary/95 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 md:w-auto md:px-8"
                   onClick={() => openModal('signup')}
                 >
                   Create your free account
@@ -919,7 +929,7 @@ export function LandingPage({
                 <Button
                   variant="outline"
                   size="lg"
-                  className="h-12 w-full rounded-xl border-2 border-primary text-base font-semibold text-primary transition-all duration-200 hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 md:w-auto md:px-8"
+                  className="h-12 w-full rounded-full border border-primary/45 text-base font-semibold text-primary transition-all duration-200 hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 md:w-auto md:px-8"
                   onClick={() => openModal('login')}
                 >
                   I already have an account

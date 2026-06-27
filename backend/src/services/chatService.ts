@@ -205,11 +205,13 @@ export class ChatService {
       // Check for crisis language first — keyword matching remains the primary
       // safety net, with sentiment and AI-assisted scoring as additive signals.
       const keywordCrisis = this.detectCrisisLanguage(userMessage);
+      const distressSignal = this.detectDistressSignal(userMessage);
       const enhancedCrisisSentiment = await this.analyzeSentimentFastPass(userMessage);
       const computedCrisisRisk = enhancedCrisisSentiment?.indicators?.crisisRisk ?? 0;
 
       const shouldRunAiCrisisAssessment =
         keywordCrisis ||
+        distressSignal ||
         computedCrisisRisk >= 0.6 ||
         (computedCrisisRisk >= 0.35
           && enhancedCrisisSentiment.primary.confidence >= 0.8
@@ -327,6 +329,16 @@ export class ChatService {
               detectedAt: new Date()
             }
           });
+
+          // Record the crisis as an important moment in conversation memory
+          await conversationMemoryService.recordImportantMoment(
+            userId,
+            'Crisis Intervention',
+            resourcesShared ? 'Safety escalation with helpline resources shared' : 'Safety grounding sequence activated',
+            'high',
+            userMessage.slice(0, 200),
+            crisisResponse.slice(0, 200)
+          );
         } catch (crisisEventError) {
           chatLogger.warn({ userId, err: crisisEventError }, 'Failed to persist crisis event record');
         }
@@ -379,7 +391,7 @@ export class ChatService {
 
         // Limit to 5 free messages per day
         if (messageCount >= 5) {
-          const paywallResponse = "You've reached your daily limit of 5 free AI therapy messages. Please upgrade to MaanSarathi Premium from your Subscription settings to unlock unlimited AI conversations, deeper personalized insights, and premium therapeutic exercises.";
+          const paywallResponse = "You've reached your daily limit of 5 free AI therapy messages. Please upgrade to ManaSarathi Premium from your Subscription settings to unlock unlimited AI conversations, deeper personalized insights, and premium therapeutic exercises.";
           
           const botMessage = await this.saveChatMessage(
             userId,
@@ -686,6 +698,45 @@ export class ChatService {
 
       // Update conversation memory with bot response
       await conversationMemoryService.updateMemory(userId, finalResponseContent, 'bot');
+
+      // Check and record important moments (emotional peaks/breakthroughs)
+      try {
+        const hasHighIntensity = enhancedCrisisSentiment && enhancedCrisisSentiment.primary && enhancedCrisisSentiment.primary.intensity >= 8.5;
+        const isSevereNegative = sentimentSnapshot && sentimentSnapshot.label === 'negative' && ['sadness', 'fear', 'anger'].includes(sentimentSnapshot.dominantEmotion || '');
+        const isSignificantPositive = sentimentSnapshot && sentimentSnapshot.label === 'positive' && ['joy', 'surprise'].includes(sentimentSnapshot.dominantEmotion || '');
+
+        if (hasHighIntensity || isSevereNegative || isSignificantPositive) {
+          let topic = 'General';
+          if (sentimentSnapshot?.dominantEmotion) {
+            topic = sentimentSnapshot.dominantEmotion;
+          }
+          
+          let summary = 'Significant emotional moment';
+          let impact: 'high' | 'medium' | 'low' = 'low';
+
+          if (hasHighIntensity) {
+            summary = `Intense expression of ${sentimentSnapshot?.dominantEmotion || 'emotion'}`;
+            impact = 'high';
+          } else if (isSevereNegative) {
+            summary = `Expression of distress (${sentimentSnapshot?.dominantEmotion || 'grief'})`;
+            impact = 'medium';
+          } else if (isSignificantPositive) {
+            summary = `Expression of breakthrough or positive shift (${sentimentSnapshot?.dominantEmotion || 'clarity'})`;
+            impact = 'medium';
+          }
+
+          await conversationMemoryService.recordImportantMoment(
+            userId,
+            topic,
+            summary,
+            impact,
+            userMessage.slice(0, 200),
+            finalResponseContent.slice(0, 200)
+          );
+        }
+      } catch (memError) {
+        chatLogger.warn({ err: memError, userId }, 'Failed to record breakthrough important moment');
+      }
 
       // Update conversation timestamp
       if (activeConversationId) {
@@ -1727,35 +1778,59 @@ Rules:
       this.buildGratitudeSection(userContext),
       this.buildSleepSection(userContext),
       feedbackSummary || null,
-      `RESPONSE STRUCTURE & STYLE (follow these guidelines):
-1) Validate the user's emotion or situation in 1-2 short, warm sentences.
-2) Reflect a thought or behavior pattern you notice in what they shared (e.g., overthinking, somatic tension).
-3) Offer ONE practical coping action or suggestions aligned with the ${approach} approach.
-4) Suggest a concrete micro-action they can do right now (e.g., "Take 3 slow breaths", "Sit or lie down in a safe space").
-5) Close naturally with a gentle check-in or open-ended question to continue the conversation.
-6) Flow naturally and supportively. Avoid robotic, formulaic structures.
+      `CONVERSATIONAL PERSONALITY (core identity):
+You are ManaSarathi — a warm, grounded friend who genuinely cares and has wellness expertise.
+You speak like a real person having a real conversation, not a chatbot following a script.
 
-PERSONALITY RULES — NEVER:
-- Use repetitive, hardcoded section headers (such as "### Practical Next Step" or "### Check-in Question") in every response. This makes your replies feel artificial and robotic. Instead, weave your reflections, steps, and questions naturally into conversational paragraphs.
-- Say "everything will be fine", "just stay positive", "look on the bright side", or similar toxic positivity.
-- Provide clinical diagnoses, medication names, or dosage suggestions.
-- Claim "I understand exactly how you feel" — you are an AI, not a human.
-- Give overly verbose monologues or preachy motivational speeches.
-- Minimize suffering with phrases like "at least...", "others have it worse", or "it's not that bad".
+YOUR APPROACH STYLE (${approach}):
+${approach === 'western'
+  ? `You lean on cognitive and behavioral tools. When suggesting something, naturally weave in ideas like reframing thoughts, noticing thinking patterns, behavioral experiments, or evidence-based coping — but as a friend would mention them, not as a textbook would list them. Example: "Have you noticed that thought might be a bit of catastrophizing? Sometimes it helps to ask — what's the actual evidence here?"`
+  : approach === 'eastern'
+  ? `You lean on contemplative and body-based wisdom. When the moment calls for it, naturally suggest breathwork, mindfulness, somatic awareness, gentle movement, or compassion practices — but as a friend who practices these, not as an instructor. Example: "Hmm, it sounds like your body is holding a lot of that tension. Want to try a few slow breaths together?"`
+  : `You blend cognitive clarity with body-based calm. Sometimes that means helping someone reframe a thought, sometimes it means guiding them into a breath — read what they need. Example: "That's a heavy thought to carry. Let's look at it together — and maybe take a breath first."`
+}
 
-PERSONALITY RULES — ALWAYS:
+HOW TO RESPOND:
+- Start with what feels natural. Sometimes that's validation, sometimes it's a question, sometimes it's just sitting with what they said.
+- Don't follow a formula. Read the room. If they said something heavy, don't rush to offer a "practical tip" — just hold space first.
+- Only ask a question when you genuinely need to understand something better, or when a gentle check-in would feel natural. Do NOT end every response with a question.
+- If the user is venting, let them vent. Reflect back what you heard. You don't always need to fix things.
+- If the user shares good news or progress, celebrate it genuinely. Don't immediately pivot to "what else can we work on?"
+- Match the user's energy and tone. Casual user → casual reply. Distressed user → calm, grounded reply. Playful user → match that lightness.
+- Shorter is almost always better. A heartfelt 2-sentence reply beats a structured 5-paragraph essay.
+- Use natural language. Say "That sounds really tough" not "I acknowledge the difficulty you are experiencing."
+- Use contractions (I'm, you're, that's, it's) — they sound human.
+- Occasionally use gentle conversational phrases like "hmm", "you know", "honestly" to feel more natural.
+- When suggesting something, frame it as a friend would: "Have you tried..." or "Something that helps a lot of people is..." — never "Step 1: Do X. Step 2: Do Y."
+
+WHEN TO ASK QUESTIONS:
+- When you need clarity: "When you say overwhelmed, what does that feel like for you?"
+- When checking in after they've been quiet: "How are things going today?"
+- When they mention something you want to explore: "Tell me more about that?"
+- Do NOT ask a question at the end of every single response. Sometimes the right move is a warm statement that leaves space: "I'm glad you shared that with me."
+
+NEVER:
+- Use formulaic section headers (### Practical Next Step, ### Check-in) in responses.
+- Say "everything will be fine", "just stay positive", or any toxic positivity.
+- Give clinical diagnoses, medication names, or dosage advice.
+- Claim "I understand exactly how you feel."
+- Give preachy monologues or motivational speeches.
+- Minimize suffering with "at least...", "others have it worse", or "it's not that bad."
+- End every response with a question.
+
+ALWAYS:
 - Acknowledge difficulty without minimizing it.
-- Use "I notice..." or "It sounds like..." rather than command-like language ("You should...").
-- Offer suggestions as gentle invitations rather than directives.
-- Keep responses under 120 words — be warm, clear, and concise.
+- Offer suggestions as gentle invitations, not instructions.
+- Keep responses under ~120 words. Aim for 40–80 words when brevity fits the moment.
 - Be trauma-informed: never push someone to share more than they want.
-- Remind about professional help if the user discloses severe distress or risk.
+- Remind about professional help if severe distress or risk is disclosed.
 - You are a wellness companion, NOT a licensed therapist — never claim otherwise.`
       ,
-      `FORMAT REQUIREMENTS (strict):
-- Use clear, clean Markdown formatting (bolding, simple bulleted lists when suggesting multiple exercises, etc.).
-- Avoid walls of text by separating key ideas or suggestions with single blank lines.
-- Do NOT use rigid, formulaic section headers. Flow naturally from validation to reflection, to natural suggestions, to a closing check-in question.`
+      `FORMAT (strict):
+- Write in natural paragraphs, not bullet-point lists (unless listing exercises).
+- Use Markdown only when it genuinely helps (bold for emphasis, not for rigid structure).
+- Avoid walls of text. One or two short paragraphs is usually enough.
+- Do NOT use rigid section headers. Flow naturally like a real conversation.`
     ]
       .filter(Boolean)
       .join('\n\n');
@@ -2409,15 +2484,27 @@ PERSONALITY RULES — ALWAYS:
   }
 
   detectCrisisLanguage(message: string): boolean {
-    const crisisKeywords = [
-      'suicide', 'suicidal', 'kill myself', 'end it all', 'don\'t want to live',
-      'hurt myself', 'self harm', 'self-harm', 'cutting', 'overdose',
-      'hopeless', 'no point', 'better off dead', 'want to die',
-      'can\'t go on', 'end my life', 'not worth living'
+    const criticalCrisisPatterns = [
+      /\b(suicide|suicidal|kill myself|end my life|end it all|don'?t want to live)\b/i,
+      /\b(want to die|better off dead|no reason to live)\b/i,
+      /\b(self[ -]?harm|cutting|overdose)\b/i,
+      /\b(plan to (die|hurt))\b/i,
+      /\b(hurt myself|harm myself|not worth living)\b/i
     ];
 
-    const lowerMessage = message.toLowerCase();
-    return crisisKeywords.some(keyword => lowerMessage.includes(keyword));
+    return criticalCrisisPatterns.some(pattern => pattern.test(message));
+  }
+
+  detectDistressSignal(message: string): boolean {
+    const distressPatterns = [
+      /\b(hopeless|worthless|no point)\b/i,
+      /\b(can'?t go on|give up)\b/i,
+      /\b(severe|extreme|unbearable) (pain|depression|anxiety)\b/i,
+      /\b(struggling|barely coping|barely holding on)\b/i,
+      /\b(can'?t handle|too much)\b/i
+    ];
+
+    return distressPatterns.some(pattern => pattern.test(message));
   }
 
   detectExerciseRequest(message: string): { requested: boolean; timeAvailable?: number } | null {
@@ -2530,7 +2617,21 @@ PERSONALITY RULES — ALWAYS:
 • **Crisis Text Line (US)**: Text HOME to 741741`
     };
 
-    const key = (region || '').toUpperCase();
+        let key = 'DEFAULT';
+    if (region) {
+      const normalized = region.toLowerCase().trim();
+      if (normalized === 'us' || normalized === 'united states' || normalized === 'north america' || normalized === 'usa') {
+        key = 'US';
+      } else if (normalized === 'in' || normalized === 'india') {
+        key = 'IN';
+      } else if (normalized === 'uk' || normalized === 'united kingdom' || normalized === 'gb' || normalized === 'great britain') {
+        key = 'GB';
+      } else if (normalized === 'ca' || normalized === 'canada') {
+        key = 'CA';
+      } else if (normalized === 'au' || normalized === 'australia') {
+        key = 'AU';
+      }
+    }
     const resources = crisisResources[key] || crisisResources['DEFAULT'];
 
     return `I'm very concerned about your safety and wellbeing. If you're having thoughts of hurting yourself, please reach out for immediate help:
@@ -2901,13 +3002,13 @@ Would you like me to help you find local resources?`;
       const stressScore = context.assessmentInsights?.byType?.stress?.latestScore;
 
       if (anxietyScore && anxietyScore > 60) {
-        starters.push("💭 Let's talk about what's been making you anxious");
+        starters.push("I've been feeling kind of anxious lately");
       }
       if (depressionScore && depressionScore > 60) {
-        starters.push("🌧️ I'd like to talk about how I've been feeling lately");
+        starters.push("I've been feeling really down recently");
       }
       if (stressScore && stressScore > 60) {
-        starters.push("😰 Help me manage the stress I'm dealing with");
+        starters.push("Work has been stressing me out");
       }
 
       // Based on time since last chat
@@ -2920,46 +3021,46 @@ Would you like me to help you find local resources?`;
         const daysSince = Math.floor((Date.now() - lastMessage.createdAt.getTime()) / (1000 * 60 * 60 * 24));
 
         if (daysSince > 3) {
-          starters.push(`👋 It's been ${daysSince} days - what's new with you?`);
+          starters.push(`It's been a while — how have you been?`);
         } else if (daysSince === 0) {
-          starters.push("💬 Continue our conversation from earlier");
+          starters.push("Pick up where we left off earlier");
         }
       }
 
       // Based on recurring themes from memory
       if (memory.recurringThemes?.includes('work')) {
-        starters.push("💼 How have things been at work recently?");
+        starters.push("How's work been going?");
       }
       if (memory.recurringThemes?.includes('relationships')) {
-        starters.push("💕 Talk about my relationships");
+        starters.push("Something's been on my mind about a relationship");
       }
       if (memory.recurringThemes?.includes('sleep')) {
-        starters.push("😴 I'm having trouble sleeping again");
+        starters.push("I haven't been sleeping well");
       }
 
       // Progress check
       if (context.wellnessScore) {
         if (context.wellbeingTrend === 'improving') {
-          starters.push("📈 Let's review my progress together");
+          starters.push("I think I've been making some progress");
         } else if (context.wellbeingTrend === 'declining') {
-          starters.push("📉 I feel like I'm struggling more lately");
+          starters.push("I feel like things have been harder lately");
         }
       }
 
       // Time-based suggestions
       const hour = new Date().getHours();
       if (hour >= 21 || hour <= 5) {
-        starters.push("🌙 Having trouble sleeping tonight");
+        starters.push("Can't sleep tonight");
       } else if (hour >= 6 && hour <= 9) {
-        starters.push("☀️ Help me start my day with the right mindset");
+        starters.push("Help me start today on a good note");
       }
 
       // Always include general options
       if (starters.length < 4) {
-        starters.push("🧘 I'd like to try a relaxation exercise");
-        starters.push("📝 Help me process my thoughts and feelings");
-        starters.push("❓ I have a question about mental wellness");
-        starters.push("🎯 Set a personal goal with me");
+        starters.push("I want to try a breathing exercise");
+        starters.push("I just need someone to talk to");
+        starters.push("Something good happened today!");
+        starters.push("Help me sort through my thoughts");
       }
 
       // Return max 6 starters
@@ -2968,10 +3069,10 @@ Would you like me to help you find local resources?`;
       chatLogger.error({ userId, err: error }, 'Failed to generate conversation starters');
       // Return default starters on error
       return [
-        "💬 How are you feeling today?",
-        "🧘 I'd like to try a relaxation exercise",
-        "📝 Help me process my thoughts",
-        "❓ I have a question about mental wellness"
+        "How are you feeling today?",
+        "I want to try a breathing exercise",
+        "I just need someone to talk to",
+        "Something good happened today!"
       ];
     }
   }
@@ -3312,39 +3413,39 @@ Format as valid JSON only.`;
 
       // Personalized greeting based on context
       if (wellnessTrend === 'improving') {
-        return `${timeGreeting}, ${userName}! 🌟 I can see you've been making progress. How are you feeling today?`;
+        return `Hey ${userName} 🌟 You've been making some really nice progress. How are you feeling today?`;
       }
 
       if (anxietyScore > 70) {
-        return `${timeGreeting}, ${userName}. I'm here for you. Take a deep breath - let's talk about what's on your mind.`;
+        return `Hey ${userName}. I'm here. Take a breath — no rush. What's on your mind?`;
       }
 
       if (depressionScore > 70) {
-        return `${timeGreeting}, ${userName}. I know things might feel heavy right now. I'm here to listen and support you.`;
+        return `Hey ${userName}. I know things might feel heavy right now. I'm here to listen.`;
       }
 
       if (wellnessTrend === 'declining') {
-        return `${timeGreeting}, ${userName}. I've noticed things might be challenging lately. Want to talk about it?`;
+        return `Hey ${userName}. How are you doing? I'm here if you want to talk.`;
       }
 
       // Check recurring themes
       if (memory.recurringThemes?.includes('work') && hour >= 9 && hour <= 17) {
-        return `${timeGreeting}, ${userName}! How's your workday going so far?`;
+        return `Hey ${userName}! How's your day going so far?`;
       }
 
       if (memory.recurringThemes?.includes('sleep') && (hour < 7 || hour > 22)) {
-        return `${timeGreeting}, ${userName}! How did you sleep? I'm here if you want to talk about rest.`;
+        return `Hey ${userName}. How did you sleep? I'm here if you want to chat.`;
       }
 
-      // Default positive greeting
-      const positiveGreetings = [
-        `${timeGreeting}, ${userName}! 😊 How are you doing today?`,
-        `${timeGreeting}, ${userName}! It's great to see you. What's on your mind?`,
-        `${timeGreeting}, ${userName}! I'm here to listen. How can I support you today?`,
-        `${timeGreeting}, ${userName}! Ready to chat whenever you are. How are you feeling?`
+      // Default natural greetings
+      const naturalGreetings = [
+        `Hey ${userName} 👋 How are you doing?`,
+        `Hi ${userName}! What's on your mind today?`,
+        `Good to see you, ${userName}. How are things?`,
+        `Hey there, ${userName}. How's your day going?`
       ];
 
-      return positiveGreetings[Math.floor(Math.random() * positiveGreetings.length)];
+      return naturalGreetings[Math.floor(Math.random() * naturalGreetings.length)];
     } catch (error) {
       console.error('Error generating mood-based greeting:', error);
       return 'Hello! How are you feeling today?';

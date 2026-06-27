@@ -232,7 +232,11 @@ const trendChipClasses: Record<AssessmentTrend | 'baseline', string> = {
 
 const relativeTimeFormat = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
 
-const BASIC_OVERALL_ASSESSMENT_SET = new Set(OVERALL_ASSESSMENT_OPTION_IDS);
+const BASIC_OVERALL_ASSESSMENT_SET = new Set([
+  'basic_overall',
+  'basicoverall',
+  ...OVERALL_ASSESSMENT_OPTION_IDS
+]);
 
 interface CombinedHistorySnapshot {
   id: string;
@@ -851,7 +855,7 @@ export function AssessmentList({ onStartAssessment, onStartCombinedAssessment, o
                               aria-label={`Status: ${assessment.trendLabel ?? assessment.trend}`}
                             >
                               {assessment.trendLabel ?? (assessment.trend === 'baseline'
-                                ? 'Baseline'
+                                ? 'Initial Score'
                                 : assessment.trend.charAt(0).toUpperCase() + assessment.trend.slice(1))}
                               {assessment.change !== null &&
                                 assessment.change !== undefined &&
@@ -1003,7 +1007,9 @@ export function AssessmentList({ onStartAssessment, onStartCombinedAssessment, o
                           <div className={`flex items-start ${device.isMobile ? 'flex-col gap-2' : 'justify-between gap-4'}`}>
                             <div className="space-y-1">
                               <p className="text-xs md:text-sm font-medium text-muted-foreground">
-                                Combined wellbeing snapshot
+                                {snapshot.assessments.length === 1 && (snapshot.assessments[0].assessmentType === 'basic_overall' || snapshot.assessments[0].assessmentType === 'basicoverall')
+                                  ? 'Baseline Wellness Screening'
+                                  : 'Combined wellbeing snapshot'}
                               </p>
                               <p className="text-xs text-muted-foreground">
                                 Completed {getRelativeTime(snapshot.completedAt)}
@@ -1020,21 +1026,23 @@ export function AssessmentList({ onStartAssessment, onStartCombinedAssessment, o
                               )}
                             </div>
                           </div>
-                          <div className={`grid ${device.isMobile ? 'grid-cols-1' : 'grid-cols-2'} gap-2 pt-1`}>
-                            {snapshot.assessments.map((entry) => (
-                              <div
-                                key={`${snapshot.id}-${entry.assessmentType}`}
-                                className="flex items-center justify-between rounded-md bg-white/80 px-3 py-2 text-xs"
-                              >
-                                <span className="font-medium text-muted-foreground truncate">
-                                  {friendlyAssessmentLabel(entry.assessmentType)}
-                                </span>
-                                <span className="font-semibold text-primary ml-2">
-                                  {Math.round(entry.score)}%
-                                </span>
-                              </div>
-                            ))}
-                          </div>
+                          {snapshot.assessments.length > 1 && (
+                            <div className={`grid ${device.isMobile ? 'grid-cols-1' : 'grid-cols-2'} gap-2 pt-1`}>
+                              {snapshot.assessments.map((entry) => (
+                                <div
+                                  key={`${snapshot.id}-${entry.assessmentType}`}
+                                  className="flex items-center justify-between rounded-md bg-white/80 px-3 py-2 text-xs"
+                                >
+                                  <span className="font-medium text-muted-foreground truncate">
+                                    {friendlyAssessmentLabel(entry.assessmentType)}
+                                  </span>
+                                  <span className="font-semibold text-primary ml-2">
+                                    {Math.round(entry.score)}%
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       ))}
                       {device.isMobile && combinedHistoryWithChange.length > 3 && (

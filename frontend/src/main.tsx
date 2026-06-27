@@ -6,6 +6,10 @@ import "./styles/index.css";
 import "./styles/tailwind-compat.css";
 import "./i18n/config";
 import { AccessibilityProvider } from "./contexts/AccessibilityContext";
+import { initializeGlobalErrorHandlers } from "./utils/errorHandlers";
+
+// Initialize global error handling and API interception
+initializeGlobalErrorHandlers();
 
 if ("serviceWorker" in navigator && import.meta.env.DEV) {
 	navigator.serviceWorker

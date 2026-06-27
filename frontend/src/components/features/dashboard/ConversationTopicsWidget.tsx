@@ -184,23 +184,36 @@ export function ConversationTopicsWidget({ userId }: ConversationTopicsWidgetPro
   }
 
   const topTopics = [...memory.recentTopics]
+    .map(topic => {
+      const mentionsCount = typeof topic.count === 'number' 
+        ? topic.count 
+        : typeof (topic as any).mentions === 'number' 
+          ? (topic as any).mentions 
+          : typeof (topic as any).effectiveMentions === 'number'
+            ? (topic as any).effectiveMentions
+            : 0;
+      return {
+        ...topic,
+        count: mentionsCount
+      };
+    })
     .sort((a, b) => b.count - a.count)
     .slice(0, 5);
 
   const maxCount = topTopics[0]?.count || 1;
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <MessageCircle className="h-5 w-5" />
+    <Card className="shadow-md border border-slate-100 hover:shadow-lg transition-shadow duration-300">
+      <CardHeader className="pb-3 bg-gradient-to-br from-indigo-500/5 to-purple-500/5 border-b">
+        <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-800">
+          <MessageCircle className="h-5 w-5 text-indigo-600 animate-pulse" />
           Conversation Topics
         </CardTitle>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-xs text-muted-foreground mt-1">
           What you&apos;ve been talking about (last 30 days)
         </p>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-4 pt-4">
         <div className="space-y-3">
           {topTopics.map((topic) => {
             const percentage = (topic.count / maxCount) * 100;
@@ -208,21 +221,21 @@ export function ConversationTopicsWidget({ userId }: ConversationTopicsWidgetPro
             const colorClass = TOPIC_COLORS[topic.topic] || 'bg-gray-500';
 
             return (
-              <div key={topic.topic} className="space-y-1">
+              <div key={topic.topic} className="space-y-1 hover:translate-x-1 transition-transform duration-200">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="font-medium">{label}</span>
-                  <span className="text-muted-foreground">
+                  <span className="font-medium text-slate-700">{label}</span>
+                  <span className="text-xs font-semibold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full">
                     {topic.count} {topic.count === 1 ? 'time' : 'times'}
                   </span>
                 </div>
                 <div className="relative">
-                  <Progress value={percentage} className="h-2" />
+                  <Progress value={percentage} className="h-2 bg-slate-100" />
                   <div
-                    className={`absolute top-0 left-0 h-2 rounded-full ${colorClass} transition-all`}
+                    className={`absolute top-0 left-0 h-2 rounded-full ${colorClass} transition-all duration-700 ease-out shadow-sm`}
                     style={{ width: `${percentage}%` }}
                   />
                 </div>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-[10px] text-muted-foreground text-right">
                   Last mentioned: {new Date(topic.lastMentioned).toLocaleDateString()}
                 </p>
               </div>

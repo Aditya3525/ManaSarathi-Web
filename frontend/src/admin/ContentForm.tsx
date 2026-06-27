@@ -106,7 +106,25 @@ export const ContentForm: React.FC<ContentFormProps> = ({ existing, selectedType
           normalizedTags = [];
         }
       }
-      setFormData({ ...existing, tags: normalizedTags || [] });
+
+      const parseJsonArray = (val: any): string[] => {
+        if (Array.isArray(val)) return val;
+        if (typeof val === 'string' && val.trim().length > 0) {
+          try {
+            const parsed = JSON.parse(val);
+            return Array.isArray(parsed) ? parsed : [];
+          } catch {
+            return [];
+          }
+        }
+        return [];
+      };
+
+      setFormData({
+        ...existing,
+        tags: normalizedTags || [],
+        focusAreas: parseJsonArray(existing.focusAreas)
+      });
       setYoutubeInput(existing.youtubeUrl || '');
     } else if (selectedType) {
       setFormData(prev => ({

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 6: JavaScript Core Fundamentals</title>
+  <style>
+    body {
+      font-family: Georgia, serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 680px;
+      margin: 40px auto;
+      padding: 0 20px;
+      background-color: #fcfcfc;
+    }
+    h1, h2, h3 {
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      font-weight: 700;
+      color: #111;
+      margin-top: 1.5em;
+    }
+    h1 {
+      font-size: 2.2em;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 0.3em;
+    }
+    code {
+      font-family: Consolas, Monaco, monospace;
+      background-color: #f4f4f4;
+      padding: 2px 4px;
+      font-size: 0.9em;
+      border-radius: 3px;
+    }
+    pre {
+      background-color: #f4f4f4;
+      padding: 15px;
+      overflow-x: auto;
+      border-left: 3px solid #ccc;
+      font-family: Consolas, Monaco, monospace;
+    }
+    .note {
+      background-color: #fffae6;
+      border-left: 4px solid #e6b800;
+      padding: 15px;
+      margin: 20px 0;
+      font-style: italic;
+    }
+    .quiz-container {
+      background-color: #f0f7f4;
+      border: 1px solid #d0e6dc;
+      border-radius: 5px;
+      padding: 20px;
+      margin-top: 30px;
+    }
+    .btn {
+      background-color: #2e7d32;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      font-family: sans-serif;
+      font-size: 0.9em;
+      border-radius: 3px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .btn:hover {
+      background-color: #1b5e20;
+    }
+    .answer {
+      display: none;
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px dashed #ccc;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Lesson 6: JavaScript Core Fundamentals</h1>
+  
+  <p>Welcome to step 1! To write backend code, we must master the primary language: **JavaScript**. Today we cover the modern ES6 features that you will see on every line of the backend.</p>
+
+  <h2>1. Variable Scopes: <code>let</code> vs <code>const</code></h2>
+  <p>In modern JavaScript, we never use <code>var</code>. We use:</p>
+  <ul>
+    <li><strong><code>const</code></strong>: For values that won't be reassigned. (Default to this!).</li>
+    <li><strong><code>let</code></strong>: For variables that can change.</li>
+  </ul>
+  <pre>
+const PORT = 5000;
+// PORT = 6000; // ❌ TypeError: Assignment to constant variable.
+
+let requestCount = 0;
+requestCount++; // ✅ Allowed
+  </pre>
+
+  <h2>2. Arrow Functions</h2>
+  <p>Instead of the old <code>function</code> keyword, modern code uses arrow functions. They are shorter and handle scopes better:</p>
+  <pre>
+// Old way:
+function add(a, b) {
+  return a + b;
+}
+
+// Modern Arrow Function:
+const add = (a, b) => a + b; // implicit return (no curly braces needed)
+
+// Multi-line Arrow Function:
+const greetUser = (name) => {
+  const message = `Hello, ${name}!`;
+  return message; // explicit return (needed when using curly braces)
+};
+  </pre>
+
+  <h2>3. Destructuring (Objects & Arrays)</h2>
+  <p>Destructuring lets you extract properties from objects or values from arrays into variables quickly.</p>
+  <pre>
+const user = { name: "Aditya", role: "Developer", age: 21 };
+
+// Old way:
+const name = user.name;
+const role = user.role;
+
+// Destructuring:
+const { name, role } = user; // Instantly extracts both!
+  </pre>
+
+  <h2>4. Template Literals</h2>
+  <p>Instead of messy string concatenation with <code>+</code>, use backticks (<code>`</code>) and <code>${}</code> to interpolate variables:</p>
+  <pre>
+const mood = "Happy";
+const message = `The user is feeling ${mood} today.`; // ✅ Clean!
+  </pre>
+
+  <hr>
+
+  <h2>🧠 Active Recall Practice</h2>
+  
+  <div class="quiz-container">
+    <h3>Exercise 1: Convert to Arrow Function</h3>
+    <p>Convert this old JS function into a modern arrow function using destructuring:
+      <pre>
+function printDetails(user) {
+  const name = user.name;
+  console.log("User name is: " + name);
+}
+      </pre>
+    </p>
+    <button class="btn" onclick="toggleAnswer('ans1')">Reveal Solution</button>
+    <div id="ans1" class="answer">
+      <p><strong>Solution:</strong></p>
+      <pre>
+const printDetails = ({ name }) => {
+  console.log(`User name is: ${name}`);
+};
+      </pre>
+    </div>
+  </div>
+
+  <div class="quiz-container">
+    <h3>Exercise 2: const with Objects</h3>
+    <p>If we define an object with <code>const</code>, can we change its properties? For example:
+      <pre>
+const config = { port: 5000 };
+config.port = 6000; // Will this throw an error?
+      </pre>
+    </p>
+    <button class="btn" onclick="toggleAnswer('ans2')">Reveal Answer</button>
+    <div id="ans2" class="answer">
+      <p><strong>Answer:</strong> No, it will not throw an error. <code>const</code> prevents re-assigning the variable name itself (i.e. you cannot do <code>config = {}</code>), but it does not make the object properties read-only. The object can still be mutated.</p>
+    </div>
+  </div>
+
+  <script>
+    function toggleAnswer(id) {
+      const el = document.getElementById(id);
+      if (el.style.display === 'block') {
+        el.style.display = 'none';
+      } else {
+        el.style.display = 'block';
+      }
+    }
+  </script>
+
+</body>
+</html>

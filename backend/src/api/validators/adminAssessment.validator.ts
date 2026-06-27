@@ -59,9 +59,12 @@ export const createAssessmentSchema = z.object({
     category: z.string().min(3).max(50),
     description: z.string().min(10).max(2000),
     timeEstimate: z.string().max(50).optional(),
+    timeframe: z.string().max(100).optional().nullable(),
     scoringConfig: scoringConfigSchema,
     questions: z.array(questionSchema).min(1).max(100),
-    isActive: z.boolean().optional()
+    isActive: z.boolean().optional(),
+    isBasicOverallOnly: z.boolean().optional(),
+    visibleInMainList: z.boolean().optional()
   })
 });
 
@@ -73,9 +76,12 @@ export const updateAssessmentSchema = z.object({
     category: z.string().min(3).max(50).optional(),
     description: z.string().min(10).max(2000).optional(),
     timeEstimate: z.string().max(50).optional(),
+    timeframe: z.string().max(100).optional().nullable(),
     scoringConfig: scoringConfigSchema.optional(),
     questions: z.array(questionSchema).min(1).max(100).optional(),
-    isActive: z.boolean().optional()
+    isActive: z.boolean().optional(),
+    isBasicOverallOnly: z.boolean().optional(),
+    visibleInMainList: z.boolean().optional()
   })
 });
 

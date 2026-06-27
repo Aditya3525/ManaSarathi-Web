@@ -30,6 +30,7 @@ export interface StoredUser {
   hasPassword?: boolean;
   isGoogleUser?: boolean;
   securityQuestion?: string | null;
+  isPremium?: boolean;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -110,7 +111,7 @@ export async function loginUser(credentials: {
  * Returns `{ user, token }` on success; throws on failure.
  */
 export async function registerUser(userData: {
-  name: string;
+  name?: string;
   email: string;
   password: string;
 }): Promise<{ user: StoredUser; token: string }> {

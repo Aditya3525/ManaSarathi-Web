@@ -21,6 +21,7 @@ interface OverallAssessmentSelectionProps {
   isSubmitting?: boolean;
   defaultSelected?: string[];
   errorMessage?: string | null;
+  options?: OverallAssessmentOption[];
 }
 
 const OPTIONS: OverallAssessmentOption[] = [
@@ -77,7 +78,7 @@ const OPTIONS: OverallAssessmentOption[] = [
 
 export const OVERALL_ASSESSMENT_OPTION_IDS = OPTIONS.map((option) => option.id);
 
-export function OverallAssessmentSelection({ onSubmit, onCancel, isSubmitting, defaultSelected, errorMessage }: OverallAssessmentSelectionProps) {
+export function OverallAssessmentSelection({ onSubmit, onCancel, isSubmitting, defaultSelected, errorMessage, options = OPTIONS }: OverallAssessmentSelectionProps) {
   const [selected, setSelected] = useState<Set<string>>(new Set(defaultSelected));
 
   useEffect(() => {
@@ -91,17 +92,17 @@ export function OverallAssessmentSelection({ onSubmit, onCancel, isSubmitting, d
   }, [defaultSelected]);
 
   const totalMinutes = useMemo(() => {
-    return OPTIONS.filter((option) => selected.has(option.id)).reduce((minutes, option) => {
+    return options.filter((option) => selected.has(option.id)).reduce((minutes, option) => {
       const match = option.estimatedTime.match(/(\d+)/);
       if (match) {
         return minutes + Number(match[1]);
       }
       return minutes + 2;
     }, 0);
-  }, [selected]);
+  }, [selected, options]);
 
   const toggleAll = (checked: boolean) => {
-    setSelected(checked ? new Set(OPTIONS.map((option) => option.id)) : new Set());
+    setSelected(checked ? new Set(options.map((option) => option.id)) : new Set());
   };
 
   const toggle = (id: string) => {
@@ -143,7 +144,7 @@ export function OverallAssessmentSelection({ onSubmit, onCancel, isSubmitting, d
             <div className="flex items-center gap-2">
               <Checkbox
                 id="toggle-all"
-                checked={selected.size === OPTIONS.length}
+                checked={selected.size === options.length}
                 onCheckedChange={(value) => toggleAll(Boolean(value))}
               />
               <label htmlFor="toggle-all" className="cursor-pointer select-none">
@@ -152,7 +153,7 @@ export function OverallAssessmentSelection({ onSubmit, onCancel, isSubmitting, d
             </div>
             <div className="flex items-center gap-2">
               <CheckCircle2 className="h-4 w-4 text-primary" />
-              <span>{selected.size} of {OPTIONS.length} selected</span>
+              <span>{selected.size} of {options.length} selected</span>
             </div>
             <div className="flex items-center gap-2">
               <Clock className="h-4 w-4 text-primary" />
@@ -164,7 +165,7 @@ export function OverallAssessmentSelection({ onSubmit, onCancel, isSubmitting, d
 
       <div className="max-w-5xl mx-auto px-6 py-10">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {OPTIONS.map((option) => {
+          {options.map((option) => {
             const isChecked = selected.has(option.id);
             return (
               <Card

@@ -151,7 +151,7 @@ router.get('/summary', async (req: Request, res: Response) => {
           },
         };
 
-        const recommendations = await recommendationService.getContentRecommendations({
+        const recommendations = await recommendationService.getPracticeRecommendations({
           userId,
           userContext,
           approach: user.approach as 'western' | 'eastern' | 'hybrid',
@@ -715,7 +715,7 @@ router.get('/recommended-practice', async (req: Request, res: Response) => {
       },
     };
 
-    const recommendations = await recommendationService.getContentRecommendations({
+    const recommendations = await recommendationService.getPracticeRecommendations({
       userId,
       userContext,
       approach: user.approach as 'western' | 'eastern' | 'hybrid',
@@ -874,7 +874,7 @@ async function getDashboardSummaryData(userId: string) {
         wellnessScore: assessmentInsights.insights.wellnessScore?.value
       };
 
-      const recommendations = await recommendationService.getContentRecommendations({
+      const recommendations = await recommendationService.getPracticeRecommendations({
         userId,
         userContext,
         approach: user.approach as 'western' | 'eastern' | 'hybrid',

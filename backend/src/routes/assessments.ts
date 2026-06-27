@@ -11,7 +11,8 @@ import {
 	getActiveAssessmentSession,
 	getAssessmentSessionById,
 	updateAssessmentSessionStatus,
-	submitCombinedAssessments
+	submitCombinedAssessments,
+	getOverallAssessmentOptions
 } from '../controllers/assessmentsController';
 import { validate } from '../middleware/validate';
 import {
@@ -27,6 +28,7 @@ const router = express.Router();
 router.use(authenticate as any);
 router.get('/', listAssessments as any);
 router.get('/available', getAvailableAssessments as any);
+router.get('/overall-options', getOverallAssessmentOptions as any);
 router.get('/templates', validate(getAssessmentTemplatesSchema), getAssessmentTemplates as any);
 router.post('/', validate(submitAssessmentSchema), submitAssessment as any);
 router.post('/submit-combined', submitCombinedAssessments as any);

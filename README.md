@@ -1,4 +1,4 @@
-# MaanSarathi
+# ManaSarathi
 
 An AI-powered comprehensive mental wellbeing platform providing personalized support, mood tracking, clinical assessments, therapeutic games, and professional oversight — available on **Web** and **Mobile**.
 
@@ -8,7 +8,7 @@ This repository is a monorepo containing three packages: the **React web fronten
 
 ## 🚀 Project Overview
 
-MaanSarathi bridges the gap between self-care and professional mental health support. By leveraging AI, the platform provides real-time empathetic conversations, emotional progress tracking, and personalized mindfulness and CBT (Cognitive Behavioral Therapy) resources — all accessible from a browser or a native mobile device.
+ManaSarathi bridges the gap between self-care and professional mental health support. By leveraging AI, the platform provides real-time empathetic conversations, emotional progress tracking, and personalized mindfulness and CBT (Cognitive Behavioral Therapy) resources — all accessible from a browser or a native mobile device.
 
 ### Core Architecture & Modules
 
@@ -46,6 +46,11 @@ MaanSarathi bridges the gap between self-care and professional mental health sup
 - **Privacy Settings**: Granular user data control.
 - **Data Export**: Users can export their personal data.
 - **Account Deletion**: Self-service account and data removal.
+
+#### 8. Subscription & Premium Plans
+- **Free & Premium Tiers**: Plan comparison UI with monthly/yearly billing toggle.
+- **Upgrade Flow**: Stripe-compatible checkout integration (demo mode included).
+- **Premium Feature Gating**: UI-level access control based on `isPremium` user flag.
 
 ---
 
@@ -103,21 +108,23 @@ MaanSarathi bridges the gap between self-care and professional mental health sup
 ## 📁 Project Structure
 
 ```text
-MaanSarathi/
+ManaSarathi/
 ├── frontend/                        # React + Vite web application
 │   └── src/
 │       ├── admin/                   # Full admin portal (27 components)
 │       ├── therapist/               # Therapist portal (dashboard, calendar, notes)
 │       ├── components/
 │       │   ├── features/            # Feature-specific components
+│       │   │   ├── chat/            # Chat UI (Chatbot, MarkdownMessage, MessageActions, ConversationHistorySidebar)
+│       │   │   └── subscription/    # Subscription plan selection & upgrade flow
 │       │   ├── common/              # Shared UI components
 │       │   ├── layout/              # Page layout components
-│       │   └── ui/                  # Primitive UI components
+│       │   └── ui/                  # Primitive UI + motion wrappers (motion-enhanced, motion-wrapper)
 │       ├── contexts/                # React Context providers
 │       ├── hooks/                   # Custom React hooks
 │       ├── services/                # API integration layer
 │       ├── stores/                  # Zustand global state
-│       ├── styles/                  # Global CSS
+│       ├── styles/                  # Global CSS + Tailwind compat layer
 │       ├── types/                   # TypeScript interfaces
 │       ├── utils/                   # Utility functions
 │       ├── i18n/                    # Internationalization config
@@ -126,8 +133,10 @@ MaanSarathi/
 │   ├── src/
 │   │   ├── controllers/             # Route handlers (19 controllers)
 │   │   ├── routes/                  # Express routers (28+ route files)
-│   │   ├── services/                # Business logic & AI orchestration (21 services)
-│   │   │   └── providers/           # Individual LLM provider adapters
+│   │   ├── services/                # Business logic & AI orchestration
+│   │   │   ├── providers/           # Individual LLM provider adapters
+│   │   │   ├── enhancedRecommendationService.ts  # Context-aware recommendation engine
+│   │   │   └── crisisDetectionService.ts         # Real-time crisis signal detection
 │   │   ├── middleware/              # Auth, error handling, health monitoring
 │   │   ├── config/                  # Database, auth, passport config
 │   │   ├── utils/                   # Logger and helpers
@@ -297,8 +306,9 @@ Base URL: `/api`
 ### Engagement & Personalization
 | Endpoint Group | Description |
 |---|---|
-| `/content/:id/engage` | Track content engagement |
+| `/content/:id/engage` | Track content engagement (completion, rating, time spent, mood before/after, effectiveness) |
 | `/content/bookmarks`, `/content/:id/bookmark` | Bookmark management |
+| `/engagement` | Engagement history, streaks, stats & enhanced AI recommendations with context (time of day, environment) |
 | `/dashboard` | Dashboard data aggregation |
 
 ### Help & Safety
@@ -372,8 +382,11 @@ eas submit --platform android                    # Submit to Play Store
 This repository uses **Graphify** for AST-based codebase graph generation, enabling AI agents to navigate and understand the architecture. The graph output lives in `graphify-out/`.
 
 ```bash
-# Regenerate after major structural changes
-python -m graphify update .
+# Regenerate after major structural changes (AST-only, no API key needed)
+graphify update .
+
+# Full semantic extraction (docs, images, papers — requires an LLM API key)
+graphify extract .
 ```
 
 ---

@@ -270,7 +270,12 @@ export function AssessmentFlow({
 				{/* Question Card */}
 				{currentQuestion && (
 					<Card>
-						<CardHeader>
+						<CardHeader className="space-y-1.5">
+							{assessmentDef.timeframe && (
+								<p className="text-xs font-semibold text-primary uppercase tracking-wider">
+									Timeframe asked: {assessmentDef.timeframe}
+								</p>
+							)}
 							<CardTitle className="text-lg leading-relaxed">
 								{currentQuestion.text}
 							</CardTitle>

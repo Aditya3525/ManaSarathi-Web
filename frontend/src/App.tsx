@@ -19,12 +19,13 @@ import { Progress, Profile } from './components/features/profile';
 import { HelpSafety } from './components/layout';
 import { ToastContainer } from './components/ui/ToastContainer';
 import { PWAInstallPrompt } from './components/ui/pwa-install-prompt';
+import { OfflineBanner } from './components/ui/OfflineBanner';
 import { AdminAuthProvider, useAdminAuth } from './contexts/AdminAuthContext';
 import { ChatProvider } from './contexts/ChatContext';
 import { ToastProvider } from './contexts/ToastContext';
 import { useAssessmentHistory } from './hooks/useAssessments';
 import { queryClient } from './lib/queryClient';
-import { assessmentsApi, AssessmentInsights, AssessmentSessionSummary } from './services/api';
+import { assessmentsApi, AssessmentInsights, AssessmentSessionSummary, OverallAssessmentOption } from './services/api';
 import { getCurrentUser, loginUser, registerUser, signOut, StoredUser, completeOnboarding, setupUserPassword } from './services/auth';
 import { useAuthStore } from './stores/authStore';
 import { JournalPage } from './components/features/journal';
@@ -110,6 +111,7 @@ function AppInner() {
   const [loginError, setLoginError] = useState<{ error: string; suggestion?: string; message?: string } | null>(null);
   const [currentAssessment, setCurrentAssessment] = useState<string | null>(null);
   const [selectedAssessmentTypes, setSelectedAssessmentTypes] = useState<string[]>([]);
+  const [overallOptions, setOverallOptions] = useState<OverallAssessmentOption[]>([]);
 
   // React Query for assessment data ✅
   // Only fetch when user is logged in (not on admin pages)
@@ -160,6 +162,18 @@ function AppInner() {
     }
   }, []);
 
+  const sanitizeCombinedSelection = useCallback((types: string[] | null | undefined): string[] => {
+    if (!types || types.length === 0) {
+      return [];
+    }
+    const validIds = new Set(
+      overallOptions.length > 0 
+        ? overallOptions.map(o => o.id) 
+        : DEFAULT_COMBINED_SELECTION
+    );
+    return types.filter((type) => validIds.has(type));
+  }, [overallOptions]);
+
   useEffect(() => {
     const handlePopState = () => {
       setCurrentPage(pathToPage(window.location.pathname));
@@ -204,7 +218,7 @@ function AppInner() {
           setActiveSession(session);
 
           if (session) {
-            const sanitizedSelection = sanitizeCombinedAssessmentSelection(session.selectedTypes);
+            const sanitizedSelection = sanitizeCombinedSelection(session.selectedTypes);
             setLastCombinedSelection(sanitizedSelection.length > 0 ? sanitizedSelection : null);
           }
         } else {
@@ -317,6 +331,26 @@ function AppInner() {
     return () => window.removeEventListener('storage', handleStorage);
   }, [currentPage, logoutFromStore, navigateTo, setUser]);
 
+  // Load dynamic overall assessment options
+  useEffect(() => {
+    if (!user || currentPage === 'admin' || currentPage === 'admin-login') {
+      return;
+    }
+
+    const fetchOverallOptions = async () => {
+      try {
+        const response = await assessmentsApi.getOverallAssessmentOptions();
+        if (response.success && response.data) {
+          setOverallOptions(response.data);
+        }
+      } catch (error) {
+        console.error('Failed to load overall assessment options:', error);
+      }
+    };
+
+    void fetchOverallOptions();
+  }, [user, currentPage]);
+
   const startGoogleOAuth = useCallback(() => {
     const frontendOrigin = encodeURIComponent(window.location.origin);
     window.location.assign(`${getServerBaseUrl()}/api/auth/google?frontend_origin=${frontendOrigin}`);
@@ -334,31 +368,19 @@ function AppInner() {
     setInsightsFocusType(assessmentType);
     navigateTo('insights');
   }, [navigateTo]);
-
   const startBasicOverallAssessment = useCallback(() => {
-    const recentSelection = sanitizeCombinedAssessmentSelection(lastCombinedSelection);
-    const defaults = recentSelection.length > 0 ? recentSelection : DEFAULT_COMBINED_SELECTION;
-
-    // React Query handles error state
-    setAssessmentSelectionDefaults([...defaults]);
-    setAssessmentSelectionReturnPage('assessments');
-    navigateTo('assessment-selection');
-  }, [lastCombinedSelection, navigateTo]);
+    startAssessment('basic_overall');
+  }, [startAssessment]);
 
   const handleAssessmentInviteDecision = (accept: boolean) => {
     if (accept) {
-      // React Query handles error state
-      setAssessmentSelectionReturnPage('dashboard');
-      const defaults = sanitizeCombinedAssessmentSelection(lastCombinedSelection);
-      setAssessmentSelectionDefaults(defaults.length > 0 ? defaults : undefined);
-      navigateTo('assessment-selection');
+      startAssessment('basic_overall');
       return;
     }
     navigateTo('dashboard');
   };
-
   const beginOverallAssessment = async (selectedTypes: string[]) => {
-    const sanitizedSelectedTypes = sanitizeCombinedAssessmentSelection(selectedTypes);
+    const sanitizedSelectedTypes = sanitizeCombinedSelection(selectedTypes);
 
     if (sanitizedSelectedTypes.length === 0 || isStartingOverallSession) {
       return;
@@ -439,7 +461,7 @@ function AppInner() {
 
       // Update session and selection state
       setActiveSession(response.data.session);
-      const sanitizedSessionSelection = sanitizeCombinedAssessmentSelection(response.data.session.selectedTypes);
+      const sanitizedSessionSelection = sanitizeCombinedSelection(response.data.session.selectedTypes);
       setLastCombinedSelection(sanitizedSessionSelection.length > 0 ? sanitizedSessionSelection : null);
       setAssessmentSelectionReturnPage('dashboard');
       setAssessmentSelectionDefaults(undefined);
@@ -520,7 +542,7 @@ function AppInner() {
     }
   };
 
-  const signUp = async (userData: { name: string; email: string; password: string }) => {
+  const signUp = async (userData: { email: string; password: string }) => {
     try {
       setAuthError(null);
       console.log('Starting registration process for:', userData);
@@ -751,7 +773,9 @@ function AppInner() {
       emergencyContact: userData.emergencyContact,
       emergencyPhone: userData.emergencyPhone,
       createdAt: userData.createdAt || new Date().toISOString(),
-      updatedAt: userData.updatedAt || new Date().toISOString()
+      updatedAt: userData.updatedAt || new Date().toISOString(),
+      hasPassword: userData.hasPassword,
+      isGoogleUser: userData.isGoogleUser
     }, userData.token);
 
     // Store complete user data (for backward compatibility)
@@ -771,11 +795,11 @@ function AppInner() {
     });
 
     // Simplified routing logic:
-    // - New Google users (justCreated) -> password setup
+    // - New Google users (no password set) -> password setup
     // - Existing users without onboarding -> onboarding
     // - Existing users with onboarding -> dashboard
-    if (userData.justCreated) {
-      console.log('Routing new Google user to password setup');
+    if (userData.hasPassword === false) {
+      console.log('Routing Google user to password setup (no password set)');
       navigateTo('password-setup');
     } else if (!userData.isOnboarded) {
       console.log('Routing returning user to onboarding (incomplete)');
@@ -1081,6 +1105,7 @@ function AppInner() {
             isSubmitting={isStartingOverallSession}
             errorMessage={assessmentError}
             defaultSelected={assessmentSelectionDefaults}
+            options={overallOptions.length > 0 ? overallOptions : undefined}
           />
         );
       case 'combined-assessment-flow':
@@ -1150,7 +1175,7 @@ function AppInner() {
         return <HelpSafety onNavigate={navigateTo} userRegion={user?.region} />;
       case 'admin':
         // Show admin dashboard if admin session exists (either old 'admin' or new 'adminUser')
-        return (admin || adminUser) ? <AdminDashboard /> : <LandingPage onSignUp={signUp} onLogin={login} onAdminLogin={handleAdminLogin} authError={authError} loginError={loginError} onNavigate={(page) => navigateTo(page as Page)} />;
+        return (admin || adminUser) ? <AdminDashboard onNavigate={navigateTo} /> : <LandingPage onSignUp={signUp} onLogin={login} onAdminLogin={handleAdminLogin} authError={authError} loginError={loginError} onNavigate={(page) => navigateTo(page as Page)} />;
       case 'therapist-login':
         return (
           <TherapistLoginPage
@@ -1175,6 +1200,7 @@ function AppInner() {
   };
   return (
     <div className="min-h-screen bg-background">
+      <OfflineBanner />
       {loadingUser ? (
         <div className="flex items-center justify-center h-screen text-muted-foreground">Loading...</div>
       ) : (

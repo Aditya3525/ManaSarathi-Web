@@ -120,7 +120,13 @@ export const scoreAdvancedAssessment = ({
 	if (scoring.domains && scoring.domains.length > 0) {
 		categoryBreakdown = scoring.domains.reduce<Record<string, { raw: number; normalized: number; interpretation: string }>>(
 			(acc, domain) => {
-				const domainRaw = domain.items.reduce((sum, itemId) => sum + (valueMap.get(itemId) ?? 0), 0);
+				const items = (domain.items && domain.items.length > 0)
+					? domain.items
+					: questions
+							.filter((q) => q.domain === domain.id || q.domain === domain.label)
+							.map((q) => q.id);
+
+				const domainRaw = items.reduce((sum, itemId) => sum + (valueMap.get(itemId) ?? 0), 0);
 				const domainMin = domain.minScore ?? 0;
 				const domainMax = domain.maxScore ?? 0;
 				const domainNormalized = normalizeScore(domainRaw, domainMin, domainMax);

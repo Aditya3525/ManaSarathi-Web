@@ -208,7 +208,19 @@ export const PreviewModal: React.FC<PreviewModalProps> = ({
               
               {content.content ? (
                 <div className="whitespace-pre-wrap leading-relaxed">
-                  {content.content}
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm]}
+                    skipHtml
+                    components={{
+                      a: ({ children, href }) => (
+                        <a href={href} target="_blank" rel="noopener noreferrer">
+                          {children}
+                        </a>
+                      ),
+                    }}
+                  >
+                    {content.content}
+                  </ReactMarkdown>
                 </div>
               ) : (
                 <p className="text-center text-muted-foreground">Story content not available</p>

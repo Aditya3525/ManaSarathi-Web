@@ -10,9 +10,10 @@ import { Progress } from '../../ui/progress';
 
 interface EnhancedInsightsCardProps {
   onNavigate?: (page: string) => void;
+  isFullWidth?: boolean;
 }
 
-export function EnhancedInsightsCard({ onNavigate }: EnhancedInsightsCardProps) {
+export function EnhancedInsightsCard({ onNavigate, isFullWidth = false }: EnhancedInsightsCardProps) {
   const device = useDevice();
   const { data: insights, isLoading, error } = useInsights();
   const refreshInsights = useRefreshInsights();
@@ -90,6 +91,7 @@ export function EnhancedInsightsCard({ onNavigate }: EnhancedInsightsCardProps) 
   const hasEnhancedData = insights?.assessments || insights?.chatbot;
   const isCombined = insights?.source === 'combined';
   const isCached = insights?.cached !== false;
+  const showSplitLayout = isFullWidth && !device.isMobile && (insights?.aiSummary || insights?.wellnessScore);
 
   return (
     <Card className="relative">
@@ -138,100 +140,107 @@ export function EnhancedInsightsCard({ onNavigate }: EnhancedInsightsCardProps) 
         )}
       </CardHeader>
 
-      <CardContent className="space-y-4">
-        {/* AI Summary */}
-        {insights?.aiSummary && (
-          <div className="bg-gradient-to-r from-primary/10 to-accent/10 rounded-lg p-4">
-            <div className="flex items-start gap-3">
-              <Sparkles className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-              <div className="space-y-2 flex-1">
-                <p className="text-sm leading-relaxed">{insights.aiSummary}</p>
-                {insights.overallTrend && (
-                  <div className="flex items-center gap-2 text-xs">
-                    <TrendingUp className={`h-3 w-3 ${insights.overallTrend === 'improving' ? 'text-green-600' :
-                        insights.overallTrend === 'declining' ? 'text-red-600' :
-                          'text-yellow-600'
-                      }`} />
-                    <span className="font-medium capitalize">{insights.overallTrend}</span>
+      <CardContent className={showSplitLayout ? "grid grid-cols-1 lg:grid-cols-5 gap-6" : "space-y-4"}>
+        {/* Left Column: AI Summary or Empty State */}
+        <div className={showSplitLayout ? "lg:col-span-3 space-y-4 flex flex-col justify-between" : "space-y-4"}>
+          {/* AI Summary */}
+          {insights?.aiSummary && (
+            <div className="bg-gradient-to-r from-primary/10 to-accent/10 rounded-lg p-4 flex-1 flex flex-col justify-center">
+              <div className="flex items-start gap-3">
+                <Sparkles className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                <div className="space-y-2 flex-1 min-w-0">
+                  <div style={{ maxHeight: '115px', overflowY: 'auto' }} className="pr-2">
+                    <p className="text-sm leading-relaxed">{insights.aiSummary}</p>
                   </div>
-                )}
+                  {insights.overallTrend && (
+                    <div className="flex items-center gap-2 text-xs pt-1">
+                      <TrendingUp className={`h-3 w-3 ${insights.overallTrend === 'improving' ? 'text-green-600' :
+                          insights.overallTrend === 'declining' ? 'text-red-600' :
+                            'text-yellow-600'
+                        }`} />
+                      <span className="font-medium capitalize">{insights.overallTrend}</span>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-
-
-
-        {/* Empty State */}
-        {!insights?.aiSummary && !hasEnhancedData && (
-          <div className="text-center space-y-3 py-6">
-            <Sparkles className="h-12 w-12 text-muted-foreground mx-auto" />
-            <div className="space-y-2">
-              <p className="text-sm font-medium">No insights yet</p>
-              <p className="text-xs text-muted-foreground">
-                Complete an assessment or chat with our AI to receive personalized insights
-              </p>
+          {/* Empty State */}
+          {!insights?.aiSummary && !hasEnhancedData && (
+            <div className="text-center space-y-3 py-6">
+              <Sparkles className="h-12 w-12 text-muted-foreground mx-auto" />
+              <div className="space-y-2">
+                <p className="text-sm font-medium">No insights yet</p>
+                <p className="text-xs text-muted-foreground">
+                  Complete an assessment or chat with our AI to receive personalized insights
+                </p>
+              </div>
+              <div className={device.isMobile ? "flex flex-col gap-2" : "flex gap-2 justify-center"}>
+                <Button
+                  size="sm"
+                  onClick={() => onNavigate?.('assessments')}
+                  className={device.isMobile ? "w-full min-h-[44px]" : ""}
+                >
+                  <Brain className="h-4 w-4 mr-2" />
+                  Take Assessment
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => onNavigate?.('chatbot')}
+                  className={device.isMobile ? "w-full min-h-[44px]" : ""}
+                >
+                  <MessageCircle className="h-4 w-4 mr-2" />
+                  Start Chat
+                </Button>
+              </div>
             </div>
-            <div className={device.isMobile ? "flex flex-col gap-2" : "flex gap-2 justify-center"}>
-              <Button
-                size="sm"
-                onClick={() => onNavigate?.('assessments')}
-                className={device.isMobile ? "w-full min-h-[44px]" : ""}
-              >
-                <Brain className="h-4 w-4 mr-2" />
-                Take Assessment
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => onNavigate?.('chatbot')}
-                className={device.isMobile ? "w-full min-h-[44px]" : ""}
-              >
-                <MessageCircle className="h-4 w-4 mr-2" />
-                Start Chat
-              </Button>
-            </div>
-          </div>
-        )}
+          )}
+        </div>
 
-        {/* Wellness Score */}
-        {insights?.wellnessScore && (
-          <div className="border-t pt-4">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium">Overall Wellness Score</span>
-              <span className="text-2xl font-bold text-primary">
-                {Math.round(insights.wellnessScore.value)}%
-              </span>
-            </div>
-            <Progress value={insights.wellnessScore.value} className="h-3" />
-            <p className="text-xs text-muted-foreground mt-2">
-              Calculated using {insights.wellnessScore.method}
-            </p>
-          </div>
-        )}
+        {/* Right Column: Wellness Score & Action Prompts */}
+        {(insights?.wellnessScore || (hasEnhancedData && onNavigate)) && (
+          <div className={showSplitLayout ? "lg:col-span-2 space-y-4 flex flex-col justify-between" : "space-y-4"}>
+            {/* Wellness Score */}
+            {insights?.wellnessScore && (
+              <div className={showSplitLayout ? "bg-muted/20 border rounded-lg p-4 flex-1 flex flex-col justify-center" : "border-t pt-4"}>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium">Overall Wellness Score</span>
+                  <span className="text-2xl font-bold text-primary">
+                    {Math.round(insights.wellnessScore.value)}%
+                  </span>
+                </div>
+                <Progress value={insights.wellnessScore.value} className="h-3" />
+                <p className="text-xs text-muted-foreground mt-2">
+                  Calculated using {insights.wellnessScore.method}
+                </p>
+              </div>
+            )}
 
-        {/* Action Prompts */}
-        {hasEnhancedData && onNavigate && (
-          <div className="flex gap-2 pt-2 border-t">
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => onNavigate('progress')}
-              className={device.isMobile ? "flex-1 min-h-[44px]" : "flex-1"}
-            >
-              <TrendingUp className="h-4 w-4 mr-2" />
-              View Progress
-            </Button>
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => onNavigate('chatbot')}
-              className={device.isMobile ? "flex-1 min-h-[44px]" : "flex-1"}
-            >
-              <MessageCircle className="h-4 w-4 mr-2" />
-              Chat Now
-            </Button>
+            {/* Action Prompts */}
+            {hasEnhancedData && onNavigate && (
+              <div className={showSplitLayout ? "flex gap-2 pt-2" : "flex gap-2 pt-2 border-t"}>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => onNavigate('progress')}
+                  className={device.isMobile ? "flex-1 min-h-[44px]" : "flex-1 border"}
+                >
+                  <TrendingUp className="h-4 w-4 mr-2" />
+                  View Progress
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => onNavigate('chatbot')}
+                  className={device.isMobile ? "flex-1 min-h-[44px]" : "flex-1 border"}
+                >
+                  <MessageCircle className="h-4 w-4 mr-2" />
+                  Chat Now
+                </Button>
+              </div>
+            )}
           </div>
         )}
       </CardContent>

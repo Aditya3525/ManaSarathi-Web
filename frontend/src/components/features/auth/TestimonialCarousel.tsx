@@ -54,19 +54,7 @@ export function TestimonialCarousel() {
           <span className="ml-1 text-xs text-muted-foreground">&middot; {testimonial.role}</span>
         )}
       </div>
-      <div className="flex items-center justify-center gap-1.5">
-        {TESTIMONIALS.map((_, index) => (
-          <button
-            key={index}
-            type="button"
-            onClick={() => setActiveIndex(index)}
-            className={`h-1.5 rounded-full transition-all duration-300 ${
-              index === activeIndex ? 'w-6 bg-primary' : 'w-1.5 bg-muted-foreground/30'
-            }`}
-            aria-label={`Testimonial ${index + 1}`}
-          />
-        ))}
-      </div>
+
     </div>
   );
 }

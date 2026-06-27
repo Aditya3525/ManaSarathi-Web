@@ -14,7 +14,7 @@ import {
 
 // Validation schemas
 const registerSchema = Joi.object({
-  name: Joi.string().min(2).max(50).required(),
+  name: Joi.string().min(2).max(50).optional(),
   email: Joi.string().email().required(),
   password: Joi.string().min(6).required(),
 });
@@ -150,18 +150,29 @@ export const googleAuthSuccess = async (req: Request, res: Response) => {
     // Detect if this user was just created in passport strategy
     const justCreated = user.justCreated;
 
+    // Fetch user from DB to get actual password status (since deserializeUser selects subset without password)
+    const dbUser = await prisma.user.findUnique({
+      where: { id: user.id },
+      select: {
+        password: true,
+        isOnboarded: true
+      }
+    });
+
+    const hasPassword = !!dbUser?.password;
+    const isOnboarded = dbUser ? dbUser.isOnboarded : user.isOnboarded;
+
     // Determine redirect:
-    // Existing user (has password OR already onboarded) -> dashboard
-    // Newly created Google user with no password -> setup-password
+    // User with no password -> setup-password
     // After password but not onboarded -> onboarding
+    // Fully set up user -> dashboard
     let redirectParam = 'dashboard';
     let needsSetup = false;
 
-    if (justCreated && !user.password) {
+    if (!hasPassword) {
       redirectParam = 'setup-password';
       needsSetup = true;
-    } else if (!user.isOnboarded) {
-      // Only prompt onboarding if not a fully onboarded existing account
+    } else if (!isOnboarded) {
       redirectParam = 'onboarding';
       needsSetup = true;
     }
@@ -174,9 +185,9 @@ export const googleAuthSuccess = async (req: Request, res: Response) => {
       firstName: user.firstName,
       lastName: user.lastName,
       profilePhoto: user.profilePhoto,
-      isOnboarded: user.isOnboarded,
-  hasPassword: !!user.password,
-    justCreated, // Include justCreated in user data
+      isOnboarded,
+      hasPassword,
+      justCreated, // Include justCreated in user data
       approach: user.approach,
       birthday: user.birthday,
       gender: user.gender,
@@ -239,7 +250,7 @@ export const register = async (req: Request, res: Response) => {
     // Create user
     const createdUser = await prisma.user.create({
       data: {
-        name,
+        name: name || email.split('@')[0],
         email: email.toLowerCase(),
         password: hashedPassword,
         isEmailVerified: true,
@@ -247,6 +258,7 @@ export const register = async (req: Request, res: Response) => {
     });
 
     const { password: _createdPassword, securityAnswerHash: _createdAnswerHash, ...user } = createdUser as any;
+    user.hasPassword = true;
 
     // Generate token
     const token = generateToken(user.id);
@@ -313,6 +325,7 @@ export const login = async (req: Request, res: Response) => {
 
     // Return user data (excluding sensitive fields)
     const { password: userPassword, securityAnswerHash, ...userWithoutSensitive } = user as any;
+    userWithoutSensitive.hasPassword = true;
 
     res.json({
       success: true,
@@ -343,6 +356,7 @@ export const getCurrentUser = async (req: any, res: Response) => {
     }
 
     const { password: _password, securityAnswerHash: _answerHash, ...user } = userRecord as any;
+    user.hasPassword = !!_password;
 
     res.json({
       success: true,
@@ -427,6 +441,7 @@ export const setupPassword = async (req: any, res: Response) => {
     });
 
     const { password: _password, securityAnswerHash: _answerHash, ...user } = updatedUser as any;
+    user.hasPassword = true;
 
     console.log('Password setup successful for user:', user.id);
     res.json({

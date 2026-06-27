@@ -1,4 +1,4 @@
-import { Search, Plus, FolderOpen, AlertCircle, X, Loader2, RefreshCw } from 'lucide-react';
+import { Search, Plus, FolderOpen, AlertCircle, X, RefreshCw } from 'lucide-react';
 import React, { useState, useMemo } from 'react';
 
 import {
@@ -11,6 +11,7 @@ import {
 import type { Conversation } from '../../../services/api';
 import { Button } from '../../ui/button';
 import { Input } from '../../ui/input';
+import { LoadingSpinner } from '../../ui/loading-spinner';
 import { ScrollArea } from '../../ui/scroll-area';
 import { Skeleton } from '../../ui/skeleton';
 
@@ -137,7 +138,20 @@ export function ConversationHistorySidebar({
       {/* Header with New Chat button */}
       <div className="space-y-4 p-4">
         <div className="flex items-center justify-between">
-          <h2 className="min-w-0 text-sm font-semibold tracking-tight text-slate-800 dark:text-slate-200">History</h2>
+          <div className="flex items-center gap-2">
+            <h2 className="min-w-0 text-sm font-semibold tracking-tight text-slate-800 dark:text-slate-200">History</h2>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6 ml-1 flex-shrink-0 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 rounded-full text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors"
+              aria-label="Refresh history"
+              onClick={() => refetch()}
+              disabled={isFetching}
+            >
+              <RefreshCw className={`h-3.5 w-3.5 ${isFetching ? 'animate-spin opacity-50' : ''}`} />
+            </Button>
+          </div>
           {showCloseButton && onCloseSidebar ? (
             <Button
               type="button"
@@ -183,7 +197,7 @@ export function ConversationHistorySidebar({
             // Loading skeleton
             <div className="space-y-2">
               <div className="px-3 py-2 text-xs text-muted-foreground flex items-center gap-2">
-                <Loader2 className="h-3.5 w-3.5 animate-spin text-teal-500" />
+                <LoadingSpinner size="sm" className="text-teal-500" />
                 Loading conversations...
               </div>
               {[1, 2, 3, 4, 5].map((i) => (

@@ -27,7 +27,7 @@ export interface ConversationContext {
   userId: string;
   recentTopics: ConversationTopic[];
   recurringThemes: string[];
-  emotionalPatterns: EmotionalPattern[];
+  emotionalPatterns: any;
   importantMoments: ImportantMoment[];
   conversationStyle: ConversationStyle;
   averageSessionsPerWeek?: number;
@@ -346,6 +346,24 @@ export class ConversationMemoryService {
         };
       }
 
+      let emotionalPatterns: any = { predominant: 'stable', recentShift: 'stable' };
+      if (memory.emotionalPatterns) {
+        try {
+          emotionalPatterns = JSON.parse(memory.emotionalPatterns as string) || { predominant: 'stable', recentShift: 'stable' };
+        } catch (e) {
+          memoryLogger.warn({ userId }, 'Failed to parse emotionalPatterns');
+        }
+      }
+
+      let importantMoments: ImportantMoment[] = [];
+      if (memory.importantMoments) {
+        try {
+          importantMoments = JSON.parse(memory.importantMoments as string) || [];
+        } catch (e) {
+          memoryLogger.warn({ userId }, 'Failed to parse importantMoments');
+        }
+      }
+
       // Parse topics and apply time-based decay / TTL
       const topicsData = JSON.parse(memory.topics as string) || {};
       const now = Date.now();
@@ -363,7 +381,12 @@ export class ConversationMemoryService {
           const lastMentionedMs = new Date(t.lastMentioned).getTime();
           const ageMs = now - lastMentionedMs;
           const decayFactor = ageMs > THIRTY_DAYS_MS ? 0.5 : 1;
-          return { ...t, effectiveMentions: Math.round(t.mentions * decayFactor) };
+          const mentions = t.mentions || 0;
+          return { 
+            ...t, 
+            effectiveMentions: Math.round(mentions * decayFactor),
+            count: mentions // Add count property for frontend compatibility
+          };
         })
         .sort((a: any, b: any) => new Date(b.lastMentioned).getTime() - new Date(a.lastMentioned).getTime())
         .slice(0, 10) as ConversationTopic[];
@@ -392,8 +415,8 @@ export class ConversationMemoryService {
         userId,
         recentTopics,
         recurringThemes,
-        emotionalPatterns: [],
-        importantMoments: [],
+        emotionalPatterns,
+        importantMoments,
         conversationStyle
       };
     } catch (error) {
@@ -402,7 +425,7 @@ export class ConversationMemoryService {
         userId,
         recentTopics: [],
         recurringThemes: [],
-        emotionalPatterns: [],
+        emotionalPatterns: { predominant: 'stable', recentShift: 'stable' },
         importantMoments: [],
         conversationStyle: {
           preferredLength: 'moderate',
@@ -423,6 +446,7 @@ export class ConversationMemoryService {
     emotionalTrend: 'improving' | 'stable' | 'declining';
     engagementLevel: 'high' | 'medium' | 'low';
     keyInsights: string[];
+    importantMoments?: ImportantMoment[];
   }> {
     try {
       const since = new Date();
@@ -477,7 +501,8 @@ export class ConversationMemoryService {
         topTopics,
         emotionalTrend,
         engagementLevel: messages.length > 15 ? 'high' : messages.length > 7 ? 'medium' : 'low',
-        keyInsights
+        keyInsights,
+        importantMoments: memory.importantMoments || []
       };
     } catch (error) {
       memoryLogger.error({ userId, error }, 'Failed to generate conversation summary');
@@ -486,7 +511,8 @@ export class ConversationMemoryService {
         topTopics: [],
         emotionalTrend: 'stable',
         engagementLevel: 'low',
-        keyInsights: []
+        keyInsights: [],
+        importantMoments: []
       };
     }
   }
@@ -540,6 +566,70 @@ export class ConversationMemoryService {
     } catch (error) {
       memoryLogger.error({ userId, topic, error }, 'Failed to find previous discussions');
       return { found: false, mentions: 0, relatedMessages: [] };
+    }
+  }
+
+  /**
+   * Record an important moment in conversation memory
+   */
+  async recordImportantMoment(
+    userId: string,
+    topic: string,
+    summary: string,
+    emotionalImpact: 'high' | 'medium' | 'low',
+    userMessage: string,
+    aiResponse: string
+  ): Promise<void> {
+    try {
+      let memory = await prisma.conversationMemory.findUnique({
+        where: { userId }
+      });
+
+      if (!memory) {
+        memory = await prisma.conversationMemory.create({
+          data: {
+            userId,
+            topics: '{}',
+            emotionalPatterns: JSON.stringify({
+              predominant: 'stable',
+              recentShift: 'stable'
+            }),
+            importantMoments: JSON.stringify([]),
+            conversationMetrics: JSON.stringify({
+              totalMessages: 0,
+              avgMessageLength: 0,
+              questionsAsked: 0,
+              sentimentCounts: { positive: 0, neutral: 0, negative: 0 }
+            })
+          }
+        });
+      }
+
+      const moments = JSON.parse(memory.importantMoments as string) || [];
+      const newMoment: ImportantMoment = {
+        id: `moment_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        timestamp: new Date(),
+        summary,
+        topic,
+        emotionalImpact,
+        userMessage,
+        aiResponse
+      };
+
+      moments.push(newMoment);
+      
+      // Keep only the most recent 10 important moments
+      const trimmedMoments = moments.slice(-10);
+
+      await prisma.conversationMemory.update({
+        where: { userId },
+        data: {
+          importantMoments: JSON.stringify(trimmedMoments)
+        }
+      });
+      memoryLogger.info({ userId }, 'Recorded important conversation moment');
+    } catch (error) {
+      memoryLogger.error({ userId, error }, 'Failed to record important moment');
     }
   }
 

@@ -40,6 +40,7 @@ const updateProfileSchema = Joi.object({
   emergencyPhone: Joi.string().optional(),
   dataConsent: Joi.boolean().optional(),
   clinicianSharing: Joi.boolean().optional(),
+  isPremium: Joi.boolean().optional(),
 });
 
 const onboardingSchema = Joi.object({

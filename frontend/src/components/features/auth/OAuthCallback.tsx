@@ -1,7 +1,8 @@
-import { Loader2, CheckCircle, XCircle } from 'lucide-react';
+import { CheckCircle, XCircle } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 
 import { getServerBaseUrl } from '../../../config/apiConfig';
+import { LoadingSpinner } from '../../ui/loading-spinner';
 import { Card, CardContent } from '../../ui/card';
 
 interface OAuthCallbackProps {
@@ -127,7 +128,7 @@ export function OAuthCallback({ onAuthSuccess, onAuthError }: OAuthCallbackProps
         <CardContent className="p-8 text-center space-y-6">
           {status === 'loading' && (
             <>
-              <Loader2 className="w-12 h-12 mx-auto animate-spin text-blue-600" />
+              <LoadingSpinner size="xl" className="mx-auto text-primary" />
               <div className="space-y-2">
                 <h2 className="text-2xl font-semibold">Signing you in...</h2>
                 <p className="text-gray-600">{message}</p>

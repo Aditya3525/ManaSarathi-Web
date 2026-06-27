@@ -1,0 +1,328 @@
+{
+  "practices": [
+    {
+      "title": "Navy SEAL Box Breathing (4-4-4-4)",
+      "type": "breathing",
+      "approach": "western",
+      "category": "Anxiety",
+      "difficulty": "Beginner",
+      "description": "A simple, highly effective breathing technique used by military personnel to rapidly regulate the autonomic nervous system and reduce stress.",
+      "youtubeUrl": "FJJazKtH_9I",
+      "format": "Video",
+      "duration": 300,
+      "tags": [
+        "breathing",
+        "anxiety",
+        "box-breathing",
+        "focus"
+      ],
+      "isPublished": true,
+      "scheduledPublishAt": null,
+      "intensityLevel": "low",
+      "focusAreas": [
+        "panic",
+        "anxiety"
+      ],
+      "immediateRelief": true,
+      "steps": [
+        {
+          "instruction": "Sit comfortably with your back straight. Exhale completely through your mouth.",
+          "duration": 10
+        },
+        {
+          "instruction": "Inhale slowly and deeply through your nose to a count of four.",
+          "duration": 4
+        },
+        {
+          "instruction": "Hold your breath gently for a count of four. Try not to clamp your airways shut; just suspend the breath.",
+          "duration": 4
+        },
+        {
+          "instruction": "Exhale smoothly and completely through your mouth to a count of four.",
+          "duration": 4
+        },
+        {
+          "instruction": "Hold your lungs empty for a count of four.",
+          "duration": 4
+        },
+        {
+          "instruction": "Repeat this cycle for 5 minutes, focusing only on the rhythm and the counting.",
+          "duration": 274
+        }
+      ]
+    },
+    {
+      "title": "4-7-8 Breathing for Anxiety Relief",
+      "type": "breathing",
+      "approach": "western",
+      "category": "Stress Management",
+      "difficulty": "Beginner",
+      "description": "Developed by Dr. Andrew Weil, this technique acts as a natural tranquilizer for the nervous system, helping to reduce anxiety and promote sleep.",
+      "youtubeUrl": "p8fjYPC-k2k",
+      "format": "Audio",
+      "duration": 300,
+      "tags": [
+        "breathing",
+        "4-7-8",
+        "relaxation",
+        "sleep"
+      ],
+      "isPublished": true,
+      "scheduledPublishAt": null,
+      "intensityLevel": "low",
+      "focusAreas": [
+        "stress",
+        "anxiety"
+      ],
+      "immediateRelief": true,
+      "steps": [
+        {
+          "instruction": "Place the tip of your tongue against the ridge of tissue just behind your upper front teeth, and keep it there.",
+          "duration": 10
+        },
+        {
+          "instruction": "Exhale completely through your mouth, making a 'whoosh' sound.",
+          "duration": 5
+        },
+        {
+          "instruction": "Close your mouth and inhale quietly through your nose to a mental count of four.",
+          "duration": 4
+        },
+        {
+          "instruction": "Hold your breath for a count of seven.",
+          "duration": 7
+        },
+        {
+          "instruction": "Exhale completely through your mouth, making a 'whoosh' sound to a count of eight.",
+          "duration": 8
+        },
+        {
+          "instruction": "This completes one breath. Repeat the cycle three more times for a total of four breaths.",
+          "duration": 266
+        }
+      ]
+    },
+    {
+      "title": "Nadi Shodhana: Alternate Nostril Breathing",
+      "type": "breathing",
+      "approach": "eastern",
+      "category": "Mindfulness",
+      "difficulty": "Intermediate",
+      "description": "A traditional yogic pranayama practice that balances the left and right hemispheres of the brain, calms the mind, and purifies the energy channels.",
+      "youtubeUrl": "8VwufAfPmzQ",
+      "format": "Video",
+      "duration": 600,
+      "tags": [
+        "pranayama",
+        "yoga",
+        "breathing",
+        "balance"
+      ],
+      "isPublished": true,
+      "scheduledPublishAt": null,
+      "intensityLevel": "medium",
+      "focusAreas": [
+        "focus",
+        "stress"
+      ],
+      "immediateRelief": false,
+      "steps": [
+        {
+          "instruction": "Sit comfortably. Rest your left hand on your lap. Bring your right hand to your face, resting your index and middle fingers between your eyebrows.",
+          "duration": 15
+        },
+        {
+          "instruction": "Close your eyes. Use your right thumb to gently close your right nostril. Inhale slowly and deeply through your left nostril.",
+          "duration": 5
+        },
+        {
+          "instruction": "Close your left nostril with your ring finger. Release your thumb and exhale slowly through your right nostril.",
+          "duration": 5
+        },
+        {
+          "instruction": "Keep the left nostril closed. Inhale deeply through your right nostril.",
+          "duration": 5
+        },
+        {
+          "instruction": "Close your right nostril with your thumb. Release your ring finger and exhale through your left nostril.",
+          "duration": 5
+        },
+        {
+          "instruction": "This completes one cycle. Continue this alternating pattern for several minutes, letting your breath be smooth and effortless.",
+          "duration": 565
+        }
+      ]
+    },
+    {
+      "title": "Yoga For Complete Beginners",
+      "type": "yoga",
+      "approach": "eastern",
+      "category": "Relaxation",
+      "difficulty": "Beginner",
+      "description": "A gentle 20-minute foundational practice by Yoga With Adriene to introduce beginners to mindful movement and breath.",
+      "youtubeUrl": "v7AYKMP6rOE",
+      "format": "Video",
+      "duration": 1200,
+      "tags": [
+        "yoga",
+        "adriene",
+        "beginners",
+        "movement"
+      ],
+      "isPublished": true,
+      "scheduledPublishAt": null,
+      "intensityLevel": "low",
+      "focusAreas": [
+        "stress"
+      ],
+      "immediateRelief": false,
+      "steps": [
+        {
+          "instruction": "Follow the video instructions to move through gentle, foundational yoga poses, matching breath to movement.",
+          "duration": 1200
+        }
+      ]
+    },
+    {
+      "title": "Yin Yoga for Deep Tension Release",
+      "type": "yoga",
+      "approach": "eastern",
+      "category": "Relaxation",
+      "difficulty": "Intermediate",
+      "description": "A 20-minute Yin Yoga practice holding poses for extended periods to stretch deep connective tissues and release stored tension.",
+      "youtubeUrl": "t6XlJ-N_BqI",
+      "format": "Video",
+      "duration": 1200,
+      "tags": [
+        "yin-yoga",
+        "flexibility",
+        "tension-release"
+      ],
+      "isPublished": true,
+      "scheduledPublishAt": null,
+      "intensityLevel": "medium",
+      "focusAreas": [
+        "stress"
+      ],
+      "immediateRelief": false,
+      "steps": [
+        {
+          "instruction": "Follow the video, sinking deep into each pose for 2-3 minutes. Focus on breathing into areas of tightness.",
+          "duration": 1200
+        }
+      ]
+    },
+    {
+      "title": "Somatic Shaking and Tension Release",
+      "type": "yoga",
+      "approach": "hybrid",
+      "category": "Stress Management",
+      "difficulty": "Beginner",
+      "description": "A somatic practice based on Peter Levine's trauma research, using gentle shaking and intuitive movement to discharge nervous system energy.",
+      "youtubeUrl": null,
+      "format": "Audio",
+      "duration": 600,
+      "tags": [
+        "somatic",
+        "shaking",
+        "trauma-release"
+      ],
+      "isPublished": true,
+      "scheduledPublishAt": null,
+      "intensityLevel": "high",
+      "focusAreas": [
+        "panic",
+        "anxiety",
+        "trauma"
+      ],
+      "immediateRelief": true,
+      "steps": [
+        {
+          "instruction": "Stand with your feet hip-width apart. Keep your knees slightly bent. Take a deep breath in, and exhale with a sigh.",
+          "duration": 30
+        },
+        {
+          "instruction": "Begin by gently bouncing on your heels, allowing the vibration to move up your legs.",
+          "duration": 60
+        },
+        {
+          "instruction": "Let the bouncing turn into a shake. Shake your hands and arms, as if shaking off water.",
+          "duration": 60
+        },
+        {
+          "instruction": "Let your shoulders bounce, your torso twist slightly, and allow your whole body to shake loose. Do not force it; follow where the body wants to release.",
+          "duration": 300
+        },
+        {
+          "instruction": "Gradually slow down the shaking until you come to a complete stop.",
+          "duration": 60
+        },
+        {
+          "instruction": "Stand in stillness. Notice the tingling, the energy, and the warmth in your body. Breathe deeply for one final minute.",
+          "duration": 90
+        }
+      ]
+    },
+    {
+      "title": "Guided Body Scan for Deep Sleep",
+      "type": "sleep",
+      "approach": "western",
+      "category": "Relaxation",
+      "difficulty": "Beginner",
+      "description": "A guided meditation utilizing progressive relaxation and hypnotic language to help you fall asleep fast.",
+      "youtubeUrl": "7weU48aL0F0",
+      "format": "Audio",
+      "duration": 1800,
+      "tags": [
+        "sleep",
+        "body-scan",
+        "relaxation"
+      ],
+      "isPublished": true,
+      "scheduledPublishAt": null,
+      "intensityLevel": "low",
+      "focusAreas": [
+        "insomnia",
+        "overthinking"
+      ],
+      "immediateRelief": true,
+      "steps": [
+        {
+          "instruction": "Lie in bed with your eyes closed. Listen to the guided audio, bringing your attention systematically from your toes to the crown of your head, releasing tension at each point.",
+          "duration": 1800
+        }
+      ]
+    },
+    {
+      "title": "Yoga Nidra (Yogic Sleep) for Deep Rest",
+      "type": "sleep",
+      "approach": "eastern",
+      "category": "Relaxation",
+      "difficulty": "Intermediate",
+      "description": "A 30-minute traditional Yoga Nidra practice designed to guide you into a state between wakefulness and sleep for profound rest.",
+      "youtubeUrl": "7pvdOsnd4Sc",
+      "format": "Audio",
+      "duration": 1800,
+      "tags": [
+        "yoga-nidra",
+        "sleep",
+        "nsdr",
+        "eastern"
+      ],
+      "isPublished": true,
+      "scheduledPublishAt": null,
+      "intensityLevel": "low",
+      "focusAreas": [
+        "insomnia",
+        "burnout"
+      ],
+      "immediateRelief": false,
+      "steps": [
+        {
+          "instruction": "Lie on your back in Savasana (corpse pose). Ensure you are warm and comfortable. Follow the instructor's voice as they guide you through a rotation of consciousness.",
+          "duration": 1800
+        }
+      ]
+    }
+  ]
+}

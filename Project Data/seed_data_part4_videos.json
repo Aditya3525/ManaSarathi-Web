@@ -1,0 +1,97 @@
+{
+  "contents": [
+    {
+      "title": "10-Minute Guided Meditation for Instant Calm",
+      "type": "video",
+      "approach": "western",
+      "category": "Mindfulness",
+      "difficulty": "Beginner",
+      "description": "A soothing 10-minute guided session by Headspace designed to help you step away from expectations and find a pocket of stillness. Perfect for beginners learning to reframe stress.",
+      "content": null,
+      "url": "https://www.youtube.com/watch?v=Some_Video_ID",
+      "youtubeUrl": "Some_Video_ID",
+      "thumbnailUrl": "https://img.youtube.com/vi/Some_Video_ID/maxresdefault.jpg",
+      "duration": 600,
+      "tags": [
+        "mindfulness",
+        "meditation",
+        "beginners",
+        "headspace"
+      ],
+      "isPublished": true,
+      "scheduledPublishAt": null,
+      "contentType": "VIDEO",
+      "intensityLevel": "low",
+      "focusAreas": [
+        "stress",
+        "focus"
+      ],
+      "immediateRelief": false,
+      "culturalContext": null,
+      "hasSubtitles": true,
+      "transcript": null
+    },
+    {
+      "title": "Anxiety Isn't Permanent — Here's How to Change It",
+      "type": "video",
+      "approach": "western",
+      "category": "Anxiety",
+      "difficulty": "Intermediate",
+      "description": "Dr. Tracey Marks explains the neuroscience of how anxiety works, the brain's threat detection system (amygdala), and the 'gas and brake' analogy of the nervous system.",
+      "content": null,
+      "url": "https://www.youtube.com/watch?v=Some_Video_ID",
+      "youtubeUrl": "Some_Video_ID",
+      "thumbnailUrl": "https://img.youtube.com/vi/Some_Video_ID/maxresdefault.jpg",
+      "duration": 1200,
+      "tags": [
+        "anxiety",
+        "neuroscience",
+        "education",
+        "dr-marks"
+      ],
+      "isPublished": true,
+      "scheduledPublishAt": null,
+      "contentType": "VIDEO",
+      "intensityLevel": "medium",
+      "focusAreas": [
+        "anxiety",
+        "panic"
+      ],
+      "immediateRelief": false,
+      "culturalContext": null,
+      "hasSubtitles": true,
+      "transcript": null
+    },
+    {
+      "title": "Guided RAIN Meditation with Tara Brach",
+      "type": "audio",
+      "approach": "hybrid",
+      "category": "Emotional Intelligence",
+      "difficulty": "Intermediate",
+      "description": "An audio session by Tara Brach teaching the RAIN technique (Recognize, Allow, Investigate, Nurture) for befriending difficult emotions and practicing self-compassion.",
+      "content": null,
+      "url": "https://www.youtube.com/watch?v=m4c1rXqJ_g0",
+      "youtubeUrl": "m4c1rXqJ_g0",
+      "thumbnailUrl": "https://img.youtube.com/vi/m4c1rXqJ_g0/maxresdefault.jpg",
+      "duration": 1500,
+      "tags": [
+        "rain",
+        "compassion",
+        "emotions",
+        "tara-brach"
+      ],
+      "isPublished": true,
+      "scheduledPublishAt": null,
+      "contentType": "AUDIO",
+      "intensityLevel": "high",
+      "focusAreas": [
+        "stress",
+        "depression"
+      ],
+      "immediateRelief": false,
+      "culturalContext": "The RAIN practice is a western psychological framework built upon traditional Buddhist mindfulness and compassion practices.",
+      "hasSubtitles": false,
+      "transcript": null
+    }
+  ]
+}

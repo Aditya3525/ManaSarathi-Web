@@ -130,7 +130,28 @@ app.use(helmet({
 }));
 
 app.use(compression());
-app.use(httpLogger);
+if (process.env.NODE_ENV !== 'production') {
+  app.use((req, res, next) => {
+    // Generate req.id so downstream middleware works
+    (req as any).id = (req.headers['x-request-id'] as string) || randomUUID();
+    
+    // Silence unnecessary logs
+    if (req.url?.match(/\.(js|css|png|jpg|jpeg|svg|ico)$/) || req.url?.includes('/health') || req.url === '/') {
+      return next();
+    }
+    
+    const start = Date.now();
+    res.on('finish', () => {
+      const ms = Date.now() - start;
+      // 31=red, 33=yellow, 32=green, 36=cyan, 0=reset
+      const statusColor = res.statusCode >= 500 ? '\x1b[31m' : res.statusCode >= 400 ? '\x1b[33m' : '\x1b[32m';
+      console.log(`\x1b[36m[API]\x1b[0m ${req.method} ${req.url} ${statusColor}${res.statusCode}\x1b[0m - ${ms}ms`);
+    });
+    next();
+  });
+} else {
+  app.use(httpLogger);
+}
 app.use(systemHealthMiddleware); // Track API response times and system metrics
 
 // NEW: Security middlewares - Request timeout and sanitization

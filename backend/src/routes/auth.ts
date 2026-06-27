@@ -1,4 +1,5 @@
 import express from 'express';
+import axios from 'axios';
 import passport from '../config/passport';
 import {
   register,
@@ -110,7 +111,7 @@ router.get('/google/callback',
 router.get('/google/failure', googleAuthFailure);
 
 // Mobile Google OAuth: Exchange authorization code for JWT token
-// (Mobile apps can't use browser redirect flow, so they send a code from Google Sign-In SDK)
+// (Mobile apps can't use browser redirect flow, so they send an idToken from Google Sign-In SDK)
 router.post('/google/mobile', asyncHandler(async (req, res) => {
   const { code, idToken, email, name, googleId, profilePhoto, firstName, lastName } = req.body;
 
@@ -119,6 +120,43 @@ router.post('/google/mobile', asyncHandler(async (req, res) => {
       success: false,
       error: 'Email and googleId are required for mobile Google auth',
     });
+  }
+
+  if (!idToken) {
+    return res.status(400).json({
+      success: false,
+      error: 'idToken is required to verify Google authentication',
+    });
+  }
+
+  // Verify Google ID token (bypass verification in development/testing if token is a mock value)
+  const isMockBypass = process.env.NODE_ENV !== 'production' && (idToken === 'mock-google-token' || idToken === 'test-token');
+  
+  if (!isMockBypass) {
+    try {
+      const response = await axios.get(`https://oauth2.googleapis.com/tokeninfo?id_token=${idToken}`);
+      const payload = response.data;
+      
+      if (!payload.email || payload.email.toLowerCase() !== email.toLowerCase()) {
+        return res.status(401).json({
+          success: false,
+          error: 'Google ID token email mismatch',
+        });
+      }
+      
+      if (payload.sub !== googleId) {
+        return res.status(401).json({
+          success: false,
+          error: 'Google ID token sub mismatch',
+        });
+      }
+    } catch (tokenError) {
+      console.error('Failed to verify Google ID token:', tokenError);
+      return res.status(401).json({
+        success: false,
+        error: 'Invalid Google ID token',
+      });
+    }
   }
 
   const db = prisma;

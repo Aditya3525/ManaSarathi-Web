@@ -374,6 +374,61 @@ export const recommendationService = {
 				? 'We shared a few grounding micro-practices while personalised recommendations are refreshed.'
 				: undefined
 		};
+	},
+
+	async getPracticeRecommendations(options: RecommendationOptions): Promise<RecommendationResult> {
+		const { userContext, approach, sentiment, wellnessScore, maxItems = 3 } = options;
+
+		const focusAreas = deriveFocusAreas(userContext, sentiment);
+
+		const matchingPractices = await fetchPracticeSuggestions(focusAreas, approach);
+
+		let prioritised = [...matchingPractices];
+
+		if (prioritised.length < maxItems) {
+			const allPractices = await prisma.practice.findMany({
+				where: { isPublished: true },
+				orderBy: { createdAt: 'desc' },
+				take: 50
+			});
+
+			const fallbackPractices = allPractices.map<RecommendationItem>((practice) => ({
+				id: practice.id,
+				title: practice.title,
+				description: practice.description,
+				type: 'practice',
+				approach: practice.approach,
+				duration: practice.duration,
+				tags: practice.tags ? practice.tags.split(',').map((tag) => tag.trim()) : undefined,
+				url: practice.audioUrl || practice.videoUrl || practice.youtubeUrl,
+				reason: `A general mindfulness practice to support your mental wellbeing.`,
+				source: 'practice',
+				metadata: {
+					format: practice.format,
+					difficulty: practice.difficulty
+				}
+			}));
+
+			for (const fp of fallbackPractices) {
+				if (prioritised.length >= maxItems) break;
+				if (!prioritised.some((p) => p.id === fp.id)) {
+					prioritised.push(fp);
+				}
+			}
+		}
+
+		prioritised = prioritised.slice(0, maxItems);
+
+		if ((wellnessScore ?? userContext.wellnessScore ?? 100) < 60 && !focusAreas.includes('overall wellbeing')) {
+			focusAreas.push('overall wellbeing');
+		}
+
+		return {
+			items: prioritised,
+			focusAreas: unique(focusAreas),
+			rationale: `Selected ${prioritised.length} practice suggestions based on your profile and mood.`,
+			fallbackUsed: prioritised.length > matchingPractices.length
+		};
 	}
 };
 

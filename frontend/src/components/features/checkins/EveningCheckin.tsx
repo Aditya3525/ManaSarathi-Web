@@ -75,7 +75,7 @@ export function EveningCheckin({ onComplete }: EveningCheckinProps) {
   };
 
   return (
-    <Card className="border-indigo-200/60 bg-gradient-to-br from-indigo-50/80 via-violet-50/30 to-background dark:from-indigo-950/20 dark:via-background dark:to-violet-950/10 shadow-[var(--shadow-soft)] page-enter">
+    <Card className="border-indigo-200/60 bg-gradient-to-br from-indigo-50/80 via-violet-50/30 to-background dark:bg-card dark:border-border dark:bg-none shadow-[var(--shadow-soft)] page-enter">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-base md:text-lg">
           <Moon className="h-5 w-5 text-indigo-500" />

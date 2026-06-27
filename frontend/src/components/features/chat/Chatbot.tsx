@@ -3,7 +3,6 @@ import {
   ArrowLeft,
   MessageCircle,
   User,
-  Loader2,
   AlertTriangle,
   Phone,
   X,
@@ -15,6 +14,8 @@ import {
 } from 'lucide-react';
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+
+import { LoadingSpinner } from '../../ui/loading-spinner';
 
 import { useAccessibility } from '../../../contexts/AccessibilityContext';
 import { chatApi, conversationsApi, type ChatSendMessageResponse } from '../../../services/api';
@@ -92,7 +93,7 @@ type SendMessageContentFn = (
   options?: { showUserMessage?: boolean; conversationId?: string }
 ) => Promise<void>;
 
-const EMPTY_ASSISTANT_FALLBACK = 'I am here with you. Could you share a little more so I can support you better?';
+const EMPTY_ASSISTANT_FALLBACK = "I'm here. Tell me more whenever you're ready.";
 
 const resolveNonEmptyContent = (value: unknown, fallback = EMPTY_ASSISTANT_FALLBACK): string => {
   if (typeof value !== 'string') {
@@ -227,7 +228,7 @@ const MessagesList = React.memo(({
           </div>
         )}
         
-        <div className="max-w-[78%]">
+        <div className="max-w-[90%] sm:max-w-[80%]">
           <div
             className={exerciseMeta
               ? 'rounded-2xl p-0 overflow-hidden shadow-md'
@@ -241,7 +242,7 @@ const MessagesList = React.memo(({
             }
           >
             {exerciseMeta ? (
-              <div className="min-w-[280px] max-w-[420px]">
+              <div className="w-full sm:min-w-[280px] max-w-[420px]">
                 {renderExerciseCard(exerciseMeta)}
               </div>
             ) : (
@@ -377,7 +378,10 @@ const MessagesList = React.memo(({
             <span className="text-xs leading-none" role="img" aria-label="Lotus logo">🪷</span>
           </div>
           <span className="text-sm text-slate-500 dark:text-slate-400 italic">
-            ManaSarathi is reflecting...
+            {(() => {
+              const phrases = ['typing...', 'thinking...', 'ManaSarathi is typing...'];
+              return phrases[Math.floor(Date.now() / 1000) % phrases.length];
+            })()}
           </span>
         </div>
       )}
@@ -438,7 +442,7 @@ export function Chatbot({ user, onNavigate, isModal = false, onClose }: ChatbotP
       try {
         // Load personalized greeting
         const greetingResponse = await chatApi.getMoodBasedGreeting();
-        let greetingText = `Hello ${([user?.firstName, user?.lastName].filter(Boolean).join(' ') || user?.name || 'there')}! I'm ManaSarathi, your AI wellbeing companion. I'm here to listen, support, and help guide you through your mental health journey. What would you like to talk about today?`;
+        let greetingText = `Hey ${([user?.firstName, user?.lastName].filter(Boolean).join(' ') || user?.name || 'there')}! How are you doing today?`;
         
         if (greetingResponse.success && greetingResponse.data?.greeting) {
           greetingText = greetingResponse.data.greeting;
@@ -482,7 +486,7 @@ export function Chatbot({ user, onNavigate, isModal = false, onClose }: ChatbotP
         const fallbackGreeting: Message = {
           id: '1',
           type: 'bot',
-          content: `Hello! I'm your AI wellbeing companion. How are you feeling today?`,
+          content: `Hey there! How are you feeling today?`,
           timestamp: new Date(),
           suggestions: []
         };
@@ -713,7 +717,7 @@ export function Chatbot({ user, onNavigate, isModal = false, onClose }: ChatbotP
         const fallbackMessage: Message = {
           id: (Date.now() + 2).toString(),
           type: 'bot',
-          content: 'I\'m having trouble connecting right now, but I\'m here to listen. Could you tell me more about how you\'re feeling?',
+          content: 'Hmm, I\'m having a bit of trouble on my end. Can you try saying that again?',
           timestamp: new Date()
         };
         setMessages((prev) => [...prev, fallbackMessage]);
@@ -793,7 +797,7 @@ export function Chatbot({ user, onNavigate, isModal = false, onClose }: ChatbotP
       const errorMessage: Message = {
         id: (Date.now() + 2).toString(),
         type: 'bot',
-        content: 'I\'m experiencing some technical difficulties right now. In the meantime, please know that I\'m here to support you. What would you like to talk about?',
+        content: 'Sorry about that — something went wrong on my side. Mind trying again?',
         timestamp: new Date()
       };
       setMessages(prev => [...prev, errorMessage]);
@@ -993,7 +997,7 @@ export function Chatbot({ user, onNavigate, isModal = false, onClose }: ChatbotP
       const greeting: Message = {
         id: '1',
         type: 'bot',
-        content: `Hello ${([user?.firstName, user?.lastName].filter(Boolean).join(' ') || user?.name || 'there')}! I'm your AI wellbeing companion. What would you like to talk about today?`,
+        content: `Hey ${([user?.firstName, user?.lastName].filter(Boolean).join(' ') || user?.name || 'there')}! What would you like to talk about?`,
         timestamp: new Date(),
         suggestions: conversationStarters
       };
@@ -1163,7 +1167,7 @@ export function Chatbot({ user, onNavigate, isModal = false, onClose }: ChatbotP
       />
 
       {/* Input Composer - Modern floating card style */}
-      <div className="flex-shrink-0 px-4 pb-6 pt-2 bg-gradient-to-t from-background via-background/95 to-transparent">
+      <div className="flex-shrink-0 px-4 pb-4 sm:pb-6 pt-2 bg-gradient-to-t from-background via-background/95 to-transparent">
         <div className="max-w-3xl mx-auto flex gap-2.5 items-center bg-card border border-border/60 hover:border-teal-500/40 rounded-3xl shadow-md hover:shadow-lg focus-within:shadow-lg focus-within:border-teal-500/60 p-2 transition-all duration-200">
           <div className="flex-1 relative flex items-center pl-2">
             <Input
@@ -1220,7 +1224,7 @@ export function Chatbot({ user, onNavigate, isModal = false, onClose }: ChatbotP
               className="h-8 w-8 p-0 rounded-full bg-teal-600 text-white hover:bg-teal-700 hover:scale-105 transition-all shadow-sm flex items-center justify-center"
             >
               {isTyping ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <LoadingSpinner size="sm" />
               ) : (
                 <Send className="h-3.5 w-3.5" />
               )}
@@ -1260,8 +1264,7 @@ export function Chatbot({ user, onNavigate, isModal = false, onClose }: ChatbotP
               setShowMobileSidebar(false);
             }}
             className="h-full"
-            showCloseButton
-            onCloseSidebar={() => setShowMobileSidebar(false)}
+            showCloseButton={false}
           />
         </SheetContent>
       </Sheet>

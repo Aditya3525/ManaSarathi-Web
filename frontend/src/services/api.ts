@@ -38,6 +38,7 @@ export interface User {
   clinicianSharing?: boolean;
   hasPassword?: boolean;
   securityQuestion?: string | null;
+  isPremium?: boolean;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -124,6 +125,15 @@ export interface AvailableAssessment {
   assessmentType?: string;
 }
 
+export interface OverallAssessmentOption {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  questions: number;
+  estimatedTime: string;
+}
+
 export interface AssessmentTemplate {
   id?: string;
   title: string;
@@ -132,6 +142,7 @@ export interface AssessmentTemplate {
   category?: string;
   timeEstimate?: string;
   estimatedTime?: string;
+  timeframe?: string;
   questions: AssessmentQuestion[];
   tags?: string;
   difficulty?: string;
@@ -669,6 +680,9 @@ export const assessmentsApi = {
   getAvailableAssessments: () =>
     request<AvailableAssessment[]>('/assessments/available'),
 
+  getOverallAssessmentOptions: () =>
+    request<OverallAssessmentOption[]>('/assessments/overall-options'),
+
   getAssessmentTemplates: (types?: string[]) => {
     const params = types?.length ? `?types=${types.join(',')}` : '';
     return request<{ templates: AssessmentTemplate[] }>(`/assessments/templates${params}`);
@@ -1139,7 +1153,7 @@ export const privacyApi = {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `maan-sarathi-data.${format}`;
+    a.download = `mana-sarathi-data.${format}`;
     a.click();
     URL.revokeObjectURL(url);
   },

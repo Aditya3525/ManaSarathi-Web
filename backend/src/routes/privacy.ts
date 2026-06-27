@@ -25,6 +25,10 @@ router.get('/settings', async (req: any, res) => {
       select: {
         dataConsent: true,
         clinicianSharing: true,
+        anonymousAnalytics: true,
+        marketingEmails: true,
+        researchParticipation: true,
+        consentUpdatedAt: true
       },
     });
 
@@ -32,25 +36,15 @@ router.get('/settings', async (req: any, res) => {
       return res.status(404).json({ success: false, error: 'User not found' });
     }
 
-    // Fetch new fields via raw query to avoid TypeScript Prisma client stale types
-    const rawUser = await prisma.$queryRaw<Array<{
-      anonymousAnalytics: boolean | null;
-      marketingEmails: boolean | null;
-      researchParticipation: boolean | null;
-      consentUpdatedAt: string | null;
-    }>>`SELECT "anonymousAnalytics", "marketingEmails", "researchParticipation", "consentUpdatedAt" FROM "users" WHERE "id" = ${userId}`;
-
-    const extra = rawUser[0] || {} as any;
-
     res.json({
       success: true,
       data: {
         dataSharing: user.dataConsent,
         clinicianAccess: user.clinicianSharing,
-        anonymousAnalytics: extra.anonymousAnalytics != null ? Boolean(extra.anonymousAnalytics) : true,
-        marketingEmails: extra.marketingEmails != null ? Boolean(extra.marketingEmails) : false,
-        researchParticipation: extra.researchParticipation != null ? Boolean(extra.researchParticipation) : false,
-        consentUpdatedAt: extra.consentUpdatedAt || null,
+        anonymousAnalytics: user.anonymousAnalytics != null ? Boolean(user.anonymousAnalytics) : true,
+        marketingEmails: user.marketingEmails != null ? Boolean(user.marketingEmails) : false,
+        researchParticipation: user.researchParticipation != null ? Boolean(user.researchParticipation) : false,
+        consentUpdatedAt: user.consentUpdatedAt ? user.consentUpdatedAt.toISOString() : null,
       },
     });
   } catch (error) {
@@ -72,40 +66,37 @@ router.put('/settings', async (req: any, res) => {
 
     const { dataSharing, clinicianAccess, anonymousAnalytics, marketingEmails, researchParticipation } = req.body;
 
-    // Build SET clauses dynamically (PostgreSQL-compatible)
-    const setClauses: string[] = ['"consentUpdatedAt" = CURRENT_TIMESTAMP'];
-    if (dataSharing !== undefined) setClauses.push(`"dataConsent" = ${dataSharing ? 'true' : 'false'}`);
-    if (clinicianAccess !== undefined) setClauses.push(`"clinicianSharing" = ${clinicianAccess ? 'true' : 'false'}`);
-    if (anonymousAnalytics !== undefined) setClauses.push(`"anonymousAnalytics" = ${anonymousAnalytics ? 'true' : 'false'}`);
-    if (marketingEmails !== undefined) setClauses.push(`"marketingEmails" = ${marketingEmails ? 'true' : 'false'}`);
-    if (researchParticipation !== undefined) setClauses.push(`"researchParticipation" = ${researchParticipation ? 'true' : 'false'}`);
+    const updateData: any = {
+      consentUpdatedAt: new Date()
+    };
+    if (dataSharing !== undefined) updateData.dataConsent = dataSharing;
+    if (clinicianAccess !== undefined) updateData.clinicianSharing = clinicianAccess;
+    if (anonymousAnalytics !== undefined) updateData.anonymousAnalytics = anonymousAnalytics;
+    if (marketingEmails !== undefined) updateData.marketingEmails = marketingEmails;
+    if (researchParticipation !== undefined) updateData.researchParticipation = researchParticipation;
 
-    await prisma.$executeRawUnsafe(
-      `UPDATE "users" SET ${setClauses.join(', ')} WHERE "id" = $1`,
-      userId
-    );
-
-    // Fetch updated values
-    const rawUser = await prisma.$queryRaw<Array<{
-      dataConsent: boolean;
-      clinicianSharing: boolean;
-      anonymousAnalytics: boolean | null;
-      marketingEmails: boolean | null;
-      researchParticipation: boolean | null;
-      consentUpdatedAt: string | null;
-    }>>`SELECT "dataConsent", "clinicianSharing", "anonymousAnalytics", "marketingEmails", "researchParticipation", "consentUpdatedAt" FROM "users" WHERE "id" = ${userId}`;
-
-    const row = rawUser[0];
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: updateData,
+      select: {
+        dataConsent: true,
+        clinicianSharing: true,
+        anonymousAnalytics: true,
+        marketingEmails: true,
+        researchParticipation: true,
+        consentUpdatedAt: true
+      }
+    });
 
     res.json({
       success: true,
       data: {
-        dataSharing: Boolean(row.dataConsent),
-        clinicianAccess: Boolean(row.clinicianSharing),
-        anonymousAnalytics: row.anonymousAnalytics != null ? Boolean(row.anonymousAnalytics) : true,
-        marketingEmails: row.marketingEmails != null ? Boolean(row.marketingEmails) : false,
-        researchParticipation: row.researchParticipation != null ? Boolean(row.researchParticipation) : false,
-        consentUpdatedAt: row.consentUpdatedAt || null,
+        dataSharing: Boolean(updatedUser.dataConsent),
+        clinicianAccess: Boolean(updatedUser.clinicianSharing),
+        anonymousAnalytics: updatedUser.anonymousAnalytics != null ? Boolean(updatedUser.anonymousAnalytics) : true,
+        marketingEmails: updatedUser.marketingEmails != null ? Boolean(updatedUser.marketingEmails) : false,
+        researchParticipation: updatedUser.researchParticipation != null ? Boolean(updatedUser.researchParticipation) : false,
+        consentUpdatedAt: updatedUser.consentUpdatedAt ? updatedUser.consentUpdatedAt.toISOString() : null,
       },
     });
   } catch (error) {

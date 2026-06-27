@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 3: Resilient Multi-Provider AI Fallback System</title>
+  <style>
+    body {
+      font-family: Georgia, serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 680px;
+      margin: 40px auto;
+      padding: 0 20px;
+      background-color: #fcfcfc;
+    }
+    h1, h2, h3 {
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      font-weight: 700;
+      color: #111;
+      margin-top: 1.5em;
+    }
+    h1 {
+      font-size: 2.2em;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 0.3em;
+    }
+    code {
+      font-family: Consolas, Monaco, monospace;
+      background-color: #f4f4f4;
+      padding: 2px 4px;
+      font-size: 0.9em;
+      border-radius: 3px;
+    }
+    pre {
+      background-color: #f4f4f4;
+      padding: 15px;
+      overflow-x: auto;
+      border-left: 3px solid #ccc;
+      font-family: Consolas, Monaco, monospace;
+    }
+    .note {
+      background-color: #fffae6;
+      border-left: 4px solid #e6b800;
+      padding: 15px;
+      margin: 20px 0;
+      font-style: italic;
+    }
+    .quiz-container {
+      background-color: #f0f7f4;
+      border: 1px solid #d0e6dc;
+      border-radius: 5px;
+      padding: 20px;
+      margin-top: 30px;
+    }
+    .btn {
+      background-color: #2e7d32;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      font-family: sans-serif;
+      font-size: 0.9em;
+      border-radius: 3px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .btn:hover {
+      background-color: #1b5e20;
+    }
+    .answer {
+      display: none;
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px dashed #ccc;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Lesson 3: The Multi-Provider AI Fallback System</h1>
+  
+  <p>Welcome to Lesson 3! One of the most impressive parts of ManaSarathi is its <strong>resilient AI layer</strong>. Examiners love to ask: <strong>"What happens if OpenAI's servers go down? Does your chatbot crash?"</strong></p>
+  <p>In this lesson, we will learn how you built a custom failsafe fallback chain that guarantees 100% uptime.</p>
+
+  <h2>1. The Core AI Provider Interface</h2>
+  <p>To avoid coupling the code to just one provider (like OpenAI), you wrote a generic interface. Any AI service must implement the same interface. In <a href="file:///c:/Engineering/Final%20Year%20Project/ManaSarathi/backend/src/services/llmProvider.ts"><code>llmProvider.ts</code></a>:</p>
+  <pre>
+interface AIProvider {
+  generateResponse(messages: AIMessage[]): Promise<AIResponse>;
+  isAvailable(): Promise<boolean>;
+}
+  </pre>
+
+  <h2>2. The Priority Fallback Chain</h2>
+  <p>When the user sends a message, the server runs down a prioritized list of AI providers. If one fails, it instantly falls back to the next one:</p>
+  <pre>
+[User sends chat]
+      ↓
+[1. OpenAI] ── (Failed or in cooldown?) ──→ [2. Anthropic]
+                                                   ↓ (Failed?)
+[4. NVIDIA] ←── (Failed?) ── [3. Gemini] ←─────────┘
+      ↓
+[5. HuggingFace] ── (Failed?) ──→ [6. Ollama (Local Fallback)]
+  </pre>
+  <p>This fallback priority chain is configured dynamically in your environment variables.</p>
+
+  <h2>3. Failsafe Features (The Examiner-Wow Factor)</h2>
+  
+  <h3>A. Circuit Breaker / Cooldown</h3>
+  <p>If a provider fails **10 times in a row**, the server flags it as "unhealthy" and puts it on a **3-minute cooldown**. During this cooldown, the server doesn't even try to call it, saving time and keeping response times fast for the user.</p>
+
+  <h3>B. Key Rotation</h3>
+  <p>What if you run out of API credits or hit rate limits? Your backend allows registering multiple API keys per provider (e.g. <code>OPENAI_API_KEY_1</code>, <code>OPENAI_API_KEY_2</code>). The system automatically rotates through them if one returns a rate-limit error.</p>
+
+  <h3>C. Local Ollama Fallback</h3>
+  <p>In development mode, if all internet-based API providers fail (or if you have no internet access), the system falls back to a locally hosted LLM running on **Ollama** (e.g., Llama 3). This ensures the app is always functional.</p>
+
+  <div class="note">
+    <strong>💡 Examiner Tip:</strong> If the examiner asks, "Why did you build this complex fallback system instead of just calling OpenAI?", your answer should be: 
+    <em>"Production mental wellness applications require high availability. Relying on a single API provider creates a single point of failure (SPOF). This multi-provider fallback architecture ensures that if one provider experiences an outage, rate limits, or network errors, the system gracefully degrades to alternative providers without interrupting the user's therapy support session."</em>
+  </div>
+
+  <hr>
+
+  <h2>🧠 Active Recall Practice (Desirable Difficulty)</h2>
+  
+  <div class="quiz-container">
+    <h3>Question 1: The Circuit Breaker</h3>
+    <p>Describe what happens when a provider fails 10 consecutive times.</p>
+    <button class="btn" onclick="toggleAnswer('ans1')">Reveal Answer</button>
+    <div id="ans1" class="answer">
+      <p><strong>Answer:</strong> It enters a 3-minute cooldown period. During this time, the `LLMService` skips it entirely in the priority list to prevent slow request timeouts and immediately queries the next active provider in the chain.</p>
+    </div>
+  </div>
+
+  <div class="quiz-container">
+    <h3>Question 2: Decoupled Design</h3>
+    <p>Why did we create an `AIProvider` interface instead of writing provider-specific code directly in our chat controllers?</p>
+    <button class="btn" onclick="toggleAnswer('ans2')">Reveal Answer</button>
+    <div id="ans2" class="answer">
+      <p><strong>Answer:</strong> It decouples our core chat logic from individual API SDKs. If we want to add a new AI provider in the future, we only have to write a new class implementing the `AIProvider` interface, without modifying the controller or routing logic.</p>
+    </div>
+  </div>
+
+  <script>
+    function toggleAnswer(id) {
+      const el = document.getElementById(id);
+      if (el.style.display === 'block') {
+        el.style.display = 'none';
+      } else {
+        el.style.display = 'block';
+      }
+    }
+  </script>
+
+</body>
+</html>

@@ -45,6 +45,7 @@ export class ChatbotService {
    */
   async addMessage(
     conversationId: string,
+    userId: string,
     role: 'user' | 'assistant',
     content: string
   ): Promise<void> {
@@ -55,6 +56,10 @@ export class ChatbotService {
 
       if (!conversation) {
         throw new Error('Conversation not found');
+      }
+
+      if (conversation.userId !== userId) {
+        throw new Error('Unauthorized access to conversation');
       }
 
       // Parse existing messages
@@ -89,7 +94,7 @@ export class ChatbotService {
   /**
    * End a conversation and generate AI summary
    */
-  async endConversation(conversationId: string): Promise<void> {
+  async endConversation(conversationId: string, userId: string): Promise<void> {
     try {
       const conversation = await prisma.chatbotConversation.findUnique({
         where: { id: conversationId },
@@ -97,6 +102,10 @@ export class ChatbotService {
 
       if (!conversation) {
         throw new Error('Conversation not found');
+      }
+
+      if (conversation.userId !== userId) {
+        throw new Error('Unauthorized access to conversation');
       }
 
       const messages: ChatMessage[] = JSON.parse(conversation.messages);

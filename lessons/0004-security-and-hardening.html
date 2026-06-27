@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 4: Backend Security & Hardening</title>
+  <style>
+    body {
+      font-family: Georgia, serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 680px;
+      margin: 40px auto;
+      padding: 0 20px;
+      background-color: #fcfcfc;
+    }
+    h1, h2, h3 {
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      font-weight: 700;
+      color: #111;
+      margin-top: 1.5em;
+    }
+    h1 {
+      font-size: 2.2em;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 0.3em;
+    }
+    code {
+      font-family: Consolas, Monaco, monospace;
+      background-color: #f4f4f4;
+      padding: 2px 4px;
+      font-size: 0.9em;
+      border-radius: 3px;
+    }
+    pre {
+      background-color: #f4f4f4;
+      padding: 15px;
+      overflow-x: auto;
+      border-left: 3px solid #ccc;
+      font-family: Consolas, Monaco, monospace;
+    }
+    .note {
+      background-color: #fffae6;
+      border-left: 4px solid #e6b800;
+      padding: 15px;
+      margin: 20px 0;
+      font-style: italic;
+    }
+    .quiz-container {
+      background-color: #f0f7f4;
+      border: 1px solid #d0e6dc;
+      border-radius: 5px;
+      padding: 20px;
+      margin-top: 30px;
+    }
+    .btn {
+      background-color: #2e7d32;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      font-family: sans-serif;
+      font-size: 0.9em;
+      border-radius: 3px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .btn:hover {
+      background-color: #1b5e20;
+    }
+    .answer {
+      display: none;
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px dashed #ccc;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Lesson 4: Backend Security & Hardening</h1>
+  
+  <p>Welcome to Lesson 4! In any health-related project, <strong>data security is paramount</strong>. Examiners will look to grill you on security: <strong>"How do you protect patient data? What happens if someone intercepts the traffic? How do you prevent XSS/SQL Injection?"</strong></p>
+  <p>Let's look at the multiple layers of security built into the ManaSarathi backend.</p>
+
+  <h2>1. Authentication & Auto-JWT Refresh</h2>
+  <p>We authenticate requests using JSON Web Tokens (JWT) inside the <code>Authorization: Bearer <token></code> header. To prevent attackers from using stolen tokens forever, our JWTs have a short expiry period.</p>
+  <p>However, to avoid forcing the user to log out mid-use, we implemented a custom auto-refresh middleware: <a href="file:///c:/Engineering/Final%20Year%20Project/ManaSarathi/backend/src/middleware/jwtRefresh.ts"><code>jwtRefresh.ts</code></a>. If the user sends a request and their token is close to expiring, the server generates a new token and attaches it to the response via the custom header <code>X-New-Token</code>. The frontend reads this header and swaps the token seamlessly.</p>
+
+  <h2>2. HTTP Headers & Helmet</h2>
+  <p>We use <a href="https://helmetjs.github.io/">Helmet middleware</a> to secure Express by setting various HTTP headers. In <a href="file:///c:/Engineering/Final%20Year%20Project/ManaSarathi/backend/src/server.ts"><code>server.ts</code></a>:</p>
+  <pre>
+app.use(helmet({
+  contentSecurityPolicy: { ... },
+  hsts: { maxAge: 31536000 } // Forces HTTPS for 1 year
+}));
+  </pre>
+  <ul>
+    <li><strong>HSTS (HTTP Strict Transport Security):</strong> Ensures browsers only talk to our backend over secure HTTPS, never unencrypted HTTP.</li>
+    <li><strong>CSP (Content Security Policy):</strong> Directs browsers where they are allowed to download and execute scripts/images from, preventing cross-site scripting (XSS) injection.</li>
+  </ul>
+
+  <h2>3. CORS (Cross-Origin Resource Sharing)</h2>
+  <p>By default, browsers block web pages from making requests to a different domain. We configure CORS so only our trusted frontend domain can call our backend API. If a malicious site tries to invoke our API endpoints on behalf of a user, the browser automatically blocks the request.</p>
+
+  <h2>4. Input Sanitization & SQL Injection Prevention</h2>
+  <ul>
+    <li><strong>SQL Injection:</strong> Since we use <strong>Prisma ORM</strong>, SQL injection is prevented out-of-the-box. Prisma parameterizes all queries (using prepared statements), meaning user input is never executed as SQL code directly.</li>
+    <li><strong>XSS Sanitization:</strong> Our custom <a href="file:///c:/Engineering/Final%20Year%20Project/ManaSarathi/backend/src/middleware/sanitization.ts"><code>sanitization.ts</code></a> middleware scans the request body and strips out dangerous HTML tags (like <code>&lt;script&gt;</code>) before they reach the controllers or database.</li>
+  </ul>
+
+  <div class="note">
+    <strong>💡 Examiner Tip:</strong> If the examiner asks, "How do you protect your API endpoints from being flooded by hackers or automated bots (DDoS)?", your answer should be: 
+    <em>"We implemented two levels of rate-limiting: a global rate limiter of 500 requests per 15 minutes, and custom, tighter rate limiters (e.g., in <code>authRateLimits.ts</code>) on authentication endpoints like login, registration, and password reset to block brute-force attacks."</em>
+  </div>
+
+  <hr>
+
+  <h2>🧠 Active Recall Practice (Desirable Difficulty)</h2>
+  
+  <div class="quiz-container">
+    <h3>Question 1: Preventing SQL Injection</h3>
+    <p>How does our backend prevent SQL Injection? Do we manually clean SQL query strings?</p>
+    <button class="btn" onclick="toggleAnswer('ans1')">Reveal Answer</button>
+    <div id="ans1" class="answer">
+      <p><strong>Answer:</strong> No, we don't manually clean query strings. We use Prisma ORM, which automatically parameterizes all queries. This ensures that user input is treated strictly as data parameters, not executable SQL command strings.</p>
+    </div>
+  </div>
+
+  <div class="quiz-container">
+    <h3>Question 2: JWT Auto-Refresh</h3>
+    <p>Explain why we use short-lived JWTs combined with an auto-refresh middleware instead of just issuing tokens that last for 1 year.</p>
+    <button class="btn" onclick="toggleAnswer('ans2')">Reveal Answer</button>
+    <div id="ans2" class="answer">
+      <p><strong>Answer:</strong> Long-lived tokens (e.g. 1 year) are a major security risk: if a token is stolen, the attacker has permanent access. Short-lived tokens minimize this risk window. The auto-refresh middleware solves the UX problem: as long as the user is actively using the app, they receive new tokens automatically without being logged out.</p>
+    </div>
+  </div>
+
+  <script>
+    function toggleAnswer(id) {
+      const el = document.getElementById(id);
+      if (el.style.display === 'block') {
+        el.style.display = 'none';
+      } else {
+        el.style.display = 'block';
+      }
+    }
+  </script>
+
+</body>
+</html>

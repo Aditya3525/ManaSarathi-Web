@@ -44,6 +44,7 @@ interface CombinedQuestion {
 	assessmentTitle: string;
 	questionIndex: number; // Index within this assessment
 	totalInAssessment: number;
+	timeframe?: string;
 	options: Array<{
 		id: string;
 		value: number;
@@ -260,6 +261,7 @@ export default function CombinedAssessmentFlow({
 					assessmentTitle: template.title,
 					questionIndex: index + 1,
 					totalInAssessment: template.questions.length,
+					timeframe: template.timeframe,
 					options: q.options.map(opt => ({
 						id: opt.id,
 						value: opt.value,
@@ -632,7 +634,12 @@ export default function CombinedAssessmentFlow({
 
 				{/* Question Card */}
 				<Card className="shadow-lg">
-					<CardHeader>
+					<CardHeader className="space-y-1.5">
+						{currentQuestion.timeframe && (
+							<p className="text-xs font-semibold text-primary uppercase tracking-wider">
+								Timeframe asked: {currentQuestion.timeframe}
+							</p>
+						)}
 						<CardTitle className="text-xl leading-relaxed">{currentQuestion.questionText}</CardTitle>
 					</CardHeader>
 					<CardContent className="space-y-4">

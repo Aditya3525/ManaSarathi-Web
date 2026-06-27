@@ -4,6 +4,8 @@ import { Button } from '../../ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../../ui/card';
 import { Badge } from '../../ui/badge';
 import { useNotificationStore } from '../../../stores/notificationStore';
+import { useAuthStore } from '../../../stores/authStore';
+import { usersApi } from '../../../services/api';
 
 interface PlanFeature {
   name: string;
@@ -24,6 +26,7 @@ interface PlanProps {
 
 export const SubscriptionPlans: React.FC<{ userIsPremium?: boolean }> = ({ userIsPremium }) => {
   const { push } = useNotificationStore();
+  const { user, setUser } = useAuthStore();
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('yearly');
   const [currentPlan, setCurrentPlan] = useState<'free' | 'premium'>(userIsPremium ? 'premium' : 'free');
 
@@ -31,7 +34,9 @@ export const SubscriptionPlans: React.FC<{ userIsPremium?: boolean }> = ({ userI
     setCurrentPlan(userIsPremium ? 'premium' : 'free');
   }, [userIsPremium]);
 
-  const handleUpgrade = () => {
+  const handleUpgrade = async () => {
+    if (!user) return;
+    
     // In a real app, this would redirect to a Stripe checkout session
     push({
       type: 'success',
@@ -40,14 +45,27 @@ export const SubscriptionPlans: React.FC<{ userIsPremium?: boolean }> = ({ userI
     });
     
     // Simulate successful upgrade after a short delay for demo purposes
-    setTimeout(() => {
+    try {
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      const response = await usersApi.updateProfile(user.id, { isPremium: true });
+      if (response.success && response.data) {
+        setUser(response.data.user as any);
+      }
+      
       setCurrentPlan('premium');
       push({
         type: 'success',
         title: 'Upgrade Successful!',
-        description: 'Welcome to MaanSarathi Premium. All features are now unlocked.',
+        description: 'Welcome to ManaSarathi Premium. All features are now unlocked.',
       });
-    }, 2000);
+    } catch (error) {
+      console.error('Failed to upgrade subscription:', error);
+      push({
+        type: 'error',
+        title: 'Upgrade Failed',
+        description: 'There was an error processing your upgrade. Please try again.',
+      });
+    }
   };
 
   const freeFeatures: PlanFeature[] = [

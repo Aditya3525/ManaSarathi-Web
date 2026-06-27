@@ -46,7 +46,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
           Welcome to ManaSarathi
         </h2>
         <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed max-w-md mx-auto">
-          Your safe space for emotional support, reflection prompts, guided breathing sessions, and cognitive tools. Tell me what is on your mind.
+          I'm here whenever you want to talk. No pressure, no judgment — just a space to be yourself.
         </p>
       </div>
 

@@ -1,13 +1,18 @@
-# Graph Report - C:\Engineering\Final Year Project\MaanSarathi  (2026-05-18)
+# Graph Report - ManaSarathi  (2026-06-27)
 
 ## Corpus Check
-- 510 files · ~661,955 words
+- 547 files · ~4,419,538 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 2282 nodes · 2757 edges · 399 communities detected
-- Extraction: 86% EXTRACTED · 14% INFERRED · 0% AMBIGUOUS · INFERRED: 395 edges (avg confidence: 0.8)
+- 5280 nodes · 9895 edges · 369 communities (308 shown, 61 thin omitted)
+- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 119 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
+
+## Graph Freshness
+- Built from commit: `1f6feca2`
+- Run `git rev-parse HEAD` and compare to check if the graph is stale.
+- Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - [[_COMMUNITY_Community 0|Community 0]]
@@ -53,7 +58,6 @@
 - [[_COMMUNITY_Community 40|Community 40]]
 - [[_COMMUNITY_Community 41|Community 41]]
 - [[_COMMUNITY_Community 42|Community 42]]
-- [[_COMMUNITY_Community 43|Community 43]]
 - [[_COMMUNITY_Community 44|Community 44]]
 - [[_COMMUNITY_Community 45|Community 45]]
 - [[_COMMUNITY_Community 46|Community 46]]
@@ -131,7 +135,6 @@
 - [[_COMMUNITY_Community 118|Community 118]]
 - [[_COMMUNITY_Community 119|Community 119]]
 - [[_COMMUNITY_Community 120|Community 120]]
-- [[_COMMUNITY_Community 121|Community 121]]
 - [[_COMMUNITY_Community 122|Community 122]]
 - [[_COMMUNITY_Community 123|Community 123]]
 - [[_COMMUNITY_Community 124|Community 124]]
@@ -207,11 +210,9 @@
 - [[_COMMUNITY_Community 194|Community 194]]
 - [[_COMMUNITY_Community 195|Community 195]]
 - [[_COMMUNITY_Community 196|Community 196]]
-- [[_COMMUNITY_Community 197|Community 197]]
 - [[_COMMUNITY_Community 198|Community 198]]
 - [[_COMMUNITY_Community 199|Community 199]]
 - [[_COMMUNITY_Community 200|Community 200]]
-- [[_COMMUNITY_Community 201|Community 201]]
 - [[_COMMUNITY_Community 202|Community 202]]
 - [[_COMMUNITY_Community 203|Community 203]]
 - [[_COMMUNITY_Community 204|Community 204]]
@@ -250,8 +251,6 @@
 - [[_COMMUNITY_Community 237|Community 237]]
 - [[_COMMUNITY_Community 238|Community 238]]
 - [[_COMMUNITY_Community 239|Community 239]]
-- [[_COMMUNITY_Community 240|Community 240]]
-- [[_COMMUNITY_Community 241|Community 241]]
 - [[_COMMUNITY_Community 242|Community 242]]
 - [[_COMMUNITY_Community 243|Community 243]]
 - [[_COMMUNITY_Community 244|Community 244]]
@@ -259,14 +258,12 @@
 - [[_COMMUNITY_Community 246|Community 246]]
 - [[_COMMUNITY_Community 247|Community 247]]
 - [[_COMMUNITY_Community 248|Community 248]]
-- [[_COMMUNITY_Community 249|Community 249]]
 - [[_COMMUNITY_Community 250|Community 250]]
 - [[_COMMUNITY_Community 251|Community 251]]
 - [[_COMMUNITY_Community 252|Community 252]]
 - [[_COMMUNITY_Community 253|Community 253]]
 - [[_COMMUNITY_Community 254|Community 254]]
 - [[_COMMUNITY_Community 255|Community 255]]
-- [[_COMMUNITY_Community 256|Community 256]]
 - [[_COMMUNITY_Community 257|Community 257]]
 - [[_COMMUNITY_Community 258|Community 258]]
 - [[_COMMUNITY_Community 259|Community 259]]
@@ -288,16 +285,13 @@
 - [[_COMMUNITY_Community 275|Community 275]]
 - [[_COMMUNITY_Community 276|Community 276]]
 - [[_COMMUNITY_Community 277|Community 277]]
-- [[_COMMUNITY_Community 278|Community 278]]
 - [[_COMMUNITY_Community 279|Community 279]]
 - [[_COMMUNITY_Community 280|Community 280]]
 - [[_COMMUNITY_Community 281|Community 281]]
 - [[_COMMUNITY_Community 282|Community 282]]
 - [[_COMMUNITY_Community 283|Community 283]]
-- [[_COMMUNITY_Community 284|Community 284]]
 - [[_COMMUNITY_Community 285|Community 285]]
 - [[_COMMUNITY_Community 286|Community 286]]
-- [[_COMMUNITY_Community 287|Community 287]]
 - [[_COMMUNITY_Community 288|Community 288]]
 - [[_COMMUNITY_Community 289|Community 289]]
 - [[_COMMUNITY_Community 290|Community 290]]
@@ -310,8 +304,6 @@
 - [[_COMMUNITY_Community 297|Community 297]]
 - [[_COMMUNITY_Community 298|Community 298]]
 - [[_COMMUNITY_Community 299|Community 299]]
-- [[_COMMUNITY_Community 300|Community 300]]
-- [[_COMMUNITY_Community 301|Community 301]]
 - [[_COMMUNITY_Community 302|Community 302]]
 - [[_COMMUNITY_Community 303|Community 303]]
 - [[_COMMUNITY_Community 304|Community 304]]
@@ -320,42 +312,11 @@
 - [[_COMMUNITY_Community 307|Community 307]]
 - [[_COMMUNITY_Community 308|Community 308]]
 - [[_COMMUNITY_Community 309|Community 309]]
-- [[_COMMUNITY_Community 310|Community 310]]
-- [[_COMMUNITY_Community 311|Community 311]]
-- [[_COMMUNITY_Community 312|Community 312]]
-- [[_COMMUNITY_Community 313|Community 313]]
 - [[_COMMUNITY_Community 314|Community 314]]
 - [[_COMMUNITY_Community 315|Community 315]]
 - [[_COMMUNITY_Community 316|Community 316]]
 - [[_COMMUNITY_Community 317|Community 317]]
-- [[_COMMUNITY_Community 318|Community 318]]
-- [[_COMMUNITY_Community 319|Community 319]]
-- [[_COMMUNITY_Community 320|Community 320]]
-- [[_COMMUNITY_Community 321|Community 321]]
-- [[_COMMUNITY_Community 322|Community 322]]
-- [[_COMMUNITY_Community 323|Community 323]]
-- [[_COMMUNITY_Community 324|Community 324]]
-- [[_COMMUNITY_Community 325|Community 325]]
-- [[_COMMUNITY_Community 326|Community 326]]
-- [[_COMMUNITY_Community 327|Community 327]]
-- [[_COMMUNITY_Community 328|Community 328]]
-- [[_COMMUNITY_Community 329|Community 329]]
-- [[_COMMUNITY_Community 330|Community 330]]
-- [[_COMMUNITY_Community 331|Community 331]]
-- [[_COMMUNITY_Community 332|Community 332]]
-- [[_COMMUNITY_Community 333|Community 333]]
-- [[_COMMUNITY_Community 334|Community 334]]
 - [[_COMMUNITY_Community 335|Community 335]]
-- [[_COMMUNITY_Community 336|Community 336]]
-- [[_COMMUNITY_Community 337|Community 337]]
-- [[_COMMUNITY_Community 338|Community 338]]
-- [[_COMMUNITY_Community 339|Community 339]]
-- [[_COMMUNITY_Community 340|Community 340]]
-- [[_COMMUNITY_Community 341|Community 341]]
-- [[_COMMUNITY_Community 342|Community 342]]
-- [[_COMMUNITY_Community 343|Community 343]]
-- [[_COMMUNITY_Community 344|Community 344]]
-- [[_COMMUNITY_Community 345|Community 345]]
 - [[_COMMUNITY_Community 346|Community 346]]
 - [[_COMMUNITY_Community 347|Community 347]]
 - [[_COMMUNITY_Community 348|Community 348]]
@@ -364,10 +325,8 @@
 - [[_COMMUNITY_Community 351|Community 351]]
 - [[_COMMUNITY_Community 352|Community 352]]
 - [[_COMMUNITY_Community 353|Community 353]]
-- [[_COMMUNITY_Community 354|Community 354]]
 - [[_COMMUNITY_Community 355|Community 355]]
 - [[_COMMUNITY_Community 356|Community 356]]
-- [[_COMMUNITY_Community 357|Community 357]]
 - [[_COMMUNITY_Community 358|Community 358]]
 - [[_COMMUNITY_Community 359|Community 359]]
 - [[_COMMUNITY_Community 360|Community 360]]
@@ -377,2173 +336,1124 @@
 - [[_COMMUNITY_Community 364|Community 364]]
 - [[_COMMUNITY_Community 365|Community 365]]
 - [[_COMMUNITY_Community 366|Community 366]]
-- [[_COMMUNITY_Community 367|Community 367]]
-- [[_COMMUNITY_Community 368|Community 368]]
 - [[_COMMUNITY_Community 369|Community 369]]
 - [[_COMMUNITY_Community 370|Community 370]]
-- [[_COMMUNITY_Community 371|Community 371]]
-- [[_COMMUNITY_Community 372|Community 372]]
-- [[_COMMUNITY_Community 373|Community 373]]
-- [[_COMMUNITY_Community 374|Community 374]]
-- [[_COMMUNITY_Community 375|Community 375]]
-- [[_COMMUNITY_Community 376|Community 376]]
-- [[_COMMUNITY_Community 377|Community 377]]
-- [[_COMMUNITY_Community 378|Community 378]]
-- [[_COMMUNITY_Community 379|Community 379]]
-- [[_COMMUNITY_Community 380|Community 380]]
-- [[_COMMUNITY_Community 381|Community 381]]
-- [[_COMMUNITY_Community 382|Community 382]]
-- [[_COMMUNITY_Community 383|Community 383]]
-- [[_COMMUNITY_Community 384|Community 384]]
-- [[_COMMUNITY_Community 385|Community 385]]
-- [[_COMMUNITY_Community 386|Community 386]]
-- [[_COMMUNITY_Community 387|Community 387]]
-- [[_COMMUNITY_Community 388|Community 388]]
-- [[_COMMUNITY_Community 389|Community 389]]
-- [[_COMMUNITY_Community 390|Community 390]]
-- [[_COMMUNITY_Community 391|Community 391]]
-- [[_COMMUNITY_Community 392|Community 392]]
-- [[_COMMUNITY_Community 393|Community 393]]
-- [[_COMMUNITY_Community 394|Community 394]]
-- [[_COMMUNITY_Community 395|Community 395]]
-- [[_COMMUNITY_Community 396|Community 396]]
-- [[_COMMUNITY_Community 397|Community 397]]
-- [[_COMMUNITY_Community 398|Community 398]]
 
 ## God Nodes (most connected - your core abstractions)
-1. `ChatService` - 60 edges
-2. `getApiBaseUrl()` - 56 edges
-3. `createRequestLogger()` - 53 edges
-4. `adminFetch()` - 39 edges
-5. `LLMService` - 26 edges
-6. `formatZodErrors()` - 26 edges
-7. `String()` - 22 edges
-8. `validate()` - 20 edges
-9. `roundTo()` - 16 edges
-10. `Boolean()` - 16 edges
+1. `Communities` - 379 edges
+2. `cn()` - 269 edges
+3. `Button` - 116 edges
+4. `Card()` - 100 edges
+5. `CardContent()` - 92 edges
+6. `CardHeader()` - 69 edges
+7. `CardTitle()` - 66 edges
+8. `ChatService` - 65 edges
+9. `createRequestLogger()` - 61 edges
+10. `Badge()` - 59 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `getJournalEntries()` --calls--> `formatZodErrors()`  [INFERRED]
-  C:\Engineering\Final Year Project\MaanSarathi\backend\src\controllers\journalController.ts → C:\Engineering\Final Year Project\ManaSarathi\backend\src\utils\zodHelpers.ts
-- `deleteJournalEntry()` --calls--> `formatZodErrors()`  [INFERRED]
-  C:\Engineering\Final Year Project\MaanSarathi\backend\src\controllers\journalController.ts → C:\Engineering\Final Year Project\ManaSarathi\backend\src\utils\zodHelpers.ts
-- `listAssessments()` --calls--> `String()`  [INFERRED]
-  C:\Engineering\Final Year Project\ManaSarathi\backend\src\controllers\admin\assessmentAdminController.ts → C:\Engineering\Final Year Project\ManaSarathi\frontend\src\components\features\content\MediaPlayerDialog.tsx
-- `formatDate()` --calls--> `toLocaleDateString()`  [INFERRED]
-  C:\Engineering\Final Year Project\ManaSarathi\frontend\src\admin\AssessmentList.tsx → C:\Engineering\Final Year Project\ManaSarathi\frontend\src\therapist\SessionNotesList.tsx
-- `formatDate()` --calls--> `toLocaleDateString()`  [INFERRED]
-  C:\Engineering\Final Year Project\ManaSarathi\frontend\src\admin\UserManagement.tsx → C:\Engineering\Final Year Project\ManaSarathi\frontend\src\therapist\SessionNotesList.tsx
+- `parseBoundedInt()` --calls--> `String()`  [INFERRED]
+  backend/src/controllers/admin/activityLogController.ts → frontend/src/components/features/content/MediaPlayerDialog.tsx
+- `parseBoundedInt()` --calls--> `String()`  [INFERRED]
+  backend/src/controllers/admin/userManagementController.ts → frontend/src/components/features/content/MediaPlayerDialog.tsx
+- `createCheckin()` --calls--> `handleSubmit()`  [INFERRED]
+  backend/src/controllers/checkinController.ts → frontend/src/components/features/checkins/EveningCheckin.tsx
+- `createCheckin()` --calls--> `handleSubmit()`  [INFERRED]
+  backend/src/controllers/checkinController.ts → frontend/src/components/features/checkins/EveningReflection.tsx
+- `createCheckin()` --calls--> `handleSubmit()`  [INFERRED]
+  backend/src/controllers/checkinController.ts → frontend/src/components/features/checkins/MorningCheckin.tsx
 
-## Communities
+## Import Cycles
+- 3-file cycle: `backend/src/services/assessmentInsightsService.ts -> backend/src/services/llmProvider.ts -> backend/src/types/ai.ts -> backend/src/services/assessmentInsightsService.ts`
+- 4-file cycle: `backend/src/services/assessmentInsightsService.ts -> backend/src/services/llmProvider.ts -> backend/src/services/providers/OllamaProvider.ts -> backend/src/types/ai.ts -> backend/src/services/assessmentInsightsService.ts`
+- 4-file cycle: `backend/src/services/assessmentInsightsService.ts -> backend/src/services/llmProvider.ts -> backend/src/services/providers/AnthropicProvider.ts -> backend/src/types/ai.ts -> backend/src/services/assessmentInsightsService.ts`
+- 4-file cycle: `backend/src/services/assessmentInsightsService.ts -> backend/src/services/llmProvider.ts -> backend/src/services/providers/GeminiProvider.ts -> backend/src/types/ai.ts -> backend/src/services/assessmentInsightsService.ts`
+- 4-file cycle: `backend/src/services/assessmentInsightsService.ts -> backend/src/services/llmProvider.ts -> backend/src/services/providers/HuggingFaceProvider.ts -> backend/src/types/ai.ts -> backend/src/services/assessmentInsightsService.ts`
+- 4-file cycle: `backend/src/services/assessmentInsightsService.ts -> backend/src/services/llmProvider.ts -> backend/src/services/providers/NvidiaProvider.ts -> backend/src/types/ai.ts -> backend/src/services/assessmentInsightsService.ts`
+- 4-file cycle: `backend/src/services/assessmentInsightsService.ts -> backend/src/services/llmProvider.ts -> backend/src/services/providers/OpenAIProvider.ts -> backend/src/types/ai.ts -> backend/src/services/assessmentInsightsService.ts`
+- 5-file cycle: `backend/src/services/assessmentInsightsService.ts -> backend/src/services/llmProvider.ts -> backend/src/services/providers/OllamaProvider.ts -> backend/src/services/providers/BaseAIProvider.ts -> backend/src/types/ai.ts -> backend/src/services/assessmentInsightsService.ts`
+- 5-file cycle: `backend/src/services/assessmentInsightsService.ts -> backend/src/services/llmProvider.ts -> backend/src/services/providers/AnthropicProvider.ts -> backend/src/services/providers/BaseAIProvider.ts -> backend/src/types/ai.ts -> backend/src/services/assessmentInsightsService.ts`
+- 5-file cycle: `backend/src/services/assessmentInsightsService.ts -> backend/src/services/llmProvider.ts -> backend/src/services/providers/GeminiProvider.ts -> backend/src/services/providers/BaseAIProvider.ts -> backend/src/types/ai.ts -> backend/src/services/assessmentInsightsService.ts`
+- 5-file cycle: `backend/src/services/assessmentInsightsService.ts -> backend/src/services/llmProvider.ts -> backend/src/services/providers/HuggingFaceProvider.ts -> backend/src/services/providers/BaseAIProvider.ts -> backend/src/types/ai.ts -> backend/src/services/assessmentInsightsService.ts`
+- 5-file cycle: `backend/src/services/assessmentInsightsService.ts -> backend/src/services/llmProvider.ts -> backend/src/services/providers/NvidiaProvider.ts -> backend/src/services/providers/BaseAIProvider.ts -> backend/src/types/ai.ts -> backend/src/services/assessmentInsightsService.ts`
+- 5-file cycle: `backend/src/services/assessmentInsightsService.ts -> backend/src/services/llmProvider.ts -> backend/src/services/providers/OpenAIProvider.ts -> backend/src/services/providers/BaseAIProvider.ts -> backend/src/types/ai.ts -> backend/src/services/assessmentInsightsService.ts`
+
+## Communities (369 total, 61 thin omitted)
 
 ### Community 0 - "Community 0"
-Cohesion: 0.03
-Nodes (84): adminFetch(), getAdminToken(), getTokenForPath(), request(), requestBlob(), getApiBaseUrl(), handleBulkDelete(), handleBulkPublish() (+76 more)
+Cohesion: 0.24
+Nodes (15): SystemDiagnostics(), TestResult, copyTestResult(), getErrorExplanation(), runAllTests(), testAIProviders(), testAnalytics(), testAPIKeys() (+7 more)
 
 ### Community 1 - "Community 1"
-Cohesion: 0.03
-Nodes (87): buildChatPayload(), clearMemory(), getChatHistory(), getChatInsights(), getConversationStarters(), getConversationSummary(), getProactiveCheckIn(), parseApproachFromMetadata() (+79 more)
+Cohesion: 0.07
+Nodes (42): createGratitudeEntry(), createGratitudeSchema, getGratitudeEntries(), getGratitudeModel(), normalizeItems(), querySchema, completeHabit(), completeHabitSchema (+34 more)
 
 ### Community 2 - "Community 2"
-Cohesion: 0.03
-Nodes (60): getAllowedProductionOrigins(), isAllowedFrontendOrigin(), normalizeOrigin(), splitOrigins(), getAssessmentHistory(), authenticate(), extractOrigin(), getEmailVerificationSecret() (+52 more)
+Cohesion: 0.05
+Nodes (46): router, DEFAULT_PRODUCTION_ORIGINS, getAllowedProductionOrigins(), isAllowedFrontendOrigin(), LOCAL_HOSTNAMES, normalizeOrigin(), splitOrigins(), loginLimiter (+38 more)
 
 ### Community 3 - "Community 3"
-Cohesion: 0.04
-Nodes (8): handleSelectConversation(), loadInitialData(), getConversationMemory(), getExerciseRecommendations(), ChatService, ConversationMemoryService, ConversationService, verifyOllamaInsight()
+Cohesion: 0.01
+Nodes (379): Communities, Community 0 - "Community 0", Community 100 - "Community 100", Community 101 - "Community 101", Community 102 - "Community 102", Community 103 - "Community 103", Community 104 - "Community 104", Community 105 - "Community 105" (+371 more)
 
 ### Community 4 - "Community 4"
-Cohesion: 0.03
-Nodes (51): searchYouTubeVideos(), buildCsv(), escapeCsvCell(), handleExport(), extractYouTubeId(), getDecisionSummary(), getSourceHostLabel(), isProbablyUrl() (+43 more)
+Cohesion: 0.20
+Nodes (9): CompleteOnboardingInput, completeOnboardingSchema, LoginInput, loginSchema, PasswordSetupInput, passwordSetupSchema, RegisterInput, registerSchema (+1 more)
 
 ### Community 5 - "Community 5"
-Cohesion: 0.04
-Nodes (25): AIProviderError, AssessmentNotFoundError, AssessmentSessionExpiredError, BadRequestError, CacheError, ChatSessionNotFoundError, ConflictError, ContentNotFoundError (+17 more)
-
-### Community 6 - "Community 6"
-Cohesion: 0.05
-Nodes (26): getDefaultShareSelection(), hasShareSelectionEnabled(), isFiniteNumber(), readAssessmentShareContext(), sanitizeContext(), saveAssessmentShareContext(), tooltipFormatter(), deltaClassForType() (+18 more)
+Cohesion: 0.09
+Nodes (24): CONTENT_FALLBACK_SUGGESTIONS, getContentById(), listContent(), prisma, acknowledgeTicket(), createSupportTicket(), createTicketSchema, getTicketById() (+16 more)
 
 ### Community 7 - "Community 7"
-Cohesion: 0.04
-Nodes (13): submitFeedback(), CrisisAlertsFeed(), parseJsonToList(), Boolean(), handler(), handler(), useTherapistBookingsQuery(), useTherapistClientNotesQuery() (+5 more)
+Cohesion: 0.10
+Nodes (6): extractYouTubeId(), formatTime(), MediaPlayer(), MediaPlayerProps, playbackRates, Practices()
 
 ### Community 8 - "Community 8"
-Cohesion: 0.07
-Nodes (13): AnthropicProvider, createSystemPrompt(), getAllApiKeys(), getCurrentApiKey(), handleError(), logVerbose(), prepareMessages(), rotateApiKey() (+5 more)
+Cohesion: 0.23
+Nodes (8): createSystemPrompt(), getAllApiKeys(), getCurrentApiKey(), logVerbose(), prepareMessages(), rotateApiKey(), tryWithKeyRotation(), NvidiaProvider
 
 ### Community 9 - "Community 9"
-Cohesion: 0.07
-Nodes (36): fetchAssessment(), buildAssessmentTemplatesCacheKey(), buildDefinitionCandidates(), cloneDomains(), cloneInterpretationBands(), cloneScoring(), computeFallbackVerifiedScore(), computeVerifiedScoreFromDefinition() (+28 more)
+Cohesion: 0.03
+Nodes (69): dependencies, axios, class-variance-authority, clsx, cmdk, date-fns, @dnd-kit/core, @dnd-kit/sortable (+61 more)
 
 ### Community 10 - "Community 10"
-Cohesion: 0.05
-Nodes (9): formatDate(), formatDate(), formatTimeAgo(), calculateCurrentStreak(), countMoodEntriesInRange(), formatRelativeDate(), toStartOfDay(), toLocaleDateString() (+1 more)
+Cohesion: 0.07
+Nodes (23): getWsBaseUrl(), EnhancedInsightsCard(), useAssessmentHistory(), useAssessmentInsights(), useCompleteAssessmentSession(), useStartAssessmentSession(), useSubmitAssessment(), API_BASE_URL (+15 more)
 
 ### Community 11 - "Community 11"
-Cohesion: 0.06
-Nodes (25): getActivityLogs(), logActivity(), parseBoundedInt(), calculateAssessmentScore(), createAssessment(), deleteAssessment(), duplicateAssessment(), listAssessments() (+17 more)
+Cohesion: 0.11
+Nodes (12): ChatbotService, ChatMessage, ConversationInsights, llmService, prisma, serviceLogger, AssessmentData, ChatbotData (+4 more)
 
 ### Community 12 - "Community 12"
-Cohesion: 0.09
-Nodes (20): buildAssessmentInsights(), buildResponseHighlights(), calculateRecommendations(), calculateWellnessScore(), computeHistoryAndSummaries(), deriveOverallTrend(), determineTrend(), ensurePlainObject() (+12 more)
+Cohesion: 0.04
+Nodes (49): allContents, ASSESSMENT_SEEDS, AssessmentSeed, BaseQuestion, BASIC_OVERALL_SEED, BASIC_SCORING, BIG_FIVE_BASE, BROODING_BASE (+41 more)
 
 ### Community 13 - "Community 13"
-Cohesion: 0.1
-Nodes (18): getAIPerformanceAnalytics(), getComprehensiveAnalytics(), getCrisisDetectionAnalytics(), getSystemHealthAnalytics(), getTimeframeHELPER(), getUserEngagementAnalytics(), getWellnessImpactAnalytics(), getAIProviderAnalytics() (+10 more)
+Cohesion: 0.09
+Nodes (16): CRISIS_PATTERNS, CrisisDetectionContext, CrisisDetectionResult, CrisisLevel, crisisLogger, prisma, ApproachMode, EnhancedRecommendationContext (+8 more)
 
 ### Community 14 - "Community 14"
 Cohesion: 0.07
-Nodes (15): useAdminAuth(), AppInner(), clearRememberedAdminDestination(), getRememberedAdminDestination(), readAdminDestinationChoices(), setRememberedAdminDestination(), writeAdminDestinationChoices(), parseTags() (+7 more)
+Nodes (33): fetchTherapistData(), TherapistBooking, TherapistClient, TherapistClientSummary, TherapistCrisisAlert, TherapistNoteRecord, TherapistProfile, therapistQueryKeys (+25 more)
 
 ### Community 15 - "Community 15"
-Cohesion: 0.1
-Nodes (15): getMoodBasedGreeting(), ContextAwarenessService, DashboardModeService, isCompletedToday(), normalizeApproach(), toDayDiff(), toStartOfDay(), directionFromDelta() (+7 more)
+Cohesion: 0.13
+Nodes (12): ContextAwarenessService, contextLogger, ContextualInsight, RecentEvent, TimeContext, buildMetricsPayload(), DEFAULT_CONVERSATION_METRICS, extractTopTopics() (+4 more)
 
 ### Community 16 - "Community 16"
-Cohesion: 0.11
-Nodes (3): getAIHealthCheck(), LLMService, OpenAIProvider
+Cohesion: 0.05
+Nodes (43): AssessmentCardConfig, AssessmentCardState, AssessmentList(), AssessmentListProps, AvailableAssessment, baseAssessments, BASIC_OVERALL_ASSESSMENT_SET, CombinedHistorySnapshot (+35 more)
 
 ### Community 17 - "Community 17"
 Cohesion: 0.08
-Nodes (11): getServerBaseUrl(), getWsBaseUrl(), resolveConfiguredOrigin(), resolveServerOrigin(), toApiBase(), handleFeatureLearnMore(), handleGoogleAuth(), openModal() (+3 more)
+Nodes (28): Sidebar(), SidebarContent(), SidebarContext, SidebarContextProps, SidebarFooter(), SidebarGroup(), SidebarGroupAction(), SidebarGroupContent() (+20 more)
 
 ### Community 18 - "Community 18"
-Cohesion: 0.11
-Nodes (16): isExerciseCardType(), parseAssessmentPromptMeta(), parseExerciseCardMeta(), parseRawMetadata(), applyChatPayload(), handleFeedbackSubmit(), handleGetSummary(), handleKeyPress() (+8 more)
+Cohesion: 0.04
+Nodes (52): 10.1 Local Setup, 10.2 Production Architecture, 10.3 Health and Monitoring, 10.4 Backup and Recovery, 11.1 Conclusion, 11.2 Limitations, 11.3 Future Scope, 1.1 Background (+44 more)
 
 ### Community 19 - "Community 19"
-Cohesion: 0.11
-Nodes (7): blank(), chap(), ctr(), imgAt(), imgFull(), imgHalf(), rule()
+Cohesion: 0.06
+Nodes (37): ASSESSMENT_CATALOG, ASSESSMENT_DEFINITION_CACHE_TTL_MS, ASSESSMENT_TEMPLATE_MAP, ASSESSMENT_TEMPLATES_CACHE_TTL_MS, assessmentDefinitionCache, AssessmentDefinitionCacheEntry, AssessmentDefinitionWithQuestions, assessmentTemplatesCache (+29 more)
 
 ### Community 20 - "Community 20"
-Cohesion: 0.26
-Nodes (20): buildInterpretation(), normalize(), roundTo(), scoreBigFive(), scoreBrooding(), scoreEi10(), scoreEq5(), scoreGad2() (+12 more)
+Cohesion: 0.07
+Nodes (36): AssessmentListProps, BulkActionToolbarProps, Activity, UserData, UserDetails, NotificationBellProps, LanguageSelector(), ApiResponse (+28 more)
 
 ### Community 21 - "Community 21"
-Cohesion: 0.12
-Nodes (6): blank(), chap(), ctr(), pageBorderProp(), pageProps(), rule()
+Cohesion: 0.05
+Nodes (40): dependencies, @anthropic-ai/sdk, axios, bcryptjs, compression, cors, date-fns, dotenv (+32 more)
 
 ### Community 22 - "Community 22"
-Cohesion: 0.17
-Nodes (12): createJournalEntry(), deleteJournalEntry(), getJournalEntries(), getJournalPrompt(), getWeeklyReflection(), normalizeEmotionFromMood(), updateJournalEntry(), getWeekStart() (+4 more)
+Cohesion: 0.06
+Nodes (25): EmotionWheelProps, Profile(), ACTIVITY_COLORS, ActivityItem, calculateCurrentStreak(), clampPercent(), countMoodEntriesInRange(), formatRelativeDate() (+17 more)
 
 ### Community 23 - "Community 23"
-Cohesion: 0.16
-Nodes (9): average(), calculateCurrentMoodStreak(), calculateMoodDistribution(), calculateProfileCompletion(), generateInsightsFromAssessments(), getCheckinSummaryData(), getDashboardSummaryData(), getStreakMessage() (+1 more)
+Cohesion: 0.08
+Nodes (49): closeTicket(), createCrisisResource(), createCrisisResourceSchema, createFAQ(), createFAQSchema, createTherapist(), createTherapistSchema, deleteCrisisResource() (+41 more)
 
 ### Community 24 - "Community 24"
-Cohesion: 0.15
-Nodes (11): average(), createCheckin(), getCheckinSummary(), startOfToday(), dayEmoji(), dayLabel(), handleSubmit(), handleSubmit() (+3 more)
+Cohesion: 0.04
+Nodes (52): 10.1 Local Setup, 10.2 Production Architecture, 10.3 Health and Monitoring, 10.4 Backup and Recovery, 11.1 Conclusion, 11.2 Limitations, 11.3 Future Scope, 1.1 Background (+44 more)
 
 ### Community 25 - "Community 25"
-Cohesion: 0.13
-Nodes (2): h(), sp()
+Cohesion: 0.10
+Nodes (34): User, forgotPasswordSchema, generateToken(), getCurrentUser(), getFrontendBaseUrl(), getOAuthFrontendBaseUrl(), getOAuthOriginFromState(), getSecurityQuestionForReset() (+26 more)
 
 ### Community 26 - "Community 26"
-Cohesion: 0.22
-Nodes (1): EnhancedRecommendationService
+Cohesion: 0.05
+Nodes (37): API Security, Authentication, Authorization, Automation Guidance, CI Gate Strategy, Common Pitfalls, Completion Criteria, Cross-Cutting (+29 more)
 
 ### Community 27 - "Community 27"
-Cohesion: 0.12
-Nodes (1): load()
+Cohesion: 0.06
+Nodes (25): router, AuthRoutesOptions, createAdminAuthRoutes(), createMediaRoutes(), MediaRoutesOptions, MediaType, PrismaLike, YouTubeMetadata (+17 more)
 
 ### Community 28 - "Community 28"
-Cohesion: 0.15
-Nodes (3): blank(), chapterPage(), dividerRule()
+Cohesion: 0.14
+Nodes (15): createMoodEntry(), deleteMoodEntry(), getMoodEntries(), getMoodStats(), LEGACY_MOOD_BY_EMOTION, LEGACY_MOOD_BY_GROUP, normalizeLegacyMood(), validate() (+7 more)
 
 ### Community 29 - "Community 29"
-Cohesion: 0.24
-Nodes (12): assignPlanModulesToUser(), main(), seedAssessmentInsightForUser(), seedAssessmentLibrary(), seedAssessmentsForUser(), seedContent(), seedMoodEntriesForUser(), seedPlanModules() (+4 more)
+Cohesion: 0.10
+Nodes (27): ADVANCED_ASSESSMENT_TYPES, AssessmentDetailContext, AssessmentInsightsPayload, BASIC_OVERALL_ASSESSMENT_TYPES, buildResponseHighlights(), calculateRecommendations(), determineTrend(), EnrichedAssessment (+19 more)
 
 ### Community 30 - "Community 30"
-Cohesion: 0.13
-Nodes (0): 
+Cohesion: 0.15
+Nodes (13): ApproachProfile, EmotionProfile, getWeekStart(), journalLogger, JournalService, negativeMoods, normalizeApproach(), normalizeEmotion() (+5 more)
 
 ### Community 31 - "Community 31"
-Cohesion: 0.21
-Nodes (10): anxietyQuestionIds(), categoryInterpretation(), categoryLabel(), clampScore(), interpretAnxietyScore(), scoreAnxietyAssessment(), buildResponses(), clamp() (+2 more)
+Cohesion: 0.07
+Nodes (30): buildResponses(), clamp(), isReverseScored(), AnxietyCategory, AnxietyQuestion, anxietyQuestionCount(), anxietyQuestionIds(), AnxietyScoreSummary (+22 more)
 
 ### Community 32 - "Community 32"
-Cohesion: 0.27
-Nodes (1): StructuredExercisesService
+Cohesion: 0.06
+Nodes (32): scripts, build, build:backend, build:frontend, ci, clean, db:generate, db:migrate (+24 more)
 
 ### Community 33 - "Community 33"
-Cohesion: 0.24
-Nodes (1): ChatbotService
+Cohesion: 0.06
+Nodes (13): AIProviderError, AppError, AssessmentNotFoundError, ChatSessionNotFoundError, ConflictError, ContentNotFoundError, ErrorResponse, ForbiddenError (+5 more)
 
 ### Community 34 - "Community 34"
-Cohesion: 0.2
-Nodes (5): getInitialSettings(), loadStoredSettings(), useAccessibility(), buildUserLabel(), ResponsiveChatbot()
+Cohesion: 0.18
+Nodes (29): add_abstract(), add_acknowledgement(), add_certificate(), add_cover(), add_declaration(), add_logo(), add_page_border(), add_text() (+21 more)
 
 ### Community 35 - "Community 35"
-Cohesion: 0.35
-Nodes (9): buildHabitNudge(), calculateMoodStreak(), createId(), extractTopicFromMessage(), getActiveHabits(), getAdaptiveNudges(), getHabitModel(), getLastConversationFollowUp() (+1 more)
+Cohesion: 0.16
+Nodes (27): AssessmentScoreResult, BIG_FIVE_QUESTIONS, buildInterpretation(), MINI_IPIP_ITEMS, normalize(), ResponseMap, roundTo(), SCORE_HANDLERS (+19 more)
 
 ### Community 36 - "Community 36"
-Cohesion: 0.18
-Nodes (0): 
+Cohesion: 0.07
+Nodes (29): compilerOptions, allowSyntheticDefaultImports, declaration, declarationMap, emitDecoratorMetadata, esModuleInterop, experimentalDecorators, forceConsistentCasingInFileNames (+21 more)
 
 ### Community 37 - "Community 37"
-Cohesion: 0.18
-Nodes (0): 
+Cohesion: 0.16
+Nodes (3): LLMService, AIProvider, AIProviderType
 
 ### Community 38 - "Community 38"
-Cohesion: 0.18
-Nodes (0): 
+Cohesion: 0.07
+Nodes (29): scripts, build, db:generate, db:generate:auto, db:generate:auto:if-needed, db:push:auto, db:reset, db:studio (+21 more)
 
 ### Community 39 - "Community 39"
-Cohesion: 0.2
-Nodes (2): useRenameConversation(), useUpdateConversation()
+Cohesion: 0.10
+Nodes (21): prisma, seedAdminUser(), seedAssessments(), seedCrisisResources(), seedFAQs(), seedRequiredData(), seedTherapists(), buildContents() (+13 more)
 
 ### Community 40 - "Community 40"
-Cohesion: 0.2
-Nodes (2): saveProfile(), validateProfile()
+Cohesion: 0.11
+Nodes (25): calculateAssessmentScore(), createAssessment(), deleteAssessment(), duplicateAssessment(), getAssessment(), getCategories(), previewAssessment(), updateAssessment() (+17 more)
 
 ### Community 41 - "Community 41"
-Cohesion: 0.22
-Nodes (2): buildSelector(), escapeClassSelector()
+Cohesion: 0.11
+Nodes (5): BreathingGuide(), formatTime(), isProbablyUrl(), MediaPlayerDialog(), playbackRates
 
 ### Community 42 - "Community 42"
-Cohesion: 0.22
-Nodes (2): SidebarMenuButton(), useSidebar()
-
-### Community 43 - "Community 43"
-Cohesion: 0.22
-Nodes (3): cn(), formatDate(), formatRelativeTime()
+Cohesion: 0.04
+Nodes (54): AdminSectionHeader(), AdminSectionHeaderProps, Avatar(), AvatarFallback(), AvatarImage(), BreadcrumbEllipsis(), BreadcrumbItem(), BreadcrumbLink() (+46 more)
 
 ### Community 44 - "Community 44"
-Cohesion: 0.42
-Nodes (8): main(), seedAdminUser(), seedAssessments(), seedContent(), seedCrisisResources(), seedFAQs(), seedPractices(), seedTherapists()
+Cohesion: 0.08
+Nodes (25): 1. AI & Conversational Engine, 2. Clinical Assessments, 3. Daily Tracking & Reflection, 4. Content & Practices, 5. Admin & Therapist Portals, AI & Codebase Tooling, 📜 API Overview, Backend (+17 more)
 
 ### Community 45 - "Community 45"
-Cohesion: 0.22
-Nodes (0): 
+Cohesion: 0.04
+Nodes (34): AdminOverview(), AdminOverviewProps, ReadyCheckResponse, ReadyProviderStatus, AdminSectionCard(), AdminSectionCardProps, AdminStatCard(), AdminStatCardProps (+26 more)
 
 ### Community 46 - "Community 46"
-Cohesion: 0.28
-Nodes (4): handleNext(), handleSecurityQuestionComplete(), validateBirthday(), validateStep1()
+Cohesion: 0.38
+Nodes (6): dayEmoji(), dayLabel(), EveningCheckin(), energyEmoji(), energyLabel(), MorningCheckin()
 
 ### Community 47 - "Community 47"
-Cohesion: 0.22
-Nodes (0): 
+Cohesion: 0.07
+Nodes (16): COMMON_INSURANCES, CREDENTIALS, DAYS_OF_WEEK, SPECIALTIES, TherapistForm(), TherapistFormData, TherapistFormProps, US_STATES (+8 more)
 
 ### Community 48 - "Community 48"
-Cohesion: 0.32
-Nodes (3): extractTherapistToken(), readTherapistClaims(), requireTherapist()
+Cohesion: 0.08
+Nodes (18): buildSelector(), colors, compiledStyles, cssFiles, __dirname, escapeClassSelector(), __filename, keywordColors (+10 more)
 
 ### Community 49 - "Community 49"
-Cohesion: 0.25
-Nodes (0): 
+Cohesion: 0.05
+Nodes (50): ActivityLog(), AdminDashboardProps, mapContent(), mapPractice(), normalizePracticeLevel(), normalizeTags(), PRACTICE_LEVELS, Tab (+42 more)
 
 ### Community 50 - "Community 50"
-Cohesion: 0.25
-Nodes (0): 
+Cohesion: 0.08
+Nodes (21): API_BASE_URL, BackendResourceType, BookingStatus, CrisisResource, crisisResourcesApi, FAQ, faqApi, FAQCategory (+13 more)
 
 ### Community 51 - "Community 51"
-Cohesion: 0.25
-Nodes (0): 
+Cohesion: 0.11
+Nodes (19): isStrongPassword(), birthdayField, completeOnboarding(), getMoodHistory(), getUserProfile(), LEGACY_MOOD_BY_EMOTION, LEGACY_MOOD_BY_GROUP, logMood() (+11 more)
 
 ### Community 52 - "Community 52"
-Cohesion: 0.43
-Nodes (6): useDevice(), useDeviceType(), useIsDesktop(), useIsMobile(), useIsTablet(), useIsTouchDevice()
+Cohesion: 0.22
+Nodes (11): NvidiaChatCompletionResponse, NvidiaChoice, OpenAIProvider, ProviderAvailabilityState, ProviderState, serviceLogger, AIConfig, AIMessage (+3 more)
 
 ### Community 53 - "Community 53"
-Cohesion: 0.39
-Nodes (6): ensureNumber(), normalizeScore(), pickInterpretation(), resolveOptionScore(), roundTo(), scoreAdvancedAssessment()
+Cohesion: 0.08
+Nodes (23): background_color, categories, description, display, icons, name, orientation, text (+15 more)
 
 ### Community 54 - "Community 54"
-Cohesion: 0.33
-Nodes (1): ExportService
+Cohesion: 0.12
+Nodes (15): ChatbotProps, Message, MessagesList, MessagesListProps, SendMessageContentFn, SpeechRecognitionCtor, SpeechRecognitionLike, SpeechWindow (+7 more)
 
 ### Community 55 - "Community 55"
-Cohesion: 0.29
-Nodes (0): 
+Cohesion: 0.11
+Nodes (20): getActiveAssessmentSession(), getAssessmentReminder(), getAssessmentSessionById(), getAvailableAssessments(), getOverallAssessmentOptions(), listAssessments(), startAssessmentSession(), updateAssessmentSessionStatus() (+12 more)
 
 ### Community 56 - "Community 56"
-Cohesion: 0.33
-Nodes (2): handleSubmit(), validate()
+Cohesion: 0.09
+Nodes (21): compilerOptions, allowJs, allowSyntheticDefaultImports, esModuleInterop, forceConsistentCasingInFileNames, isolatedModules, jsx, lib (+13 more)
 
 ### Community 57 - "Community 57"
-Cohesion: 0.29
-Nodes (0): 
+Cohesion: 0.05
+Nodes (33): average(), calculateCurrentMoodStreak(), calculateMoodDistribution(), calculateProfileCompletion(), enhancedInsightsService, generateInsightsFromAssessments(), getCheckinSummaryData(), getDashboardSummaryData() (+25 more)
 
 ### Community 58 - "Community 58"
-Cohesion: 0.29
-Nodes (0): 
+Cohesion: 0.16
+Nodes (23): AdminDashboard(), getApiBaseUrl(), useAdminAuth(), AdminAnalyticsData, AdminDashboardSummary, adminQueryKeys, AdminTimeframe, requestAdminArray() (+15 more)
 
 ### Community 59 - "Community 59"
-Cohesion: 0.29
-Nodes (0): 
+Cohesion: 0.20
+Nodes (13): BREAKPOINTS, DeviceInfo, useDevice(), useDeviceType(), useIsDesktop(), useIsMobile(), useIsTablet(), useIsTouchDevice() (+5 more)
 
 ### Community 60 - "Community 60"
-Cohesion: 0.29
-Nodes (0): 
+Cohesion: 0.10
+Nodes (21): devDependencies, eslint, eslint-config-prettier, eslint-plugin-import, eslint-plugin-jsx-a11y, eslint-plugin-react, eslint-plugin-react-hooks, jsdom (+13 more)
 
 ### Community 61 - "Community 61"
-Cohesion: 0.33
-Nodes (4): Toaster(), applyTheme(), getSystemTheme(), useTheme()
+Cohesion: 0.10
+Nodes (20): devDependencies, cross-env, nodemon, prettier, prisma, supertest, ts-node, @types/bcryptjs (+12 more)
 
 ### Community 62 - "Community 62"
-Cohesion: 0.33
-Nodes (2): mapSafetyPlanFromBackend(), parseJsonArray()
+Cohesion: 0.14
+Nodes (14): ConversationHistorySidebar(), ConversationHistorySidebarProps, ConversationItem(), ConversationItemProps, conversationKeys, useArchiveConversation(), useConversations(), useDeleteConversation() (+6 more)
 
 ### Community 63 - "Community 63"
-Cohesion: 0.29
-Nodes (0): 
+Cohesion: 0.07
+Nodes (23): prisma, APPROACH_DESCRIPTIONS, ApproachMode, AssessmentPromptAction, chatLogger, CoachingDirectives, ConversationMetadataState, EASTERN_PRACTICES (+15 more)
 
 ### Community 64 - "Community 64"
-Cohesion: 0.4
-Nodes (2): createMoodEntry(), normalizeLegacyMood()
+Cohesion: 0.11
+Nodes (11): Menubar(), MenubarCheckboxItem(), MenubarContent(), MenubarItem(), MenubarLabel(), MenubarRadioItem(), MenubarSeparator(), MenubarShortcut() (+3 more)
 
 ### Community 65 - "Community 65"
-Cohesion: 0.67
-Nodes (5): clampPercent(), computeBreathingAdoption(), computeJournalConsistency(), computeStressImprovement(), getCommunityInsights()
+Cohesion: 0.11
+Nodes (26): AnalyticsTimeframe, getAIPerformanceAnalytics(), getComprehensiveAnalytics(), getCrisisDetectionAnalytics(), getSystemHealthAnalytics(), getTimeframeHELPER(), getUserEngagementAnalytics(), getWellnessImpactAnalytics() (+18 more)
 
 ### Community 66 - "Community 66"
-Cohesion: 0.33
-Nodes (0): 
+Cohesion: 0.11
+Nodes (18): API Integration, Authentication, Available Scripts, Browser Support, Build and Deployment, Component Organization, Contributing, Development Guidelines (+10 more)
 
 ### Community 67 - "Community 67"
-Cohesion: 0.33
-Nodes (0): 
+Cohesion: 0.13
+Nodes (9): ConversationContext, ConversationMemoryService, ConversationStyle, ConversationTopic, EmotionalPattern, ImportantMoment, memoryLogger, PendingMemoryUpdate (+1 more)
 
 ### Community 68 - "Community 68"
-Cohesion: 0.33
-Nodes (0): 
+Cohesion: 0.13
+Nodes (5): AssessmentSessionExpiredError, BadRequestError, FileSizeLimitError, FileUploadError, UnsupportedFileTypeError
 
 ### Community 69 - "Community 69"
-Cohesion: 0.33
-Nodes (0): 
-
-### Community 70 - "Community 70"
-Cohesion: 0.33
-Nodes (0): 
+Cohesion: 0.15
+Nodes (14): ALL_WIDGET_IDS, DashboardMode, DashboardModeResult, DashboardModeService, isCompletedToday(), ModeWidgetConfig, NEGATIVE_MOODS, normalizeApproach() (+6 more)
 
 ### Community 71 - "Community 71"
-Cohesion: 0.33
-Nodes (0): 
+Cohesion: 0.22
+Nodes (17): ANANYA_MOODS, ananyaAssessments(), ananyaConversations(), databaseUrl, daysBack(), ensureTherapist(), json(), main() (+9 more)
 
 ### Community 72 - "Community 72"
-Cohesion: 0.4
-Nodes (0): 
+Cohesion: 0.14
+Nodes (14): getEmailVerificationSecret(), getJwtSecret(), getSessionSecret(), DecodedToken, jwtAutoRefresh(), extractTherapistToken(), JWT_SECRET, prismaAny (+6 more)
 
 ### Community 73 - "Community 73"
-Cohesion: 0.6
-Nodes (3): constantTimeCompare(), csrfProtection(), generateCsrfToken()
+Cohesion: 0.11
+Nodes (8): ApproachMode, KEYWORD_FOCUS_MAP, prisma, RecommendationItem, RecommendationOptions, RecommendationResult, RecommendationSource, SentimentSnapshot
 
 ### Community 74 - "Community 74"
-Cohesion: 0.5
-Nodes (2): sanitizeObject(), sanitizeString()
+Cohesion: 0.10
+Nodes (16): ConversationMemory, ConversationMemoryResponse, ConversationTopic, ConversationTopicsWidget(), ConversationTopicsWidgetProps, TOPIC_COLORS, TOPIC_LABELS, ConversationMemory (+8 more)
 
 ### Community 75 - "Community 75"
-Cohesion: 0.4
-Nodes (0): 
+Cohesion: 0.15
+Nodes (11): BASIC_OVERALL_ASSESSMENT_SET, BASIC_OVERALL_NORMALIZED_SET, BasicOverallSnapshot, buildRecommendations(), FOCUS_ALIAS_MAP, formatRelativeTime(), friendlyLabel(), getFocusMatchSet() (+3 more)
 
 ### Community 76 - "Community 76"
-Cohesion: 0.4
-Nodes (0): 
+Cohesion: 0.12
+Nodes (16): API Endpoints, Authentication, Backend Setup Guide, Core Endpoints, Database Schema, Database Setup, Environment Variables, Health Check (+8 more)
 
 ### Community 77 - "Community 77"
-Cohesion: 0.4
-Nodes (0): 
+Cohesion: 0.43
+Nodes (5): clearProviderEnv(), createService(), enableGemini(), enableHuggingFace(), ORIGINAL_ENV
 
 ### Community 78 - "Community 78"
-Cohesion: 0.5
-Nodes (2): cacheFirstStrategy(), isCacheableRequest()
+Cohesion: 0.23
+Nodes (11): CommandAction, CommandPaletteProps, Command(), CommandDialog(), CommandEmpty(), CommandGroup(), CommandInput(), CommandItem() (+3 more)
 
 ### Community 79 - "Community 79"
-Cohesion: 0.7
-Nodes (4): mapContent(), mapPractice(), normalizePracticeLevel(), normalizeTags()
+Cohesion: 0.21
+Nodes (7): ERROR_MESSAGES, AccessibilityProvider(), i18n, languages, resources, getFriendlyErrorMessage(), initializeGlobalErrorHandlers()
 
 ### Community 80 - "Community 80"
-Cohesion: 0.4
-Nodes (0): 
+Cohesion: 0.22
+Nodes (14): bookingSchema, bookingSharingContextSchema, buildSharingContextMessage(), cancelBooking(), composeBookingMessage(), convertTo24h(), getTherapistById(), getTherapists() (+6 more)
 
 ### Community 81 - "Community 81"
-Cohesion: 0.4
-Nodes (0): 
+Cohesion: 0.12
+Nodes (16): 6.3.10 WEBCAM INTEGRATION, 6.3.1 JAVASCRIPT, 6.3.2 TYPESCRIPT, 6.3.3 REACT JS (FRONTEND LIBRARY), 6.3.4 VITE (BUILD TOOL), 6.3.5 FIREBASE (CLOUD PLATFORM), 6.3.6 GOOGLE GEMINI AI, 6.3.7 TAILWIND CSS (STYLING FRAMEWORK) (+8 more)
 
 ### Community 82 - "Community 82"
-Cohesion: 0.4
-Nodes (0): 
+Cohesion: 0.06
+Nodes (22): EnhancedContentForm(), MyBookings(), MessageActions(), MessageActionsProps, ContentCardProps, ContentRecommendation, ContentRecommendations(), RecommendationsResponse (+14 more)
 
 ### Community 83 - "Community 83"
-Cohesion: 0.4
-Nodes (0): 
+Cohesion: 0.08
+Nodes (29): ForgotPasswordDialog(), HeroSection(), HeroSectionProps, CookiePreferences, DEFAULT_COOKIE_PREFERENCES, InfoDialogContent, LandingPageProps, CookiePreferences (+21 more)
 
 ### Community 84 - "Community 84"
-Cohesion: 0.4
-Nodes (0): 
+Cohesion: 0.21
+Nodes (8): ContentEngagementTracker(), ContentEngagementTrackerProps, EngagementData, formatTime(), moodOptions, ContentLibrary(), EngagementMetrics(), formatTime()
 
 ### Community 85 - "Community 85"
-Cohesion: 0.5
-Nodes (2): CarouselNext(), useCarousel()
-
-### Community 86 - "Community 86"
-Cohesion: 0.4
-Nodes (0): 
+Cohesion: 0.17
+Nodes (13): Carousel(), CarouselApi, CarouselContent(), CarouselContext, CarouselContextProps, CarouselItem(), CarouselNext(), CarouselOptions (+5 more)
 
 ### Community 87 - "Community 87"
-Cohesion: 0.4
-Nodes (0): 
+Cohesion: 0.15
+Nodes (11): exportActivityLogs(), getActivityFilters(), getActivityLogs(), getActivityStats(), parseBoundedInt(), router, router, ADMIN_EMAILS (+3 more)
 
 ### Community 88 - "Community 88"
-Cohesion: 0.4
-Nodes (0): 
+Cohesion: 0.20
+Nodes (13): getIntentionHistory(), getIntentionPresets(), getTodayIntention(), getTodayRange(), historyQuerySchema, paramsSchema, PRESET_INTENTIONS, reflectOnIntention() (+5 more)
 
 ### Community 89 - "Community 89"
-Cohesion: 0.4
-Nodes (0): 
+Cohesion: 0.14
+Nodes (13): AccessibilityContext, AccessibilityContextValue, AccessibilityProviderProps, AccessibilitySettings, BooleanAccessibilitySettingKey, CLASS_MAP, ColorPaletteOption, defaultSettings (+5 more)
 
 ### Community 90 - "Community 90"
-Cohesion: 0.5
-Nodes (2): handleKeyDown(), sendMessage()
+Cohesion: 0.13
+Nodes (14): 11.1 Conclusion, 11.2 Limitations, 11.3 Future Scope, 9.1 Implemented User Experience, 9.3 Discussion, APPENDIX A, APPENDIX B, APPENDIX C (+6 more)
 
 ### Community 91 - "Community 91"
-Cohesion: 0.67
-Nodes (2): convertTo24h(), normalizeAvailability()
+Cohesion: 0.13
+Nodes (14): 11.1 Conclusion, 11.2 Limitations, 11.3 Future Scope, 9.1 Implemented User Experience, 9.3 Discussion, APPENDIX A, APPENDIX B, APPENDIX C (+6 more)
 
 ### Community 92 - "Community 92"
-Cohesion: 0.83
-Nodes (3): buildVerificationHtml(), escapeHtml(), sendEmailVerificationEmail()
+Cohesion: 0.13
+Nodes (14): 11.1 Conclusion, 11.2 Limitations, 11.3 Future Scope, 9.1 Implemented User Experience, 9.3 Discussion, APPENDIX A, APPENDIX B, APPENDIX C (+6 more)
 
 ### Community 93 - "Community 93"
-Cohesion: 0.5
-Nodes (0): 
+Cohesion: 0.13
+Nodes (14): 11.1 Conclusion, 11.2 Limitations, 11.3 Future Scope, 9.1 Implemented User Experience, 9.3 Discussion, APPENDIX A, APPENDIX B, APPENDIX C (+6 more)
 
 ### Community 94 - "Community 94"
-Cohesion: 0.5
-Nodes (0): 
+Cohesion: 0.04
+Nodes (79): AssessmentFlowProps, OverallAssessmentInviteProps, OPTIONS, OverallAssessmentOption, OverallAssessmentSelectionProps, ScoreRevealProps, AdminLoginPageProps, ForgotPasswordDialogProps (+71 more)
 
 ### Community 95 - "Community 95"
-Cohesion: 0.5
-Nodes (0): 
+Cohesion: 0.13
+Nodes (15): scripts, audit, build, check, dev, format, lint, lint:fix (+7 more)
 
 ### Community 96 - "Community 96"
-Cohesion: 0.5
-Nodes (0): 
+Cohesion: 0.13
+Nodes (11): AnimatedProgressRingProps, AnimatedRevealProps, FloatingActionButton, FloatingActionButtonProps, MotionButton, MotionButtonInner, MotionButtonProps, MotionCard (+3 more)
 
 ### Community 97 - "Community 97"
-Cohesion: 0.67
-Nodes (2): checkScroll(), handleWindowResize()
+Cohesion: 0.17
+Nodes (13): ContentLibraryProps, ContentSortKey, extractYouTubeId(), isProbablyUrl(), mapRecommendationToLibraryItem(), normalizeApproach(), parseDuration(), parseStringArray() (+5 more)
 
 ### Community 98 - "Community 98"
-Cohesion: 0.5
-Nodes (0): 
+Cohesion: 0.15
+Nodes (10): BounceInTransition(), FadeInTransition(), PageTransition(), PageTransitionProps, RevealTransition(), RouteTransition(), RouteTransitionProps, ScaleInTransition() (+2 more)
 
 ### Community 99 - "Community 99"
-Cohesion: 0.5
-Nodes (0): 
+Cohesion: 0.07
+Nodes (36): AnxietyBubblePopGame(), anxiousThoughts, Bubble, BreathingRhythmGame(), BreathPattern, BreathPhase, patterns, GameCardProps (+28 more)
 
 ### Community 100 - "Community 100"
-Cohesion: 0.5
-Nodes (0): 
+Cohesion: 0.15
+Nodes (5): DashboardProps, JournalPageProps, StoredUser, AuthState, {
+  getCurrentUserMock,
+  loginUserMock,
+  registerUserMock,
+  completeOnboardingMock,
+  setupUserPasswordMock,
+  adminAuthState,
+}
 
 ### Community 101 - "Community 101"
-Cohesion: 0.5
-Nodes (0): 
+Cohesion: 0.14
+Nodes (13): browserslist, description, engines, node, keywords, license, name, private (+5 more)
 
 ### Community 102 - "Community 102"
-Cohesion: 0.5
-Nodes (0): 
+Cohesion: 0.17
+Nodes (4): InvalidCredentialsError, InvalidTokenError, TokenExpiredError, UnauthorizedError
 
 ### Community 103 - "Community 103"
-Cohesion: 0.5
-Nodes (0): 
+Cohesion: 0.29
+Nodes (6): ImageWithFallback(), ContentCard(), ContentCardProps, getTypeIcon(), FeaturedBanner(), FeaturedBannerProps
 
 ### Community 104 - "Community 104"
-Cohesion: 0.5
-Nodes (1): PageTransition()
+Cohesion: 0.28
+Nodes (8): createTestUser(), envPath, prisma, runTests(), testChatbotResponse(), testLogger, TestResult, TestUser
 
 ### Community 105 - "Community 105"
-Cohesion: 0.5
-Nodes (0): 
+Cohesion: 0.38
+Nodes (10): createOrUpdateSafetyPlan(), deleteSafetyPlan(), getCrisisResources(), getRecentCrisisEvents(), getSafetyPlan(), getUserId(), parseArrayInput(), submitCrisisFollowUp() (+2 more)
 
 ### Community 106 - "Community 106"
-Cohesion: 0.5
-Nodes (1): Skeleton()
-
-### Community 107 - "Community 107"
-Cohesion: 0.5
-Nodes (0): 
+Cohesion: 0.35
+Nodes (11): logActivity(), bulkDeleteAssessments(), bulkDeleteContent(), bulkDeletePractices(), bulkUpdateAssessmentStatus(), bulkUpdateAssessmentTags(), bulkUpdateContentStatus(), bulkUpdateContentType() (+3 more)
 
 ### Community 108 - "Community 108"
-Cohesion: 0.5
-Nodes (0): 
+Cohesion: 0.36
+Nodes (5): DateRangePicker(), DateRangePickerProps, Popover(), PopoverContent(), PopoverTrigger()
 
 ### Community 109 - "Community 109"
-Cohesion: 0.5
-Nodes (0): 
+Cohesion: 0.27
+Nodes (11): deleteUser(), getUserActivity(), getUserDetails(), getUsers(), getUserStats(), parseBoundedInt(), resetUserPassword(), updateUserStatus() (+3 more)
 
 ### Community 110 - "Community 110"
-Cohesion: 0.5
-Nodes (0): 
+Cohesion: 0.21
+Nodes (10): AssessmentResponseDetail, computeAssessmentScores(), ComputedAssessmentScores, loadAssessmentTemplate(), normalizeAssessmentType(), NORMALIZED_TYPE_MAP, normalizeScore(), resolveInterpretation() (+2 more)
 
 ### Community 111 - "Community 111"
-Cohesion: 0.5
-Nodes (0): 
+Cohesion: 0.15
+Nodes (13): ANALYSIS MODELS (SDLC MODEL TO BEAPPLIED), ASSUMPTIONS, ASSUMPTIONS AND DEPENDENCIES, Chapter 3 SOFTWARE REQUIREMENTS SPECIFICATIONS, DEPENDENCIES, FUNCTIONAL REQUIREMENTS, HARDWARE REQUIREMENTS, INTRODUCTION (+5 more)
 
 ### Community 112 - "Community 112"
-Cohesion: 0.67
-Nodes (2): normalizePath(), pathToPage()
+Cohesion: 0.21
+Nodes (10): FormControl(), FormDescription(), FormFieldContext, FormFieldContextValue, FormItem(), FormItemContext, FormItemContextValue, FormLabel() (+2 more)
 
 ### Community 113 - "Community 113"
-Cohesion: 0.5
-Nodes (0): 
+Cohesion: 0.22
+Nodes (12): assessmentSources, contents, databaseUrl, enrichAssessmentMetadata(), json(), main(), practices, prisma (+4 more)
 
 ### Community 114 - "Community 114"
-Cohesion: 1.0
-Nodes (2): deleteUser(), manualCascadeDelete()
+Cohesion: 0.22
+Nodes (11): AssessmentTemplateScoring, ensureNumber(), normalizeScore(), pickInterpretation(), resolveOptionScore(), roundTo(), scoreAdvancedAssessment(), ScoreAdvancedInput (+3 more)
 
 ### Community 115 - "Community 115"
-Cohesion: 0.67
-Nodes (0): 
+Cohesion: 0.16
+Nodes (10): createPracticeContentRoutes(), RoutesOptions, prisma, router, prisma, router, app, contentValidationSchema (+2 more)
 
 ### Community 116 - "Community 116"
-Cohesion: 0.67
-Nodes (0): 
+Cohesion: 0.17
+Nodes (9): ButtonLoadingProps, InlineLoading(), InlineLoadingProps, LoadingContainer(), LoadingContainerProps, LoadingOverlayProps, LoadingSpinner(), LoadingSpinnerProps (+1 more)
 
 ### Community 117 - "Community 117"
-Cohesion: 0.67
-Nodes (0): 
+Cohesion: 0.05
+Nodes (51): AssessmentItem, AssessmentPreviewModal(), AssessmentPreviewModalProps, CrisisResource, crisisResourceAdminApi, CrisisResourceFormData, CrisisResourceManagementProps, RESOURCE_TYPES (+43 more)
 
 ### Community 118 - "Community 118"
-Cohesion: 0.67
-Nodes (0): 
+Cohesion: 0.09
+Nodes (10): formatDate(), formatTimeAgo(), formatDate(), ConversationService, ConversationSummary, ConversationWithMessages, prisma, toLocaleDateString() (+2 more)
 
 ### Community 119 - "Community 119"
-Cohesion: 0.67
-Nodes (0): 
+Cohesion: 0.18
+Nodes (6): DrawerContent(), DrawerDescription(), DrawerFooter(), DrawerHeader(), DrawerOverlay(), DrawerTitle()
 
 ### Community 120 - "Community 120"
-Cohesion: 0.67
-Nodes (0): 
-
-### Community 121 - "Community 121"
-Cohesion: 0.67
-Nodes (0): 
+Cohesion: 0.06
+Nodes (34): average(), createCheckin(), createCheckinSchema, getCheckinSummary(), getCheckinSummarySchema, startOfToday(), completeModule(), generatePersonalizedModules() (+26 more)
 
 ### Community 122 - "Community 122"
-Cohesion: 0.67
-Nodes (0): 
+Cohesion: 0.20
+Nodes (5): AssessmentLoadingCard(), EmptyCardProps, LoadingCardProps, SkeletonCard(), SkeletonCardProps
 
 ### Community 123 - "Community 123"
-Cohesion: 0.67
-Nodes (0): 
+Cohesion: 0.08
+Nodes (22): Practice, PracticeAutoStartPayload, PracticeSession, PracticeSortKey, PracticesProps, HorizontalScrollContainer(), HorizontalScrollContainerProps, ResponsiveCollapsibleSection() (+14 more)
 
 ### Community 124 - "Community 124"
-Cohesion: 0.67
-Nodes (0): 
+Cohesion: 0.17
+Nodes (11): 2.1 Review of Existing Work, 2.2 Gap Analysis, 2.3 Proposed Resolution, APPENDIX A, APPENDIX B, APPENDIX C, ENVIRONMENT CONFIGURATION REFERENCE, IMPORTANT OPERATING COMMANDS (+3 more)
 
 ### Community 125 - "Community 125"
-Cohesion: 1.0
-Nodes (2): moveNext(), persistToJournal()
+Cohesion: 0.36
+Nodes (7): BreathingExercise, CBTThoughtRecord, Exercise, ExerciseCardMeta, ExerciseCardType, exercisesLogger, GroundingExercise
 
 ### Community 126 - "Community 126"
-Cohesion: 0.67
-Nodes (0): 
-
-### Community 127 - "Community 127"
-Cohesion: 0.67
-Nodes (0): 
+Cohesion: 0.36
+Nodes (11): add_sponsorship_page(), apply_original_layout(), clear_container(), delete_table(), format_centered(), insert_paragraph_after(), main(), restyle_chapter_openings() (+3 more)
 
 ### Community 128 - "Community 128"
-Cohesion: 0.67
-Nodes (0): 
+Cohesion: 0.04
+Nodes (64): getTokenForPath(), DashboardCollapsibleSection(), DashboardCollapsibleSectionProps, copyByChoice, CrisisFollowUp(), CrisisFollowUpProps, FollowUpChoice, DailyIntentionCard() (+56 more)
 
 ### Community 129 - "Community 129"
-Cohesion: 0.67
-Nodes (0): 
+Cohesion: 0.12
+Nodes (14): AppState, Modal, Theme, useAppStore, normalizePath(), Page, PAGE_ROUTES, PATH_TO_PAGE (+6 more)
 
 ### Community 130 - "Community 130"
-Cohesion: 0.67
-Nodes (0): 
+Cohesion: 0.32
+Nodes (7): LandingPage(), LandingPage(), Chatbot(), buildUserLabel(), ResponsiveChatbot(), useAccessibility(), useAnalytics()
 
 ### Community 131 - "Community 131"
-Cohesion: 0.67
-Nodes (1): Badge()
+Cohesion: 0.17
+Nodes (11): Completion Criteria, Decision Points, Example Prompts, Inputs to Confirm, Operational Defaults, Quick Checklist Mode, Suggested Follow-on Customizations, UI/UX Pro Max (+3 more)
 
 ### Community 132 - "Community 132"
-Cohesion: 0.67
-Nodes (0): 
+Cohesion: 0.18
+Nodes (10): Chapter 1 INTRODUCTION, Chapter 2 LITERATURE SURVEY, Chapter 7 TESTING, Chapter 8 CONCLUSION, Chapter 9 REFERENCES, INTRODUCTION, LITERATURE SURVEY, OBJECTIVES OF PROJECT REPORT (+2 more)
 
 ### Community 133 - "Community 133"
-Cohesion: 0.67
-Nodes (0): 
+Cohesion: 0.33
+Nodes (6): getAssessmentHistory(), submitAssessment(), buildAssessmentInsights(), calculateWellnessScore(), computeHistoryAndSummaries(), deriveOverallTrend()
 
 ### Community 134 - "Community 134"
-Cohesion: 0.67
-Nodes (0): 
+Cohesion: 0.16
+Nodes (10): ContextualTooltip(), ContextualTooltipProps, InlineHelp(), QuickTip(), WalkthroughStep, WalkthroughTooltipProps, Tooltip(), TooltipContent() (+2 more)
 
 ### Community 135 - "Community 135"
-Cohesion: 0.67
-Nodes (0): 
-
-### Community 136 - "Community 136"
-Cohesion: 0.67
-Nodes (1): cn()
+Cohesion: 0.18
+Nodes (10): author, dependencies, docx, description, keywords, license, name, private (+2 more)
 
 ### Community 137 - "Community 137"
-Cohesion: 0.67
-Nodes (0): 
-
-### Community 138 - "Community 138"
-Cohesion: 0.67
-Nodes (0): 
+Cohesion: 0.18
+Nodes (9): Admin guide, Contact & Contribution, Introduction, ManaSarathi — User Manual, Quick access, Safety, Privacy & Data Export, Therapist guide, Troubleshooting & FAQ (+1 more)
 
 ### Community 139 - "Community 139"
-Cohesion: 0.67
-Nodes (0): 
+Cohesion: 0.22
+Nodes (8): ChartConfig, ChartContainer(), ChartContext, ChartContextProps, ChartLegendContent(), ChartTooltipContent(), THEMES, useChart()
 
 ### Community 140 - "Community 140"
-Cohesion: 0.67
-Nodes (0): 
+Cohesion: 0.20
+Nodes (9): build, buildCommand, builder, startCommand, deploy, restartPolicyMaxRetries, restartPolicyType, startCommand (+1 more)
 
 ### Community 141 - "Community 141"
-Cohesion: 0.67
-Nodes (0): 
+Cohesion: 0.36
+Nodes (6): backendRoot, main(), mapContentTypeToEnum(), mapIntensityToEnum(), mapPracticeCategoryToEnum(), prisma
 
 ### Community 142 - "Community 142"
-Cohesion: 0.67
-Nodes (0): 
+Cohesion: 0.25
+Nodes (6): DeleteChatMessageParams, deleteChatMessageSchema, GetChatHistoryQuery, getChatHistorySchema, SendMessageInput, sendMessageSchema
 
 ### Community 143 - "Community 143"
-Cohesion: 0.67
-Nodes (0): 
+Cohesion: 0.20
+Nodes (10): ACTIVITY DIAGRAM, Chapter 4 SYSTEM DESIGN, CLASS DIAGRAM, DATA FLOW DIAGRAM (DFD), DFD LEVEL 0, DFD LEVEL 1, DFD LEVEL 2, SEQUENCE DIAGRAM (+2 more)
 
 ### Community 144 - "Community 144"
-Cohesion: 0.67
-Nodes (0): 
+Cohesion: 0.22
+Nodes (10): assignPlanModulesToUser(), json(), main(), seedAssessmentInsightForUser(), seedAssessmentLibrary(), seedAssessmentsForUser(), seedMoodEntriesForUser(), seedPlanModules() (+2 more)
 
 ### Community 145 - "Community 145"
-Cohesion: 0.67
-Nodes (0): 
+Cohesion: 0.44
+Nodes (9): all_paragraphs(), clear_paragraph(), insert_paragraph_after(), main(), replace_everywhere(), set_font(), set_text(), style_caption() (+1 more)
 
 ### Community 146 - "Community 146"
-Cohesion: 0.67
-Nodes (0): 
+Cohesion: 0.22
+Nodes (8): BreathingAnimation(), BreathingAnimationProps, BreathingPhase, defaultPattern, phaseDurationSeconds(), phaseLabels, CBTThoughtRecord(), GroundingChecklist()
 
 ### Community 147 - "Community 147"
-Cohesion: 0.67
-Nodes (0): 
+Cohesion: 0.27
+Nodes (9): AssessmentShareSelection, AssessmentShareSource, clearAssessmentShareContext(), DEFAULT_SHARE_SELECTION, getDefaultShareSelection(), isFiniteNumber(), readAssessmentShareContext(), sanitizeContext() (+1 more)
 
 ### Community 148 - "Community 148"
-Cohesion: 0.67
-Nodes (0): 
+Cohesion: 0.24
+Nodes (7): calculateBackoffDelay(), DEFAULT_RETRY_OPTIONS, fetchWithRetry(), RequestDeduplicator, RetryableError, RetryOptions, sleep()
 
 ### Community 149 - "Community 149"
-Cohesion: 0.67
-Nodes (0): 
+Cohesion: 0.22
+Nodes (10): buildAssessmentTemplatesCacheKey(), buildDefinitionCandidates(), fetchAssessmentDefinitionForVerification(), findDefinitionByCandidates(), formatCustomAssessmentTemplate(), getAssessmentTemplates(), preloadAssessmentDefinitionsForVerification(), resolveAssessmentTypeKey() (+2 more)
 
 ### Community 150 - "Community 150"
-Cohesion: 0.67
-Nodes (0): 
+Cohesion: 0.13
+Nodes (10): CurrentWeekCard(), CurrentWeekCardProps, JourneyTimeline(), JourneyTimelineProps, TimelineStep, PersonalizedPlan(), PersonalizedPlanProps, PlanModule (+2 more)
 
 ### Community 151 - "Community 151"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.22
+Nodes (9): 6.1 Technology Stack, 6.2 Frontend Implementation, 6.3 Backend API Implementation, 6.4 Authentication and Authorization, 6.5 Database Implementation, 6.6 Multi-Provider AI Service, 6.7 Assessment and Insight Processing, 6.8 Personalization and Recommendations (+1 more)
 
 ### Community 152 - "Community 152"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.22
+Nodes (9): 6.1 Technology Stack, 6.2 Frontend Implementation, 6.3 Backend API Implementation, 6.4 Authentication and Authorization, 6.5 Database Implementation, 6.6 Multi-Provider AI Service, 6.7 Assessment and Insight Processing, 6.8 Personalization and Recommendations (+1 more)
 
 ### Community 153 - "Community 153"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.22
+Nodes (9): 6.1 Technology Stack, 6.2 Frontend Implementation, 6.3 Backend API Implementation, 6.4 Authentication and Authorization, 6.5 Database Implementation, 6.6 Multi-Provider AI Service, 6.7 Assessment and Insight Processing, 6.8 Personalization and Recommendations (+1 more)
 
 ### Community 154 - "Community 154"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.22
+Nodes (9): 6.1 Technology Stack, 6.2 Frontend Implementation, 6.3 Backend API Implementation, 6.4 Authentication and Authorization, 6.5 Database Implementation, 6.6 Multi-Provider AI Service, 6.7 Assessment and Insight Processing, 6.8 Personalization and Recommendations (+1 more)
 
 ### Community 155 - "Community 155"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.40
+Nodes (4): ContentRow(), ContentRowProps, checkScroll(), handleWindowResize()
 
 ### Community 156 - "Community 156"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.22
+Nodes (9): 6.1 Technology Stack, 6.2 Frontend Implementation, 6.3 Backend API Implementation, 6.4 Authentication and Authorization, 6.5 Database Implementation, 6.6 Multi-Provider AI Service, 6.7 Assessment and Insight Processing, 6.8 Personalization and Recommendations (+1 more)
 
 ### Community 157 - "Community 157"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 158 - "Community 158"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.22
+Nodes (8): Community Hubs (Navigation), Corpus Check, God Nodes (most connected - your core abstractions), Graph Report - C:\Engineering\Final Year Project\ManaSarathi  (2026-04-25), Knowledge Gaps, Suggested Questions, Summary, Surprising Connections (you probably didn't know these)
 
 ### Community 159 - "Community 159"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.20
+Nodes (10): 1. AI & Conversational Engine, 2. Clinical Assessments, 3. Daily Tracking & Reflection, 4. Content, Practices & Therapeutic Games, 5. Admin & Therapist Portals, 6. Help & Safety System, 7. Privacy & Data Control, 8. Subscription & Premium Plans (+2 more)
 
 ### Community 160 - "Community 160"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.31
+Nodes (10): computeFallbackVerifiedScore(), computeVerifiedScoreFromDefinition(), computeVerifiedScoreFromShortRule(), normalizeToPercent(), resolveInterpretationBand(), resolveQuestionOptionValue(), resolveShortFormVerificationRule(), resolveSubmittedResponseValue() (+2 more)
 
 ### Community 161 - "Community 161"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.19
+Nodes (5): conversationController, router, ConversationWithMessages, ExportOptions, ExportService
 
 ### Community 162 - "Community 162"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.25
+Nodes (7): author, description, keywords, license, main, name, version
 
 ### Community 163 - "Community 163"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.25
+Nodes (8): Chapter 5 PROJECT PLAN, EFFORT ESTIMATE TIMETABLE, ESTIMATION OF KLOC, OVERVIEW OF RISK MITIGATION, MONITORING, MANAGEMENT RISK MANAGEMENT ORGANIZATIONAL ROLE, PROJECT ESTIMATES, PROJECT SCHEDULE, RISK MANAGEMENT, TIME-LINE CHART
 
 ### Community 164 - "Community 164"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.25
+Nodes (8): 1.1 Background, 1.2 Problem Statement, 1.3 Aim, 1.4 Objectives, 1.5 Scope, 1.6 Project Contributions, 1.7 Report Organization, INTRODUCTION
 
 ### Community 165 - "Community 165"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.25
+Nodes (8): 4.1 Architecture Overview, 4.2 Component Architecture, 4.3 Data Flow Design, 4.4 Use-Case Design, 4.5 Database Design, 4.6 Sequence Design, 4.7 Activity and State Design, SYSTEM ANALYSIS AND DESIGN
 
 ### Community 166 - "Community 166"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.25
+Nodes (8): 1.1 Background, 1.2 Problem Statement, 1.3 Aim, 1.4 Objectives, 1.5 Scope, 1.6 Project Contributions, 1.7 Report Organization, INTRODUCTION
 
 ### Community 167 - "Community 167"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.25
+Nodes (8): 4.1 Architecture Overview, 4.2 Component Architecture, 4.3 Data Flow Design, 4.4 Use-Case Design, 4.5 Database Design, 4.6 Sequence Design, 4.7 Activity and State Design, SYSTEM ANALYSIS AND DESIGN
 
 ### Community 168 - "Community 168"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.25
+Nodes (8): 1.1 Background, 1.2 Problem Statement, 1.3 Aim, 1.4 Objectives, 1.5 Scope, 1.6 Project Contributions, 1.7 Report Organization, INTRODUCTION
 
 ### Community 169 - "Community 169"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.25
+Nodes (8): 4.1 Architecture Overview, 4.2 Component Architecture, 4.3 Data Flow Design, 4.4 Use-Case Design, 4.5 Database Design, 4.6 Sequence Design, 4.7 Activity and State Design, SYSTEM ANALYSIS AND DESIGN
 
 ### Community 170 - "Community 170"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.25
+Nodes (8): 1.1 Background, 1.2 Problem Statement, 1.3 Aim, 1.4 Objectives, 1.5 Scope, 1.6 Project Contributions, 1.7 Report Organization, INTRODUCTION
 
 ### Community 171 - "Community 171"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.25
+Nodes (8): 4.1 Architecture Overview, 4.2 Component Architecture, 4.3 Data Flow Design, 4.4 Use-Case Design, 4.5 Database Design, 4.6 Sequence Design, 4.7 Activity and State Design, SYSTEM ANALYSIS AND DESIGN
 
 ### Community 172 - "Community 172"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.13
+Nodes (13): ADAPTIVE_FOLLOW_UP_RULES, AdaptiveFollowUpRule, BASIC_TEMPLATE_SCORING, CombinedAssessmentFlow(), CombinedAssessmentFlowProps, CombinedAssessmentResponseDetail, CombinedQuestion, BASIC_ASSESSMENT_DEFINITIONS (+5 more)
 
 ### Community 173 - "Community 173"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.15
+Nodes (8): DashboardLoadingSkeleton(), EmptyStateProps, ErrorMessage(), ErrorMessageProps, NetworkStatus(), NetworkStatusProps, PullToRefreshIndicator(), PullToRefreshIndicatorProps
 
 ### Community 174 - "Community 174"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.25
+Nodes (8): 1.1 Background, 1.2 Problem Statement, 1.3 Aim, 1.4 Objectives, 1.5 Scope, 1.6 Project Contributions, 1.7 Report Organization, INTRODUCTION
 
 ### Community 175 - "Community 175"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.25
+Nodes (8): 4.1 Architecture Overview, 4.2 Component Architecture, 4.3 Data Flow Design, 4.4 Use-Case Design, 4.5 Database Design, 4.6 Sequence Design, 4.7 Activity and State Design, SYSTEM ANALYSIS AND DESIGN
 
 ### Community 176 - "Community 176"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.25
+Nodes (8): 1. Color System - "Soft Editorial Wellness", 2. Typography System, 3. Motion System, 4. Elevation System, 5. Gradient Library, Dark Mode, Design System Components, Light Mode
 
 ### Community 177 - "Community 177"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.39
+Nodes (5): cn(), EmptyState(), EmptyStateCompact(), EmptyStateIllustration(), EmptyStateProps
 
 ### Community 178 - "Community 178"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.39
+Nodes (7): ExerciseCardMeta, ExerciseCardType, exerciseCardTypes, isExerciseCardType(), parseAssessmentPromptMeta(), parseExerciseCardMeta(), parseRawMetadata()
 
 ### Community 179 - "Community 179"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.25
+Nodes (7): ISpeechRecognition, ISpeechRecognitionAlternative, ISpeechRecognitionErrorEvent, ISpeechRecognitionEvent, ISpeechRecognitionResult, ISpeechRecognitionResultList, Window
 
 ### Community 180 - "Community 180"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.25
+Nodes (4): formatDate(), handleBulkDelete(), handleBulkPublish(), handleBulkUnpublish()
 
 ### Community 181 - "Community 181"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.11
+Nodes (23): AdminShell(), AdminShellNavItem, AdminShellProps, AdminBreadcrumbs(), AdminBreadcrumbsProps, BreadcrumbItem, generateBreadcrumbs(), AdminEmptyState() (+15 more)
 
 ### Community 182 - "Community 182"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.25
+Nodes (7): buildCommand, framework, headers, installCommand, name, outputDirectory, rewrites
 
 ### Community 183 - "Community 183"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.29
+Nodes (7): 3.1 Stakeholders and User Roles, 3.2 Functional Requirements, 3.3 Non-Functional Requirements, 3.4 Hardware and Software Requirements, 3.5 Constraints and Assumptions, 3.6 Feasibility Study, SOFTWARE REQUIREMENTS SPECIFICATION
 
 ### Community 184 - "Community 184"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.29
+Nodes (7): 3.1 Stakeholders and User Roles, 3.2 Functional Requirements, 3.3 Non-Functional Requirements, 3.4 Hardware and Software Requirements, 3.5 Constraints and Assumptions, 3.6 Feasibility Study, SOFTWARE REQUIREMENTS SPECIFICATION
 
 ### Community 185 - "Community 185"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.29
+Nodes (7): 3.1 Stakeholders and User Roles, 3.2 Functional Requirements, 3.3 Non-Functional Requirements, 3.4 Hardware and Software Requirements, 3.5 Constraints and Assumptions, 3.6 Feasibility Study, SOFTWARE REQUIREMENTS SPECIFICATION
 
 ### Community 186 - "Community 186"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.29
+Nodes (7): 3.1 Stakeholders and User Roles, 3.2 Functional Requirements, 3.3 Non-Functional Requirements, 3.4 Hardware and Software Requirements, 3.5 Constraints and Assumptions, 3.6 Feasibility Study, SOFTWARE REQUIREMENTS SPECIFICATION
 
 ### Community 187 - "Community 187"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.40
+Nodes (4): Key Insights, Learning Record: Lesson 1 - High-Level Architecture, Metadata, Progress Status
 
 ### Community 188 - "Community 188"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.29
+Nodes (7): 3.1 Stakeholders and User Roles, 3.2 Functional Requirements, 3.3 Non-Functional Requirements, 3.4 Hardware and Software Requirements, 3.5 Constraints and Assumptions, 3.6 Feasibility Study, SOFTWARE REQUIREMENTS SPECIFICATION
 
 ### Community 189 - "Community 189"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.29
+Nodes (6): Browser Support, File Structure, Next Steps, Overview, Resources, UI UX Pro Max Design System Implementation Guide
 
 ### Community 190 - "Community 190"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.29
+Nodes (7): AnimatedProgressRing, AnimatedReveal, Enhanced UI Components, FloatingActionButton, MotionButton, MotionCard, WellnessMetric
 
 ### Community 191 - "Community 191"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.29
+Nodes (6): buildCommand, framework, headers, installCommand, outputDirectory, rewrites
 
 ### Community 192 - "Community 192"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.29
+Nodes (7): 🧠 Developer Tooling: Graphify, ⚙️ Environment Variables, 📄 License, ManaSarathi, 📁 Project Structure, 🧪 Testing, 🔧 Useful Scripts
 
 ### Community 193 - "Community 193"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.29
+Nodes (6): createConversationMock, createMessageMock, findManyConvMock, findManyMessagesMock, findUniqueConversationMock, updateConversationMock
 
 ### Community 194 - "Community 194"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.29
+Nodes (6): countMock, deleteMany, findManyMock, findUniqueMock, findUniqueUserMock, upsertMock
 
 ### Community 195 - "Community 195"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.29
+Nodes (6): moodCreateMock, moodDeleteMock, moodEntries, moodFindFirstMock, moodFindManyMock, prismaMock
 
 ### Community 196 - "Community 196"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 197 - "Community 197"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.29
+Nodes (5): ChatContext, ChatContextType, ChatProvider(), ChatProviderProps, Message
 
 ### Community 198 - "Community 198"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.40
+Nodes (5): convertTo24h(), createTherapistManagementRoutes(), normalizeAvailability(), RoutesOptions, therapistValidationSchema
 
 ### Community 199 - "Community 199"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.33
+Nodes (6): AI PROMPT GENERATION MODULE, CODING, GENERATIVE AI UTILITY MODULE, HEURISTIC ANALYTICS ENGINE MODULE, INTERVIEW ASSESSMENT MODULE, ROUTING INFRASTRUCTURE MODULE
 
 ### Community 200 - "Community 200"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 201 - "Community 201"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 202 - "Community 202"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 203 - "Community 203"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.08
+Nodes (24): ASSESSMENT_COLORS, AssessmentComparisonChart(), AssessmentComparisonChartProps, AssessmentScore, ConversationSummaryWidget(), DashboardCustomizer(), DashboardCustomizerProps, DashboardWidget (+16 more)
 
 ### Community 204 - "Community 204"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.40
+Nodes (3): cacheFirstStrategy(), isCacheableRequest(), STATIC_ASSETS
 
 ### Community 205 - "Community 205"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.33
+Nodes (6): Admin, 📜 API Overview, Authentication, Core Features, Engagement & Personalization, Help & Safety
 
 ### Community 206 - "Community 206"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.33
+Nodes (6): 🚀 Deployment, GitHub Actions, Mobile (EAS Build), Production Checklist, Render.com (Backend + PostgreSQL), Vercel (Frontend)
 
 ### Community 207 - "Community 207"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.60
+Nodes (5): clear_paragraph(), insert_paragraph_after(), set_font(), set_paragraph_text(), style_caption()
 
 ### Community 208 - "Community 208"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.40
+Nodes (4): Key Insights, Learning Record: Lesson 2 - Database Schema & Relationships, Metadata, Progress Status
 
 ### Community 209 - "Community 209"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.40
+Nodes (3): anxietyConfig, anxietyGad2Config, prisma
 
 ### Community 210 - "Community 210"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.40
+Nodes (3): envPath, maxTokens, temperature
 
 ### Community 211 - "Community 211"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.40
+Nodes (5): ACTIVE INTERVIEW EXECUTION, ASSESSMENT & RESULTS, INTERVIEW CONFIGURATION, PLATFORM ENTRY & AUTHENTICATION, RESULT SET
 
 ### Community 212 - "Community 212"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.40
+Nodes (5): NON-FUNCTIONAL REQUIREMENTS, PERFORMANCE REQUIREMENTS, SAFETY REQUIREMENTS, SECURITY REQUIREMENTS, SOFTWARE QUALITY ATTRIBUTES
 
 ### Community 213 - "Community 213"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.40
+Nodes (5): 10.1 Local Setup, 10.2 Production Architecture, 10.3 Health and Monitoring, 10.4 Backup and Recovery, DEPLOYMENT, OPERATION AND MAINTENANCE
 
 ### Community 214 - "Community 214"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.40
+Nodes (5): 5.1 Development Methodology, 5.2 Work Breakdown, 5.3 Schedule, 5.4 Risk Management, PROJECT PLANNING AND MANAGEMENT
 
 ### Community 215 - "Community 215"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.40
+Nodes (5): 7.1 Security Controls, 7.2 Privacy and Data Control, 7.3 Crisis Detection, 7.4 Ethical Boundaries, SECURITY, PRIVACY, SAFETY AND ETHICS
 
 ### Community 216 - "Community 216"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.40
+Nodes (5): 10.1 Local Setup, 10.2 Production Architecture, 10.3 Health and Monitoring, 10.4 Backup and Recovery, DEPLOYMENT, OPERATION AND MAINTENANCE
 
 ### Community 217 - "Community 217"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.40
+Nodes (5): 5.1 Development Methodology, 5.2 Work Breakdown, 5.3 Schedule, 5.4 Risk Management, PROJECT PLANNING AND MANAGEMENT
 
 ### Community 218 - "Community 218"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.40
+Nodes (5): 7.1 Security Controls, 7.2 Privacy and Data Control, 7.3 Crisis Detection, 7.4 Ethical Boundaries, SECURITY, PRIVACY, SAFETY AND ETHICS
 
 ### Community 219 - "Community 219"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.40
+Nodes (5): 10.1 Local Setup, 10.2 Production Architecture, 10.3 Health and Monitoring, 10.4 Backup and Recovery, DEPLOYMENT, OPERATION AND MAINTENANCE
 
 ### Community 220 - "Community 220"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.40
+Nodes (5): 5.1 Development Methodology, 5.2 Work Breakdown, 5.3 Schedule, 5.4 Risk Management, PROJECT PLANNING AND MANAGEMENT
 
 ### Community 221 - "Community 221"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.08
+Nodes (22): AssessmentCompletionPayload, AssessmentFlow(), OverallAssessmentInvite(), OVERALL_ASSESSMENT_OPTION_IDS, OverallAssessmentSelection(), AdminLoginPage(), OAuthCallback(), PasswordSetup() (+14 more)
 
 ### Community 222 - "Community 222"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.40
+Nodes (5): 7.1 Security Controls, 7.2 Privacy and Data Control, 7.3 Crisis Detection, 7.4 Ethical Boundaries, SECURITY, PRIVACY, SAFETY AND ETHICS
 
 ### Community 223 - "Community 223"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.40
+Nodes (5): 10.1 Local Setup, 10.2 Production Architecture, 10.3 Health and Monitoring, 10.4 Backup and Recovery, DEPLOYMENT, OPERATION AND MAINTENANCE
 
 ### Community 224 - "Community 224"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.40
+Nodes (5): 5.1 Development Methodology, 5.2 Work Breakdown, 5.3 Schedule, 5.4 Risk Management, PROJECT PLANNING AND MANAGEMENT
 
 ### Community 225 - "Community 225"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.40
+Nodes (5): 7.1 Security Controls, 7.2 Privacy and Data Control, 7.3 Crisis Detection, 7.4 Ethical Boundaries, SECURITY, PRIVACY, SAFETY AND ETHICS
 
 ### Community 226 - "Community 226"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.40
+Nodes (4): Key Insights, Learning Record: Lesson 3 - Resilient Multi-Provider AI Fallback System, Metadata, Progress Status
 
 ### Community 227 - "Community 227"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.40
+Nodes (4): Key Insights, Learning Record: Lesson 4 - Security & Hardening, Metadata, Progress Status
 
 ### Community 228 - "Community 228"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.40
+Nodes (4): Key Insights, Learning Record: Lesson 5 - Mock External Examiner Interview, Metadata, Progress Status
 
 ### Community 229 - "Community 229"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.40
+Nodes (4): Key Insights, Learning Record: Lesson 6 - JavaScript Core Fundamentals, Metadata, Progress Status
 
 ### Community 230 - "Community 230"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.40
+Nodes (5): 10.1 Local Setup, 10.2 Production Architecture, 10.3 Health and Monitoring, 10.4 Backup and Recovery, DEPLOYMENT, OPERATION AND MAINTENANCE
 
 ### Community 231 - "Community 231"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.40
+Nodes (5): 5.1 Development Methodology, 5.2 Work Breakdown, 5.3 Schedule, 5.4 Risk Management, PROJECT PLANNING AND MANAGEMENT
 
 ### Community 232 - "Community 232"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.40
+Nodes (5): 7.1 Security Controls, 7.2 Privacy and Data Control, 7.3 Crisis Detection, 7.4 Ethical Boundaries, SECURITY, PRIVACY, SAFETY AND ETHICS
 
 ### Community 233 - "Community 233"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.40
+Nodes (5): 1. Page Transitions (App.tsx), 2. Dashboard Cards, 3. Chat Messages, 4. Journal Entries, Application Integration
 
 ### Community 234 - "Community 234"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 235 - "Community 235"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.33
+Nodes (5): MediaPlayerDialogProps, LibraryDisplayType, LibraryItem, MediaKind, MediaSource
 
 ### Community 236 - "Community 236"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.40
+Nodes (5): AI Providers (Backend Services), Backend (`backend/`), Mobile App (`mobile/`), 🛠 Tech Stack, Web Frontend (`frontend/`)
 
 ### Community 237 - "Community 237"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.40
+Nodes (5): Local URLs, Mobile App, Prerequisites, ⚡ Quick Start, Web (Frontend + Backend)
 
 ### Community 238 - "Community 238"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.40
+Nodes (3): bcrypt, prisma, { PrismaClient }
 
 ### Community 239 - "Community 239"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 240 - "Community 240"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 241 - "Community 241"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.40
+Nodes (3): MINI_IPIP_DOMAINS, MINI_IPIP_QUESTIONS_MAP, prisma
 
 ### Community 242 - "Community 242"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.60
+Nodes (4): buildVerificationHtml(), EmailVerificationSendResult, escapeHtml(), sendEmailVerificationEmail()
 
 ### Community 243 - "Community 243"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.40
+Nodes (4): API_ENDPOINTS, APP, ENVIRONMENTS, FEATURES
 
 ### Community 244 - "Community 244"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 245 - "Community 245"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 246 - "Community 246"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 247 - "Community 247"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 248 - "Community 248"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 249 - "Community 249"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 250 - "Community 250"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.40
+Nodes (4): AssessmentDomain, AssessmentScoringConfig, InterpretationBand, ScoringAlgorithm
 
 ### Community 251 - "Community 251"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.40
+Nodes (4): Key Insights, Learning Record: Lesson 6 - JavaScript Core Fundamentals, Metadata, Progress Status
 
 ### Community 252 - "Community 252"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.50
+Nodes (4): 11.1 Conclusion, 11.2 Limitations, 11.3 Future Scope, CONCLUSION AND FUTURE SCOPE
 
 ### Community 253 - "Community 253"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.50
+Nodes (4): 8.1 Testing Strategy, 8.2 Representative Test Cases, 8.3 Validation Considerations, TESTING AND VALIDATION
 
 ### Community 254 - "Community 254"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.50
+Nodes (4): 9.1 Implemented User Experience, 9.2 Result Summary, 9.3 Discussion, RESULTS AND DISCUSSION
 
 ### Community 255 - "Community 255"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 256 - "Community 256"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.50
+Nodes (4): 2.1 Review of Existing Work, 2.2 Gap Analysis, 2.3 Proposed Resolution, LITERATURE SURVEY
 
 ### Community 257 - "Community 257"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.50
+Nodes (4): 8.1 Testing Strategy, 8.2 Representative Test Cases, 8.3 Validation Considerations, TESTING AND VALIDATION
 
 ### Community 258 - "Community 258"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.50
+Nodes (4): 2.1 Review of Existing Work, 2.2 Gap Analysis, 2.3 Proposed Resolution, LITERATURE SURVEY
 
 ### Community 259 - "Community 259"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.50
+Nodes (4): 8.1 Testing Strategy, 8.2 Representative Test Cases, 8.3 Validation Considerations, TESTING AND VALIDATION
 
 ### Community 260 - "Community 260"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.50
+Nodes (4): 2.1 Review of Existing Work, 2.2 Gap Analysis, 2.3 Proposed Resolution, LITERATURE SURVEY
 
 ### Community 261 - "Community 261"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.50
+Nodes (4): 8.1 Testing Strategy, 8.2 Representative Test Cases, 8.3 Validation Considerations, TESTING AND VALIDATION
 
 ### Community 262 - "Community 262"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.40
+Nodes (4): 🎯 Learning Mission: Backend Software Engineering from Scratch, Step-by-Step Learning Path, Target Audience & Background, Why We Are Here
 
 ### Community 263 - "Community 263"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.40
+Nodes (4): Learning Scratchpad & Notes, Phase 1: Examiner Prep (Completed), Phase 2: Foundation Step-by-Step (Current), Student Profile
 
 ### Community 264 - "Community 264"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.50
+Nodes (4): 2.1 Review of Existing Work, 2.2 Gap Analysis, 2.3 Proposed Resolution, LITERATURE SURVEY
 
 ### Community 265 - "Community 265"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.50
+Nodes (4): 8.1 Testing Strategy, 8.2 Representative Test Cases, 8.3 Validation Considerations, TESTING AND VALIDATION
 
 ### Community 266 - "Community 266"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.50
+Nodes (4): Accessibility, Color Contrast, Keyboard Navigation, Motion Preferences
 
 ### Community 267 - "Community 267"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.50
+Nodes (4): Adding New Colors, Adjusting Animation Speed, Customization, Extending Motion Components
 
 ### Community 268 - "Community 268"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.50
+Nodes (4): Animations Not Showing, Color Not Applying, Performance Issues, Troubleshooting
 
 ### Community 269 - "Community 269"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.50
+Nodes (4): Framer Motion Components, Generic Wrappers, Interactive Components, List Animations
 
 ### Community 270 - "Community 270"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.50
+Nodes (4): GPU Acceleration, Lazy Loading, Performance Optimization, Reduced Motion
 
 ### Community 271 - "Community 271"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.50
+Nodes (4): devDependencies, concurrently, rimraf, wait-on
 
 ### Community 272 - "Community 272"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 273 - "Community 273"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 274 - "Community 274"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.50
+Nodes (4): Backend (`backend/.env`), Frontend (`frontend/.env.local`), Mobile (`mobile/.env`), 📘 User Manual
 
 ### Community 275 - "Community 275"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 276 - "Community 276"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 277 - "Community 277"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 278 - "Community 278"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.67
+Nodes (3): deleteUser(), manualCascadeDelete(), prisma
 
 ### Community 279 - "Community 279"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 280 - "Community 280"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 281 - "Community 281"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 282 - "Community 282"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 283 - "Community 283"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 284 - "Community 284"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 285 - "Community 285"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.40
+Nodes (4): 1. JavaScript Fundamentals, 2. TypeScript Basics, 3. Node.js & HTTP basics, 📚 Learning Resources: Backend Foundation
 
 ### Community 286 - "Community 286"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 287 - "Community 287"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 288 - "Community 288"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.67
+Nodes (3): Color Mode Support, Dark Mode, Light Mode (default)
 
 ### Community 289 - "Community 289"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.67
+Nodes (3): engines, node, npm
 
 ### Community 290 - "Community 290"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 291 - "Community 291"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 292 - "Community 292"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 293 - "Community 293"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 294 - "Community 294"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 295 - "Community 295"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 296 - "Community 296"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 297 - "Community 297"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 298 - "Community 298"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 299 - "Community 299"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 300 - "Community 300"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 301 - "Community 301"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 302 - "Community 302"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 303 - "Community 303"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 304 - "Community 304"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 305 - "Community 305"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 306 - "Community 306"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 307 - "Community 307"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 308 - "Community 308"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 309 - "Community 309"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 310 - "Community 310"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 311 - "Community 311"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 312 - "Community 312"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 313 - "Community 313"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 314 - "Community 314"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 315 - "Community 315"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 316 - "Community 316"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 317 - "Community 317"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 318 - "Community 318"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 319 - "Community 319"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 320 - "Community 320"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 321 - "Community 321"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 322 - "Community 322"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 323 - "Community 323"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 324 - "Community 324"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 325 - "Community 325"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 326 - "Community 326"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 327 - "Community 327"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 328 - "Community 328"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 329 - "Community 329"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 330 - "Community 330"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 331 - "Community 331"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 332 - "Community 332"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 333 - "Community 333"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 334 - "Community 334"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 335 - "Community 335"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 336 - "Community 336"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 337 - "Community 337"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 338 - "Community 338"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 339 - "Community 339"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 340 - "Community 340"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 341 - "Community 341"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 342 - "Community 342"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 343 - "Community 343"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 344 - "Community 344"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 345 - "Community 345"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.67
+Nodes (3): repository, type, url
 
 ### Community 346 - "Community 346"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 347 - "Community 347"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 348 - "Community 348"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 349 - "Community 349"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 350 - "Community 350"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 351 - "Community 351"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 352 - "Community 352"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.25
+Nodes (7): clearAdminToken(), setAdminToken(), Admin, AdminAuthContext, AdminAuthContextType, AdminAuthProvider(), AdminAuthProviderProps
 
 ### Community 353 - "Community 353"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 354 - "Community 354"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 355 - "Community 355"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.22
+Nodes (3): CacheError, DatabaseError, InternalServerError
 
 ### Community 356 - "Community 356"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 357 - "Community 357"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.40
+Nodes (4): MoodOption, MOODS, MoodSelector(), MoodSelectorProps
 
 ### Community 358 - "Community 358"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 359 - "Community 359"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 360 - "Community 360"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 361 - "Community 361"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.05
+Nodes (59): ActivityLogEntry, ActivityStats, formatLabel(), getActionBadge(), adminFetch(), getAdminToken(), BulkActionToolbar(), ContentFormProps (+51 more)
 
 ### Community 362 - "Community 362"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.13
+Nodes (15): listAssessments(), escapeCsvCell(), UserLoginPage(), COMMON_DOMAIN_TYPOS, isValidTopLevelDomain(), toTimeValue(), isValidTopLevelDomain(), COMMON_DOMAIN_TYPOS (+7 more)
 
 ### Community 363 - "Community 363"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.50
+Nodes (3): CodeProps, MarkdownMessage(), MarkdownMessageProps
 
 ### Community 364 - "Community 364"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.32
+Nodes (6): databaseUrl, enforceEnvironmentValidation(), ENV_VARS_CONFIG, EnvVarConfig, validateEnvironment(), ValidationResult
 
 ### Community 365 - "Community 365"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 366 - "Community 366"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 367 - "Community 367"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 368 - "Community 368"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 369 - "Community 369"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 370 - "Community 370"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 371 - "Community 371"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 372 - "Community 372"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 373 - "Community 373"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 374 - "Community 374"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 375 - "Community 375"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 376 - "Community 376"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 377 - "Community 377"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 378 - "Community 378"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 379 - "Community 379"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 380 - "Community 380"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 381 - "Community 381"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 382 - "Community 382"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 383 - "Community 383"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 384 - "Community 384"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 385 - "Community 385"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 386 - "Community 386"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 387 - "Community 387"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 388 - "Community 388"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 389 - "Community 389"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 390 - "Community 390"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 391 - "Community 391"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 392 - "Community 392"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 393 - "Community 393"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 394 - "Community 394"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 395 - "Community 395"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 396 - "Community 396"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 397 - "Community 397"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 398 - "Community 398"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.36
+Nodes (5): ToggleGroup(), ToggleGroupContext, ToggleGroupItem(), Toggle(), toggleVariants
 
 ## Knowledge Gaps
-- **Thin community `Community 151`** (2 nodes): `seed-demo-data.ts`, `main()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 152`** (2 nodes): `update-published.ts`, `main()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 153`** (2 nodes): `seed-content.ts`, `main()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 154`** (2 nodes): `seed-help-safety.ts`, `seedHelpSafetyData()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 155`** (2 nodes): `check-bookings.ts`, `main()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 156`** (2 nodes): `cleanup-duplicate-therapists.ts`, `main()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 157`** (2 nodes): `create-demo-user.ts`, `createDemoUser()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 158`** (2 nodes): `create-therapist-login.ts`, `main()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 159`** (2 nodes): `enable-foreign-keys.ts`, `enableForeignKeys()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 160`** (2 nodes): `launch-studio.ts`, `setupAndLaunchStudio()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 161`** (2 nodes): `run-migration.js`, `runMigration()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 162`** (2 nodes): `seed-batch2.ts`, `main()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 163`** (2 nodes): `seed-master-content.ts`, `main()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 164`** (2 nodes): `database.ts`, `prismaClientSingleton()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 165`** (2 nodes): `noStoreApi.ts`, `noStoreApiResponses()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 166`** (2 nodes): `notFound.ts`, `notFound()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 167`** (2 nodes): `createAdminAuthRoutes()`, `authRoutes.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 168`** (2 nodes): `mediaRoutes.ts`, `createMediaRoutes()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 169`** (2 nodes): `practiceContentRoutes.ts`, `createPracticeContentRoutes()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 170`** (2 nodes): `requireAdmin.ts`, `requireAdmin()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 171`** (2 nodes): `create-demo-admin.js`, `createDemoAdmin()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 172`** (2 nodes): `resolveDatabaseUrl()`, `adminAuth.test.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 173`** (2 nodes): `requireAdmin()`, `adminContentPracticeSync.test.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 174`** (2 nodes): `createMockResponse()`, `authOnboardingHardening.test.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 175`** (2 nodes): `enhancedRecommendationPersonalization.test.ts`, `createContext()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 176`** (2 nodes): `formatDateTime()`, `AdminOverview.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 177`** (2 nodes): `AdminSectionCard()`, `AdminSectionCard.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 178`** (2 nodes): `handleKeyDown()`, `AdminShell.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 179`** (2 nodes): `handleDelete()`, `BulkActionToolbar.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 180`** (2 nodes): `PreviewModal.tsx`, `renderContentByType()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 181`** (2 nodes): `cn()`, `AdminEmptyState.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 182`** (2 nodes): `ImageWithFallback.tsx`, `ImageWithFallback()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 183`** (2 nodes): `LanguageSelector.tsx`, `changeLanguage()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 184`** (2 nodes): `EncouragingCopy.tsx`, `EncouragingCopy()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 185`** (2 nodes): `OverallAssessmentInvite.tsx`, `OverallAssessmentInvite()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 186`** (2 nodes): `ScoreReveal.tsx`, `animate()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 187`** (2 nodes): `handleSubmit()`, `AdminLoginPage.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 188`** (2 nodes): `HeroSection.tsx`, `HeroSection()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 189`** (2 nodes): `SecurityQuestionSetup.tsx`, `handleSubmit()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 190`** (2 nodes): `SocialProofCounters.tsx`, `AnimatedCounter()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 191`** (2 nodes): `ConversationItem.tsx`, `ConversationItem()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 192`** (2 nodes): `ProactiveCheckInNotification.tsx`, `ProactiveCheckInNotification()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 193`** (2 nodes): `QuickActionsBar.tsx`, `QuickActionsBar()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 194`** (2 nodes): `TypewriterText.tsx`, `TypewriterText()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 195`** (2 nodes): `ContentCard.tsx`, `getTypeIcon()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 196`** (2 nodes): `CrisisAlertBanner.tsx`, `CrisisAlertBanner()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 197`** (2 nodes): `ConversationSummaryWidget.tsx`, `handlePeriodChange()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 198`** (2 nodes): `DashboardCustomizer.tsx`, `resolveStorageKey()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 199`** (2 nodes): `GreetingHeader.tsx`, `GreetingHeader()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 200`** (2 nodes): `MoodCalendarHeatmap.tsx`, `getCellForDay()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 201`** (2 nodes): `MoodSelector.tsx`, `MoodSelector()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 202`** (2 nodes): `OneThingToday.tsx`, `OneThingToday()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 203`** (2 nodes): `GamesHub.tsx`, `GameCard()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 204`** (2 nodes): `MindfulPatternGame.tsx`, `generatePattern()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 205`** (2 nodes): `JournalInsight.tsx`, `JournalInsight()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 206`** (2 nodes): `JournalPage.tsx`, `computeStreak()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 207`** (2 nodes): `WritingPrompt.tsx`, `WritingPrompt()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 208`** (2 nodes): `SubscriptionPlans.tsx`, `handleUpgrade()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 209`** (2 nodes): `getNavItems()`, `bottom-navigation.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 210`** (2 nodes): `checkbox.tsx`, `Checkbox()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 211`** (2 nodes): `dialog.tsx`, `DialogClose()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 212`** (2 nodes): `label.tsx`, `Label()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 213`** (2 nodes): `loading-spinner.tsx`, `LoadingSpinner()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 214`** (2 nodes): `popover.tsx`, `PopoverTrigger()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 215`** (2 nodes): `progress-ring.tsx`, `ProgressRing()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 216`** (2 nodes): `progress.tsx`, `cn()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 217`** (2 nodes): `resizable.tsx`, `ResizablePanelGroup()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 218`** (2 nodes): `separator.tsx`, `Separator()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 219`** (2 nodes): `skeleton-loaders.tsx`, `DashboardSkeleton()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 220`** (2 nodes): `switch.tsx`, `Switch()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 221`** (2 nodes): `ToastContainer.tsx`, `getToastStyles()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 222`** (2 nodes): `use-mobile.ts`, `useIsMobile()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 223`** (2 nodes): `use-analytics.ts`, `useAnalytics()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 224`** (2 nodes): `useAssessmentSession.ts`, `useAssessmentSession()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 225`** (2 nodes): `TherapistLoginPage.tsx`, `handleSubmit()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 226`** (2 nodes): `proxy.ts`, `proxy()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 227`** (2 nodes): `layout.tsx`, `RootLayout()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 228`** (2 nodes): `layout.tsx`, `AdminLayout()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 229`** (2 nodes): `page.tsx`, `AdminAnalyticsPage()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 230`** (2 nodes): `page.tsx`, `AdminHelpSafetyPage()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 231`** (2 nodes): `page.tsx`, `statusBadge()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 232`** (2 nodes): `layout.tsx`, `DashboardLayout()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 233`** (2 nodes): `page.tsx`, `isCompletedToday()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 234`** (2 nodes): `page.tsx`, `openWrite()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 235`** (2 nodes): `layout.tsx`, `TherapistLayout()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 236`** (2 nodes): `page.tsx`, `TherapistAnalyticsPage()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 237`** (2 nodes): `page.tsx`, `TherapistProfilePage()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 238`** (2 nodes): `modal.tsx`, `handler()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 239`** (2 nodes): `index.tsx`, `Providers()`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 240`** (1 nodes): `vitest.config.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 241`** (1 nodes): `vitest.setup.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 242`** (1 nodes): `run_insights_test.js`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 243`** (1 nodes): `bootstrap.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 244`** (1 nodes): `server.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 245`** (1 nodes): `adminAssessment.validator.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 246`** (1 nodes): `assessment.validator.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 247`** (1 nodes): `auth.validator.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 248`** (1 nodes): `chat.validator.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 249`** (1 nodes): `index.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 250`** (1 nodes): `mood.validator.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 251`** (1 nodes): `passport.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 252`** (1 nodes): `conversationController.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 253`** (1 nodes): `authRateLimits.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 254`** (1 nodes): `adminData.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 255`** (1 nodes): `assessments.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 256`** (1 nodes): `chat.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 257`** (1 nodes): `chatbot.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 258`** (1 nodes): `checkins.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 259`** (1 nodes): `content.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 260`** (1 nodes): `conversations.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 261`** (1 nodes): `crisis.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 262`** (1 nodes): `engagement.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 263`** (1 nodes): `faq.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 264`** (1 nodes): `gratitude.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 265`** (1 nodes): `habits.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 266`** (1 nodes): `intentions.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 267`** (1 nodes): `journal.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 268`** (1 nodes): `mood.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 269`** (1 nodes): `plans.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 270`** (1 nodes): `practices.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 271`** (1 nodes): `progress.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 272`** (1 nodes): `publicContent.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 273`** (1 nodes): `sleep.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 274`** (1 nodes): `support.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 275`** (1 nodes): `therapists.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 276`** (1 nodes): `users.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 277`** (1 nodes): `activityLogRoutes.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 278`** (1 nodes): `analyticsRoutes.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 279`** (1 nodes): `assessmentRoutes.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 280`** (1 nodes): `bulkRoutes.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 281`** (1 nodes): `dashboardRoutes.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 282`** (1 nodes): `helpSafetyAdmin.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 283`** (1 nodes): `userRoutes.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 284`** (1 nodes): `llmFallback.test.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 285`** (1 nodes): `ai.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 286`** (1 nodes): `fluent-ffmpeg.d.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 287`** (1 nodes): `allowedOrigins.test.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 288`** (1 nodes): `assessmentApi.test.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 289`** (1 nodes): `chatApi.test.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 290`** (1 nodes): `chatExerciseIntent.test.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 291`** (1 nodes): `dashboardInsights.test.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 292`** (1 nodes): `enhancedInsights.e2e.test.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 293`** (1 nodes): `enhancedInsights.integration.test.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 294`** (1 nodes): `healthReady.test.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 295`** (1 nodes): `moodApi.test.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 296`** (1 nodes): `privacyApi.test.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 297`** (1 nodes): `recommendationsApi.test.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 298`** (1 nodes): `supportApi.test.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 299`** (1 nodes): `therapistPortal.test.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 300`** (1 nodes): `vitest.config.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 301`** (1 nodes): `vitest.setup.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 302`** (1 nodes): `main.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 303`** (1 nodes): `vite-env.d.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 304`** (1 nodes): `AdminSectionHeader.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 305`** (1 nodes): `AdminStatCard.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 306`** (1 nodes): `AssessmentPreviewModal.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 307`** (1 nodes): `AdminBreadcrumbs.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 308`** (1 nodes): `AdvancedAnalyticsDashboard.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 309`** (1 nodes): `CommandPalette.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 310`** (1 nodes): `index.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 311`** (1 nodes): `index.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 312`** (1 nodes): `index.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 313`** (1 nodes): `index.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 314`** (1 nodes): `MetricsSection.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 315`** (1 nodes): `TestimonialCarousel.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 316`** (1 nodes): `TherapistProfileDialog.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 317`** (1 nodes): `EmptyState.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 318`** (1 nodes): `index.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 319`** (1 nodes): `MarkdownMessage.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 320`** (1 nodes): `GroundingChecklist.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 321`** (1 nodes): `index.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 322`** (1 nodes): `index.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 323`** (1 nodes): `FeaturedBanner.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 324`** (1 nodes): `index.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 325`** (1 nodes): `types.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 326`** (1 nodes): `CollapsibleSection.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 327`** (1 nodes): `index.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 328`** (1 nodes): `StatsRow.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 329`** (1 nodes): `StreakTracker.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 330`** (1 nodes): `WellnessScoreTrend.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 331`** (1 nodes): `AnxietyBubblePopGame.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 332`** (1 nodes): `GratitudePuzzleGame.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 333`** (1 nodes): `index.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 334`** (1 nodes): `MemoryMatchGame.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 335`** (1 nodes): `MoodColorMatcher.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 336`** (1 nodes): `index.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 337`** (1 nodes): `index.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 338`** (1 nodes): `CurrentWeekCard.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 339`** (1 nodes): `index.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 340`** (1 nodes): `JourneyTimeline.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 341`** (1 nodes): `index.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 342`** (1 nodes): `ProgressNarrative.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 343`** (1 nodes): `index.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 344`** (1 nodes): `index.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 345`** (1 nodes): `aspect-ratio.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 346`** (1 nodes): `button.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 347`** (1 nodes): `calendar.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 348`** (1 nodes): `date-range-picker.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 349`** (1 nodes): `empty-state.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 350`** (1 nodes): `loading-card.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 351`** (1 nodes): `textarea.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 352`** (1 nodes): `toggle.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 353`** (1 nodes): `therapist.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 354`** (1 nodes): `config.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 355`** (1 nodes): `usage-examples.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 356`** (1 nodes): `queryClient.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 357`** (1 nodes): `index.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 358`** (1 nodes): `ClientsList.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 359`** (1 nodes): `TherapistShell.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 360`** (1 nodes): `speech-recognition.d.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 361`** (1 nodes): `appRouting.test.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 362`** (1 nodes): `button.test.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 363`** (1 nodes): `eslint.config.mjs`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 364`** (1 nodes): `next-env.d.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 365`** (1 nodes): `next.config.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 366`** (1 nodes): `postcss.config.mjs`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 367`** (1 nodes): `page.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 368`** (1 nodes): `page.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 369`** (1 nodes): `page.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 370`** (1 nodes): `page.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 371`** (1 nodes): `page.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 372`** (1 nodes): `page.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 373`** (1 nodes): `page.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 374`** (1 nodes): `page.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 375`** (1 nodes): `page.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 376`** (1 nodes): `page.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 377`** (1 nodes): `page.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 378`** (1 nodes): `page.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 379`** (1 nodes): `page.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 380`** (1 nodes): `page.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 381`** (1 nodes): `page.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 382`** (1 nodes): `page.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 383`** (1 nodes): `page.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 384`** (1 nodes): `page.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 385`** (1 nodes): `page.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 386`** (1 nodes): `page.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 387`** (1 nodes): `page.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 388`** (1 nodes): `page.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 389`** (1 nodes): `topbar.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 390`** (1 nodes): `avatar.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 391`** (1 nodes): `button.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 392`** (1 nodes): `card.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 393`** (1 nodes): `progress.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 394`** (1 nodes): `api.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 395`** (1 nodes): `auth.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 396`** (1 nodes): `ui.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 397`** (1 nodes): `index.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 398`** (1 nodes): `config.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **2376 isolated node(s):** `__filename`, `__dirname`, `__filename`, `__dirname`, `name` (+2371 more)
+  These have ≤1 connection - possible missing edges or undocumented components.
+- **61 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Boolean()` connect `Community 7` to `Community 0`, `Community 1`, `Community 2`, `Community 3`, `Community 4`, `Community 6`, `Community 15`, `Community 17`?**
-  _High betweenness centrality (0.067) - this node is a cross-community bridge._
-- **Why does `String()` connect `Community 4` to `Community 0`, `Community 7`, `Community 9`, `Community 11`, `Community 18`, `Community 53`?**
+- **Why does `String()` connect `Community 362` to `Community 358`, `Community 41`, `Community 105`, `Community 109`, `Community 112`, `Community 114`, `Community 87`, `Community 27`?**
+  _High betweenness centrality (0.080) - this node is a cross-community bridge._
+- **Why does `validate()` connect `Community 23` to `Community 120`, `Community 358`?**
   _High betweenness centrality (0.058) - this node is a cross-community bridge._
-- **Why does `getApiBaseUrl()` connect `Community 0` to `Community 17`, `Community 27`, `Community 4`, `Community 14`?**
-  _High betweenness centrality (0.047) - this node is a cross-community bridge._
-- **Are the 53 inferred relationships involving `getApiBaseUrl()` (e.g. with `handleBulkPublish()` and `handleBulkUnpublish()`) actually correct?**
-  _`getApiBaseUrl()` has 53 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 52 inferred relationships involving `createRequestLogger()` (e.g. with `sendMessage()` and `streamMessage()`) actually correct?**
-  _`createRequestLogger()` has 52 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 37 inferred relationships involving `adminFetch()` (e.g. with `handleBulkPublish()` and `handleBulkUnpublish()`) actually correct?**
-  _`adminFetch()` has 37 INFERRED edges - model-reasoned connections that need verification._
-- **Should `Community 0` be split into smaller, more focused modules?**
-  _Cohesion score 0.03 - nodes in this community are weakly interconnected._
+- **Why does `cn()` connect `Community 42` to `Community 134`, `Community 7`, `Community 139`, `Community 17`, `Community 20`, `Community 150`, `Community 41`, `Community 45`, `Community 49`, `Community 181`, `Community 59`, `Community 64`, `Community 74`, `Community 78`, `Community 83`, `Community 85`, `Community 94`, `Community 96`, `Community 98`, `Community 355`, `Community 358`, `Community 107`, `Community 108`, `Community 365`, `Community 112`, `Community 116`, `Community 117`, `Community 119`, `Community 122`, `Community 123`?**
+  _High betweenness centrality (0.050) - this node is a cross-community bridge._
+- **What connects `__filename`, `__dirname`, `__filename` to the rest of the system?**
+  _2376 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Should `Community 1` be split into smaller, more focused modules?**
+  _Cohesion score 0.0746606334841629 - nodes in this community are weakly interconnected._
+- **Should `Community 2` be split into smaller, more focused modules?**
+  _Cohesion score 0.05109126984126984 - nodes in this community are weakly interconnected._
+- **Should `Community 3` be split into smaller, more focused modules?**
+  _Cohesion score 0.005277044854881266 - nodes in this community are weakly interconnected._

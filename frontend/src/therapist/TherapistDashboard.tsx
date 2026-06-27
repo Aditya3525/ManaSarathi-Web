@@ -689,7 +689,7 @@ export function TherapistDashboard({ onLogout, therapistName }: TherapistDashboa
                             {/* Specialties */}
                             <div>
                                 <h3 className="font-medium text-sm mb-3">Specialties</h3>
-                                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
                                     {SPECIALTIES.map(s => (
                                         <div key={s.value} className="flex items-center space-x-2">
                                             <Checkbox
@@ -774,7 +774,7 @@ export function TherapistDashboard({ onLogout, therapistName }: TherapistDashboa
                                 {profile.acceptsInsurance && (
                                     <div className="mt-4 p-3 border rounded-md bg-muted/50">
                                         <Label className="text-sm mb-2 block">Accepted Insurance Providers</Label>
-                                        <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
                                             {COMMON_INSURANCES.map(ins => (
                                                 <div key={ins} className="flex items-center space-x-2">
                                                     <Checkbox

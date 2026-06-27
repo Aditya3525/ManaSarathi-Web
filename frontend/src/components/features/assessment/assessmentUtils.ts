@@ -23,6 +23,9 @@ export const friendlyAssessmentLabel = (type: string): string => {
     case 'anxiety':
     case 'anxiety_assessment':
       return 'Anxiety';
+    case 'basic_overall':
+    case 'basicoverall':
+      return 'Baseline Wellness Screening';
     case 'depression':
     case 'depression_phq9':
     case 'phq9':
@@ -72,7 +75,7 @@ export const trendLabelForType = (
   trend: AssessmentTrend | 'mixed'
 ): string => {
   if (trend === 'mixed') return 'Mixed';
-  if (trend === 'baseline') return 'Baseline';
+  if (trend === 'baseline') return 'Initial Score';
   if (trend === 'stable') return 'Stable';
 
   const higherIsBetter = isHigherScoreBetter(type);

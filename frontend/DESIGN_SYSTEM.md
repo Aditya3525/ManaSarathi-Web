@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document outlines the complete implementation of the UI UX Pro Max design system with Framer Motion animations in the MaanSarathi web application. The design system follows a "Soft Editorial Wellness" aesthetic combining warm, muted colors with therapeutic animations.
+This document outlines the complete implementation of the UI UX Pro Max design system with Framer Motion animations in the ManaSarathi web application. The design system follows a "Soft Editorial Wellness" aesthetic combining warm, muted colors with therapeutic animations.
 
 ## Design System Components
 

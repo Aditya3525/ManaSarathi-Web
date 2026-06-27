@@ -869,8 +869,7 @@ export function ResponsiveChatbot({ user, onNavigate, isModal = false, onClose }
                     setShowMobileSidebar(false);
                   }}
                   className="h-full"
-                  showCloseButton
-                  onCloseSidebar={() => setShowMobileSidebar(false)}
+                  showCloseButton={false}
                 />
               </SheetContent>
             </Sheet>

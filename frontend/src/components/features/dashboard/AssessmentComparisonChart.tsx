@@ -133,7 +133,7 @@ export const AssessmentComparisonChart: React.FC<AssessmentComparisonChartProps>
 				{/* Overall Summary */}
 				{scores.length > 1 && (
 					<div className="pt-4 border-t">
-						<div className="grid grid-cols-3 gap-4 text-center">
+						<div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
 							<div>
 								<div className="text-lg font-semibold text-green-600">
 									{sortedScores[0].score}

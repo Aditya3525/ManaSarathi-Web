@@ -28,6 +28,11 @@ const ensureNumeric = (value: unknown, fallback = 0): number => {
   return fallback;
 };
 
+const getRawResponseValue = (responses: ResponseMap, id: string): unknown => {
+  const match = Object.keys(responses).find((k) => k.endsWith(id));
+  return match ? responses[match] : responses[id];
+};
+
 const normalize = (raw: number, min: number, max: number): number => {
   if (max === min) return 0;
   const bounded = Math.min(Math.max(raw, min), max);
@@ -461,7 +466,7 @@ export const scoreEi10 = (responses: ResponseMap): AssessmentScoreResult => {
 
 export const scoreTeique = (responses: ResponseMap): AssessmentScoreResult => {
   const ids = Array.from({ length: 30 }, (_, index) => `teique_q${index + 1}`);
-  const rawValues = ids.map((id) => ensureNumeric(responses[id]));
+  const rawValues = ids.map((id) => ensureNumeric(getRawResponseValue(responses, id)));
   if (rawValues.some((value) => Number.isNaN(value))) {
     throw new Error('Invalid TEIQue responses');
   }
@@ -632,7 +637,7 @@ export const scoreMiniIpip = (responses: ResponseMap): AssessmentScoreResult => 
   };
 
   MINI_IPIP_ITEMS.forEach(({ id, trait, reverse }) => {
-    const value = ensureNumeric(responses[id], NaN);
+    const value = ensureNumeric(getRawResponseValue(responses, id), NaN);
     if (Number.isNaN(value)) {
       throw new Error('Invalid Mini-IPIP responses');
     }

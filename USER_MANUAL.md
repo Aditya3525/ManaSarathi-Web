@@ -1,6 +1,6 @@
-# MaanSarathi — User Manual
+# ManaSarathi — User Manual
 
-This manual explains how to use the MaanSarathi platform from three perspectives: **User**, **Therapist**, and **Administrator**. It covers account setup, primary workflows, safety & privacy, and troubleshooting.
+This manual explains how to use the ManaSarathi platform from three perspectives: **User**, **Therapist**, and **Administrator**. It covers account setup, primary workflows, safety & privacy, and troubleshooting.
 
 Table of contents
 - Introduction
@@ -15,7 +15,7 @@ Table of contents
 
 ## Introduction
 
-MaanSarathi helps users track mood, complete clinical assessments, access therapeutic content, chat with an AI companion, and (optionally) connect with therapists. Therapists can manage clients, review assessments and notes. Admins operate the platform: manage users, content, and safety resources.
+ManaSarathi helps users track mood, complete clinical assessments, access therapeutic content, chat with an AI companion, and (optionally) connect with therapists. Therapists can manage clients, review assessments and notes. Admins operate the platform: manage users, content, and safety resources.
 
 ## Quick access
 

@@ -26,7 +26,7 @@ export const submitAssessmentSchema = z.object({
       { message: 'At least one response is required' }
     ),
     
-    sessionId: z.string().uuid('Invalid session ID').optional(),
+    sessionId: z.string().optional(),
     
     completedAt: z
       .string()
@@ -52,7 +52,7 @@ export const startAssessmentSessionSchema = z.object({
  */
 export const updateAssessmentSessionSchema = z.object({
   params: z.object({
-    sessionId: z.string().uuid('Invalid session ID'),
+    sessionId: z.string(),
   }),
   body: z.object({
     status: z.enum(['completed', 'cancelled'], {

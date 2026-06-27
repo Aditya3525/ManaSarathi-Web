@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 1: The Request-Response Lifecycle & High-Level Architecture</title>
+  <style>
+    body {
+      font-family: Georgia, serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 680px;
+      margin: 40px auto;
+      padding: 0 20px;
+      background-color: #fcfcfc;
+    }
+    h1, h2, h3 {
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      font-weight: 700;
+      color: #111;
+      margin-top: 1.5em;
+    }
+    h1 {
+      font-size: 2.2em;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 0.3em;
+    }
+    code {
+      font-family: Consolas, Monaco, monospace;
+      background-color: #f4f4f4;
+      padding: 2px 4px;
+      font-size: 0.9em;
+      border-radius: 3px;
+    }
+    pre {
+      background-color: #f4f4f4;
+      padding: 15px;
+      overflow-x: auto;
+      border-left: 3px solid #ccc;
+      font-family: Consolas, Monaco, monospace;
+    }
+    .note {
+      background-color: #fffae6;
+      border-left: 4px solid #e6b800;
+      padding: 15px;
+      margin: 20px 0;
+      font-style: italic;
+    }
+    .quiz-container {
+      background-color: #f0f7f4;
+      border: 1px solid #d0e6dc;
+      border-radius: 5px;
+      padding: 20px;
+      margin-top: 30px;
+    }
+    .btn {
+      background-color: #2e7d32;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      font-family: sans-serif;
+      font-size: 0.9em;
+      border-radius: 3px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .btn:hover {
+      background-color: #1b5e20;
+    }
+    .answer {
+      display: none;
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px dashed #ccc;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Lesson 1: The Request-Response Lifecycle</h1>
+  
+  <p>Welcome to Lesson 1! Since your main goal is to be ready for external examiners, we are starting with their absolute favorite topic: <strong>"Walk me through what happens when a client sends a request to your server."</strong></p>
+
+  <h2>1. The Architecture in One Diagram</h2>
+  <p>Here is how the ManaSarathi backend is structured. A request doesn't go straight to your database; it passes through a series of checkpoints:</p>
+
+  <pre>
+[Client (Frontend)] 
+      ↓ HTTP Request (e.g. POST /api/mood)
+[Express Web Server (server.ts)]
+      ↓
+[Middleware Checkpoints] ── (Helmet, CORS, Rate Limiters, JWT Auth)
+      ↓
+[Routes Router (routes/mood.ts)]
+      ↓
+[Controller (controllers/moodController.ts)]
+      ↓
+[Database/AI Services] ── (Prisma Client & LLM Services)
+      ↓
+[Database (PostgreSQL) / External LLM API]
+  </pre>
+
+  <h2>2. Step-by-Step Request Lifecycle</h2>
+  
+  <h3>Step A: The Entry Point</h3>
+  <p>When the Express server runs, the entry point is <a href="file:///c:/Engineering/Final%20Year%20Project/ManaSarathi/backend/src/server.ts"><code>server.ts</code></a>. It starts listening on port <code>5000</code> and registers all global middlewares and route files.</p>
+
+  <h3>Step B: The Middleware Gauntlet</h3>
+  <p>Before hitting any database or business logic, the request goes through <strong>middleware</strong>. Middlewares check the following:</p>
+  <ul>
+    <li><strong>Is the source allowed?</strong> (CORS)</li>
+    <li><strong>Is the request safe?</strong> (Helmet security headers, Input Sanitization)</li>
+    <li><strong>Is the user sending too many requests?</strong> (Rate Limiting)</li>
+    <li><strong>Is the user logged in?</strong> (Authentication Middleware - checks JWT token)</li>
+  </ul>
+
+  <h3>Step C: Routing</h3>
+  <p>If the request is safe and the user is authenticated, the router in <a href="file:///c:/Engineering/Final%20Year%20Project/ManaSarathi/backend/src/routes/mood.ts"><code>routes/mood.ts</code></a> routes it to the specific action:</p>
+  <pre>router.post('/', authenticate, logMood);</pre>
+
+  <h3>Step D: The Controller & Service</h3>
+  <p>The controller (e.g. <code>logMood</code> in <a href="file:///c:/Engineering/Final%20Year%20Project/ManaSarathi/backend/src/controllers/moodController.ts"><code>moodController.ts</code></a>) acts as the brain. It:
+    <ol>
+      <li>Validates the input structure using schemas (Joi/Zod).</li>
+      <li>Talks to the DB service (Prisma) to save the data.</li>
+      <li>Sends back a neat JSON response (like <code>201 Created</code>).</li>
+    </ol>
+  </p>
+
+  <div class="note">
+    <strong>💡 Examiner Tip:</strong> If the examiner asks, "Why use middleware instead of checking auth in the controller?", your answer should be: 
+    <em>"Separation of concerns. We don't want to duplicate authentication logic in every controller. Middlewares reject invalid requests early, saving server resources."</em>
+  </div>
+
+  <hr>
+
+  <h2>🧠 Active Recall Practice (Desirable Difficulty)</h2>
+  
+  <div class="quiz-container">
+    <h3>Question 1: The Lifecycle Order</h3>
+    <p>Without scrolling up, try to write down or speak aloud the 5 main stages a request goes through when hitting the ManaSarathi backend.</p>
+    <button class="btn" onclick="toggleAnswer('ans1')">Reveal Answer & Examiner Explanation</button>
+    <div id="ans1" class="answer">
+      <p><strong>Answer:</strong></p>
+      <ol>
+        <li>Client/Frontend (HTTP Request)</li>
+        <li>Express Server (Entry Point: <code>server.ts</code>)</li>
+        <li>Middleware (CORS, Rate Limiting, JWT Verification)</li>
+        <li>Router (Mapping endpoints in <code>routes/</code>)</li>
+        <li>Controller & Database Services (Business logic & Prisma DB operations)</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="quiz-container">
+    <h3>Question 2: Entry point vs Controllers</h3>
+    <p>What is the difference between <code>server.ts</code> and a file inside the <code>controllers/</code> directory?</p>
+    <button class="btn" onclick="toggleAnswer('ans2')">Reveal Answer</button>
+    <div id="ans2" class="answer">
+      <p><strong>Answer:</strong></p>
+      <ul>
+        <li><code>server.ts</code> sets up the server, global middleware, databases connection, and links top-level API routes (e.g., binds all <code>/api/mood</code> URLs to the mood router).</li>
+        <li>A controller file (e.g. <code>moodController.ts</code>) contains the actual business logic for handling requests, such as verifying input data, creating DB records, and returning responses.</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    function toggleAnswer(id) {
+      const el = document.getElementById(id);
+      if (el.style.display === 'block') {
+        el.style.display = 'none';
+      } else {
+        el.style.display = 'block';
+      }
+    }
+  </script>
+
+</body>
+</html>

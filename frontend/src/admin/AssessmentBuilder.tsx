@@ -83,6 +83,9 @@ interface ScoringConfig {
   minScore: number;
   maxScore: number;
   interpretationBands: InterpretationBand[];
+  algorithm?: string;
+  customHookId?: string;
+  domains?: any[];
 }
 
 interface AssessmentBuilderProps {
@@ -92,7 +95,18 @@ interface AssessmentBuilderProps {
   onSave: () => void;
 }
 
-const CATEGORIES = ['anxiety', 'depression', 'stress', 'trauma', 'wellbeing', 'other'];
+const CATEGORIES = [
+  'anxiety',
+  'depression',
+  'stress',
+  'trauma',
+  'wellbeing',
+  'overthinking',
+  'emotional intelligence',
+  'personality',
+  'composite',
+  'other'
+];
 const RESPONSE_TYPES = [
   { value: 'likert', label: 'Likert (0-3)' },
   { value: 'likert_5', label: 'Likert (0-4)' },
@@ -101,10 +115,19 @@ const RESPONSE_TYPES = [
 ];
 const RESPONSE_TYPE_VALUES = RESPONSE_TYPES.map((type) => type.value);
 const COLORS = [
-  { value: '#10b981', label: 'Green' },
-  { value: '#fbbf24', label: 'Yellow' },
+  { value: '#2b4c37', label: 'Forest Green' },
+  { value: '#10b981', label: 'Emerald Green' },
+  { value: '#a7f3d0', label: 'Light Mint' },
+  { value: '#84cc16', label: 'Lime (Green-Yellow)' },
+  { value: '#d9f99d', label: 'Light Lime-Green' },
+  { value: '#eab308', label: 'Yellow' },
+  { value: '#fef9c3', label: 'Soft Yellow' },
   { value: '#f97316', label: 'Orange' },
-    { value: '#e11d48', label: 'Red' },
+  { value: '#ffedd5', label: 'Pale Peach' },
+  { value: '#e11d48', label: 'Red' },
+  { value: '#fecdd3', label: 'Soft Rose' },
+  { value: '#6fa3b5', label: 'Slate Blue' },
+  { value: '#ddd6fe', label: 'Soft Lavender' }
 ];
 
 // Sortable Question Item Component
@@ -211,7 +234,10 @@ export const AssessmentBuilder: React.FC<AssessmentBuilderProps> = ({
   const [category, setCategory] = useState('anxiety');
   const [description, setDescription] = useState('');
   const [timeEstimate, setTimeEstimate] = useState('');
+  const [timeframe, setTimeframe] = useState('');
   const [isActive, setIsActive] = useState(true);
+  const [isBasicOverallOnly, setIsBasicOverallOnly] = useState(false);
+  const [visibleInMainList, setVisibleInMainList] = useState(true);
   const [selectedTags, setSelectedTags] = useState<string[]>(['all']);
 
   // Scoring State
@@ -220,6 +246,9 @@ export const AssessmentBuilder: React.FC<AssessmentBuilderProps> = ({
   const [interpretationBands, setInterpretationBands] = useState<InterpretationBand[]>([
     { max: 5, label: 'Minimal', color: '#10b981' },
   ]);
+  const [scoringAlgorithm, setScoringAlgorithm] = useState<'SUM' | 'AVERAGE' | 'WEIGHTED_SUM' | 'CUSTOM_HOOK'>('SUM');
+  const [customHookId, setCustomHookId] = useState('');
+  const [domains, setDomains] = useState<any[]>([]);
 
   // Questions State
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -321,7 +350,10 @@ export const AssessmentBuilder: React.FC<AssessmentBuilderProps> = ({
           category: string;
           description: string | null;
           timeEstimate: string | null;
+          timeframe: string | null;
           isActive: boolean;
+          isBasicOverallOnly?: boolean;
+          visibleInMainList?: boolean;
           tags?: string | null;
           scoringConfig: ScoringConfig | null;
           questions: Question[];
@@ -332,7 +364,10 @@ export const AssessmentBuilder: React.FC<AssessmentBuilderProps> = ({
         setCategory(data.category);
         setDescription(data.description || '');
         setTimeEstimate(data.timeEstimate || '');
+        setTimeframe(data.timeframe || '');
         setIsActive(data.isActive);
+        setIsBasicOverallOnly(data.isBasicOverallOnly || false);
+        setVisibleInMainList(data.visibleInMainList !== false);
         
         // Parse tags from comma-separated string
         if (data.tags) {
@@ -343,9 +378,12 @@ export const AssessmentBuilder: React.FC<AssessmentBuilderProps> = ({
         }
 
         if (data.scoringConfig) {
-          setMinScore(data.scoringConfig.minScore);
-          setMaxScore(data.scoringConfig.maxScore);
-          setInterpretationBands(data.scoringConfig.interpretationBands);
+          setMinScore(data.scoringConfig.minScore ?? 0);
+          setMaxScore(data.scoringConfig.maxScore ?? 0);
+          setInterpretationBands(data.scoringConfig.interpretationBands || []);
+          setScoringAlgorithm((data.scoringConfig.algorithm as any) || 'SUM');
+          setCustomHookId(data.scoringConfig.customHookId || '');
+          setDomains(data.scoringConfig.domains || []);
         }
 
         setQuestions(data.questions || []);
@@ -376,11 +414,17 @@ export const AssessmentBuilder: React.FC<AssessmentBuilderProps> = ({
     setCategory('anxiety');
     setDescription('');
     setTimeEstimate('');
+    setTimeframe('');
     setIsActive(false);
+    setIsBasicOverallOnly(false);
+    setVisibleInMainList(true);
     setSelectedTags(['all']);
     setMinScore(0);
     setMaxScore(0);
     setInterpretationBands([{ max: 5, label: 'Minimal', color: '#10b981' }]);
+    setScoringAlgorithm('SUM');
+    setCustomHookId('');
+    setDomains([]);
     setQuestions([]);
     recalculateScoreRange([]);
     setActiveTab('basic');
@@ -473,15 +517,31 @@ export const AssessmentBuilder: React.FC<AssessmentBuilderProps> = ({
       category,
       description: description.trim(),
       timeEstimate: timeEstimate.trim() || null,
+      timeframe: timeframe.trim() || null,
       isActive,
+      isBasicOverallOnly,
+      visibleInMainList,
       tags: selectedTags.join(','),
       scoringConfig: {
+        algorithm: scoringAlgorithm,
+        customHookId: scoringAlgorithm === 'CUSTOM_HOOK' ? customHookId : undefined,
         minScore,
         maxScore,
         interpretationBands: interpretationBands.map(b => ({
           max: b.max,
           label: b.label,
           color: b.color
+        })),
+        domains: domains.map(d => ({
+          id: d.id,
+          label: d.label,
+          minScore: d.minScore,
+          maxScore: d.maxScore,
+          interpretationBands: d.interpretationBands.map((b: any) => ({
+            max: b.max,
+            label: b.label,
+            color: b.color
+          }))
         }))
       },
       questions: questions.map((q, index) => ({
@@ -605,7 +665,7 @@ export const AssessmentBuilder: React.FC<AssessmentBuilderProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-5xl w-[95vw] h-auto max-h-[85vh] overflow-hidden flex flex-col p-0 gap-0">
+      <DialogContent className="max-w-6xl w-[96vw] h-auto max-h-[90vh] overflow-hidden flex flex-col p-0 gap-0">
         {/* Header Section */}
         <DialogHeader className="flex-shrink-0 px-6 pt-4 pb-3 border-b bg-muted/20">
           <DialogTitle className="flex items-center gap-2 text-lg font-semibold">
@@ -638,7 +698,7 @@ export const AssessmentBuilder: React.FC<AssessmentBuilderProps> = ({
             </div>
 
             {/* Content Section */}
-            <div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0 bg-muted/5" style={{ maxHeight: 'calc(85vh - 180px)' }}>
+            <div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0 bg-muted/5" style={{ maxHeight: 'calc(90vh - 180px)' }}>
               <div className="px-6 py-4">
                 <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as typeof activeTab)}>
                   <TabsContent value="basic" className="space-y-3 mt-0 data-[state=active]:block data-[state=inactive]:hidden">
@@ -707,6 +767,17 @@ export const AssessmentBuilder: React.FC<AssessmentBuilderProps> = ({
                     />
                   </div>
 
+                  <div className="space-y-2">
+                    <Label htmlFor="timeframe" className="text-sm font-medium text-foreground">Timeframe Asked</Label>
+                    <Input
+                      id="timeframe"
+                      value={timeframe}
+                      onChange={(e) => setTimeframe(e.target.value)}
+                      placeholder="e.g., Over the last 2 weeks"
+                      className="h-10 text-sm"
+                    />
+                  </div>
+
                   <div className="flex items-center space-x-2 py-2">
                     <Switch
                       id="isActive"
@@ -714,6 +785,30 @@ export const AssessmentBuilder: React.FC<AssessmentBuilderProps> = ({
                       onCheckedChange={setIsActive}
                     />
                     <Label htmlFor="isActive" className="text-sm font-medium cursor-pointer">Active (visible to users)</Label>
+                  </div>
+
+                  <div className="flex items-center space-x-2 py-2">
+                    <Switch
+                      id="isBasicOverallOnly"
+                      checked={isBasicOverallOnly}
+                      onCheckedChange={setIsBasicOverallOnly}
+                    />
+                    <div>
+                      <Label htmlFor="isBasicOverallOnly" className="text-sm font-medium cursor-pointer">Basic Overall Component</Label>
+                      <p className="text-xs text-muted-foreground">Make this available in the combined baseline wellness screening</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-2 py-2">
+                    <Switch
+                      id="visibleInMainList"
+                      checked={visibleInMainList}
+                      onCheckedChange={setVisibleInMainList}
+                    />
+                    <div>
+                      <Label htmlFor="visibleInMainList" className="text-sm font-medium cursor-pointer">Visible in main list</Label>
+                      <p className="text-xs text-muted-foreground">Show this individually in the standalone library list</p>
+                    </div>
                   </div>
 
                   <div className="space-y-3 pt-2">
@@ -756,32 +851,163 @@ export const AssessmentBuilder: React.FC<AssessmentBuilderProps> = ({
                 <TabsContent value="scoring" className="space-y-4 mt-0 data-[state=active]:block data-[state=inactive]:hidden">
                   <Card className="border-muted shadow-sm">
                     <CardHeader className="p-4 pb-3">
+                      <CardTitle className="text-sm font-semibold">Scoring Method</CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-4 pt-0 space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="scoringAlgorithm" className="text-sm font-medium">Algorithm</Label>
+                          <Select
+                            value={scoringAlgorithm}
+                            onValueChange={(val: any) => setScoringAlgorithm(val)}
+                          >
+                            <SelectTrigger id="scoringAlgorithm" className="h-10 text-sm">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="SUM">Sum of all answers (Standard)</SelectItem>
+                              <SelectItem value="AVERAGE">Average of answers</SelectItem>
+                              <SelectItem value="WEIGHTED_SUM">Weighted Sum</SelectItem>
+                              <SelectItem value="CUSTOM_HOOK">Custom Algorithm Hook (Advanced)</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        {scoringAlgorithm === 'CUSTOM_HOOK' && (
+                          <div className="space-y-2">
+                            <Label htmlFor="customHookId" className="text-sm font-medium">Custom Hook ID (Code Identifier)</Label>
+                            <Input
+                              id="customHookId"
+                              value={customHookId}
+                              onChange={(e) => setCustomHookId(e.target.value)}
+                              placeholder="e.g. personality_mini_ipip"
+                              className="h-10 text-sm"
+                            />
+                          </div>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-muted shadow-sm">
+                    <CardHeader className="p-4 pb-3 flex flex-row items-center justify-between space-y-0">
+                      <CardTitle className="text-sm font-semibold">Sub-Parameters / Domains</CardTitle>
+                      <Button
+                        onClick={() => {
+                          const newDomainId = `domain-${domains.length + 1}`;
+                          setDomains([...domains, {
+                            id: newDomainId,
+                            label: `Domain ${domains.length + 1}`,
+                            minScore: 0,
+                            maxScore: 20,
+                            interpretationBands: [{ max: 5, label: 'Low', color: '#10b981' }]
+                          }]);
+                        }}
+                        size="sm"
+                        variant="outline"
+                        className="h-9 text-sm"
+                      >
+                        <Plus className="h-4 w-4 mr-2" />
+                        Add Domain
+                      </Button>
+                    </CardHeader>
+                    <CardContent className="p-4 pt-0 space-y-4">
+                      {domains.map((dom, domIdx) => (
+                        <div key={domIdx} className="p-4 border rounded-md bg-muted/20 space-y-3 relative">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              setDomains(domains.filter((_, idx) => idx !== domIdx));
+                            }}
+                            className="absolute top-2 right-2 h-8 w-8 p-0"
+                            type="button"
+                          >
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                          </Button>
+
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <div className="space-y-1">
+                              <Label className="text-xs font-semibold">Domain ID (Slug)</Label>
+                              <Input
+                                value={dom.id}
+                                onChange={(e) => {
+                                  const updated = [...domains];
+                                  updated[domIdx].id = e.target.value.toLowerCase().replace(/\s+/g, '_');
+                                  setDomains(updated);
+                                }}
+                                placeholder="e.g. extraversion"
+                                className="h-9 text-sm"
+                              />
+                            </div>
+                            <div className="space-y-1">
+                              <Label className="text-xs font-semibold">Label (Display Name)</Label>
+                              <Input
+                                value={dom.label}
+                                onChange={(e) => {
+                                  const updated = [...domains];
+                                  updated[domIdx].label = e.target.value;
+                                  setDomains(updated);
+                                }}
+                                placeholder="e.g. Extraversion"
+                                className="h-9 text-sm"
+                              />
+                            </div>
+                            <div className="grid grid-cols-2 gap-2">
+                              <div className="space-y-1">
+                                <Label className="text-xs font-semibold">Min Score</Label>
+                                <Input
+                                  type="number"
+                                  value={dom.minScore}
+                                  onChange={(e) => {
+                                    const updated = [...domains];
+                                    updated[domIdx].minScore = Number(e.target.value);
+                                    setDomains(updated);
+                                  }}
+                                  className="h-9 text-sm"
+                                />
+                              </div>
+                              <div className="space-y-1">
+                                <Label className="text-xs font-semibold">Max Score</Label>
+                                <Input
+                                  type="number"
+                                  value={dom.maxScore}
+                                  onChange={(e) => {
+                                    const updated = [...domains];
+                                    updated[domIdx].maxScore = Number(e.target.value);
+                                    setDomains(updated);
+                                  }}
+                                  className="h-9 text-sm"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                      {domains.length === 0 && (
+                        <div className="text-xs text-muted-foreground text-center py-3">
+                          No sub-parameters/domains defined for this assessment.
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-muted shadow-sm">
+                    <CardHeader className="p-4 pb-3">
                       <CardTitle className="text-sm font-semibold">Score Range</CardTitle>
                     </CardHeader>
                     <CardContent className="p-4 pt-0 space-y-3">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="minScore" className="text-sm font-medium">Min Score</Label>
-                          <Input
-                            id="minScore"
-                            type="number"
-                            value={minScore}
-                            onChange={(e) => setMinScore(Number(e.target.value))}
-                            className="h-10 text-sm"
-                          />
+                      <div className="flex flex-wrap items-center gap-4 py-2">
+                        <div className="flex items-center gap-2 bg-muted/40 px-3 py-2 rounded-md border text-sm">
+                          <span className="text-muted-foreground font-medium">Min Score:</span>
+                          <span className="font-semibold text-primary">{minScore}</span>
                         </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="maxScore" className="text-sm font-medium">Max Score</Label>
-                          <Input
-                            id="maxScore"
-                            type="number"
-                            value={maxScore}
-                            onChange={(e) => setMaxScore(Number(e.target.value))}
-                            className="h-10 text-sm"
-                          />
-                          <p className="text-xs text-muted-foreground italic">
-                            Auto-calculated from questions
-                          </p>
+                        <div className="flex items-center gap-2 bg-muted/40 px-3 py-2 rounded-md border text-sm">
+                          <span className="text-muted-foreground font-medium">Max Score:</span>
+                          <span className="font-semibold text-primary">{maxScore}</span>
+                          <span className="text-xs text-muted-foreground italic ml-1">
+                            (Auto-calculated from questions)
+                          </span>
                         </div>
                       </div>
                     </CardContent>
@@ -798,7 +1024,7 @@ export const AssessmentBuilder: React.FC<AssessmentBuilderProps> = ({
                     <CardContent className="p-4 pt-0 space-y-3">
                       {interpretationBands.map((band, index) => (
                         <div key={index} className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-end p-3 border rounded-md bg-muted/30">
-                          <div className="flex-1 space-y-2">
+                          <div className="w-full sm:w-24 space-y-2 flex-shrink-0">
                             <Label className="text-sm font-medium">Max Score</Label>
                             <Input
                               type="number"
@@ -816,7 +1042,7 @@ export const AssessmentBuilder: React.FC<AssessmentBuilderProps> = ({
                               className="h-10 text-sm"
                             />
                           </div>
-                          <div className="flex-1 space-y-2">
+                          <div className="w-full sm:w-28 space-y-2 flex-shrink-0">
                             <Label className="text-sm font-medium">Color</Label>
                             <Select
                               value={band.color}
@@ -950,6 +1176,7 @@ export const AssessmentBuilder: React.FC<AssessmentBuilderProps> = ({
               setEditingQuestion(null);
             }}
             onSave={saveQuestion}
+            domains={domains}
           />
         )}
       </DialogContent>
@@ -957,19 +1184,20 @@ export const AssessmentBuilder: React.FC<AssessmentBuilderProps> = ({
   );
 };
 
-// Simple Question Builder Modal Component
 interface QuestionBuilderModalProps {
   question: Question;
   open: boolean;
   onClose: () => void;
   onSave: (question: Question) => void;
+  domains?: any[];
 }
 
 const QuestionBuilderModal: React.FC<QuestionBuilderModalProps> = ({
   question,
   open,
   onClose,
-  onSave
+  onSave,
+  domains = []
 }) => {
   const initialResponseType = RESPONSE_TYPE_VALUES.includes(question.responseType)
     ? question.responseType
@@ -979,13 +1207,74 @@ const QuestionBuilderModal: React.FC<QuestionBuilderModalProps> = ({
   const [responseType, setResponseType] = useState(initialResponseType);
   const [reverseScored, setReverseScored] = useState(question.reverseScored || false);
   const [options, setOptions] = useState<ResponseOption[]>(question.options);
+  const [customizeOptions, setCustomizeOptions] = useState(false);
+  const [domain, setDomain] = useState(question.domain || '');
 
   useEffect(() => {
     setText(question.text);
     setResponseType(RESPONSE_TYPE_VALUES.includes(question.responseType) ? question.responseType : 'likert');
     setReverseScored(question.reverseScored || false);
     setOptions(question.options);
+    setDomain(question.domain || '');
+
+    // Auto-detect standard presets
+    const isStandardLikert = question.responseType === 'likert' &&
+      question.options.length === 4 &&
+      question.options[0]?.value === 0 && question.options[0]?.text === 'Not at all' &&
+      question.options[1]?.value === 1 && question.options[1]?.text === 'Several days' &&
+      question.options[2]?.value === 2 && question.options[2]?.text === 'More than half the days' &&
+      question.options[3]?.value === 3 && question.options[3]?.text === 'Nearly every day';
+
+    const isStandardLikert5 = question.responseType === 'likert_5' &&
+      question.options.length === 5 &&
+      question.options[0]?.value === 0 && question.options[0]?.text === 'Never' &&
+      question.options[1]?.value === 1 && question.options[1]?.text === 'Almost never' &&
+      question.options[2]?.value === 2 && question.options[2]?.text === 'Sometimes' &&
+      question.options[3]?.value === 3 && question.options[3]?.text === 'Fairly often' &&
+      question.options[4]?.value === 4 && question.options[4]?.text === 'Very often';
+
+    const isStandardBinary = question.responseType === 'binary' &&
+      question.options.length === 2 &&
+      ((question.options[0]?.value === 1 && question.options[0]?.text === 'Yes' &&
+        question.options[1]?.value === 0 && question.options[1]?.text === 'No') ||
+       (question.options[0]?.value === 0 && question.options[0]?.text === 'No' &&
+        question.options[1]?.value === 1 && question.options[1]?.text === 'Yes'));
+
+    const isPreset = isStandardLikert || isStandardLikert5 || isStandardBinary;
+    setCustomizeOptions(!isPreset && question.options.length > 0);
   }, [question]);
+
+  const handleResponseTypeChange = (newType: string) => {
+    setResponseType(newType);
+    
+    // Default preset options
+    if (newType === 'likert') {
+      setOptions([
+        { value: 0, text: 'Not at all', order: 1 },
+        { value: 1, text: 'Several days', order: 2 },
+        { value: 2, text: 'More than half the days', order: 3 },
+        { value: 3, text: 'Nearly every day', order: 4 }
+      ]);
+    } else if (newType === 'likert_5') {
+      setOptions([
+        { value: 0, text: 'Never', order: 1 },
+        { value: 1, text: 'Almost never', order: 2 },
+        { value: 2, text: 'Sometimes', order: 3 },
+        { value: 3, text: 'Fairly often', order: 4 },
+        { value: 4, text: 'Very often', order: 5 }
+      ]);
+    } else if (newType === 'binary') {
+      setOptions([
+        { value: 1, text: 'Yes', order: 1 },
+        { value: 0, text: 'No', order: 2 }
+      ]);
+    } else if (newType === 'multiple_choice') {
+      setOptions([
+        { value: 0, text: 'Option 1', order: 1 },
+        { value: 1, text: 'Option 2', order: 2 }
+      ]);
+    }
+  };
 
   const addOption = () => {
     setOptions((prev) => {
@@ -1034,6 +1323,7 @@ const QuestionBuilderModal: React.FC<QuestionBuilderModalProps> = ({
       ...question,
       text: text.trim(),
       responseType,
+      domain: (domain === '_none' || !domain) ? undefined : domain.trim(),
       reverseScored,
       options: sanitizedOptions
     });
@@ -1041,7 +1331,7 @@ const QuestionBuilderModal: React.FC<QuestionBuilderModalProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl w-[94vw] h-[80vh] max-h-[80vh] overflow-hidden flex flex-col p-0">
+      <DialogContent className="max-w-4xl w-[95vw] h-[85vh] max-h-[85vh] overflow-hidden flex flex-col p-0">
         {/* Header Section */}
         <DialogHeader className="flex-shrink-0 px-6 pt-5 pb-4 border-b bg-muted/20">
           <DialogTitle className="text-lg font-semibold">
@@ -1067,7 +1357,7 @@ const QuestionBuilderModal: React.FC<QuestionBuilderModalProps> = ({
 
             <div className="space-y-2">
               <Label htmlFor="responseType" className="text-sm font-medium text-foreground">Response Type</Label>
-              <Select value={responseType} onValueChange={setResponseType}>
+              <Select value={responseType} onValueChange={handleResponseTypeChange}>
                 <SelectTrigger id="responseType" className="h-10 text-sm">
                   <SelectValue />
                 </SelectTrigger>
@@ -1081,7 +1371,26 @@ const QuestionBuilderModal: React.FC<QuestionBuilderModalProps> = ({
               </Select>
             </div>
 
-            <div className="flex items-center space-x-2 py-2">
+            {domains && domains.length > 0 && (
+              <div className="space-y-2">
+                <Label htmlFor="questionDomain" className="text-sm font-medium text-foreground">Domain (Optional)</Label>
+                <Select value={domain || '_none'} onValueChange={setDomain}>
+                  <SelectTrigger id="questionDomain" className="h-10 text-sm">
+                    <SelectValue placeholder="Select a domain" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="_none" className="text-sm">None / Overall Only</SelectItem>
+                    {domains.map((dom) => (
+                      <SelectItem key={dom.id} value={dom.id} className="text-sm">
+                        {dom.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
+            <div className="flex items-center space-x-2 py-1">
               <Switch
                 id="reverseScored"
                 checked={reverseScored}
@@ -1090,48 +1399,63 @@ const QuestionBuilderModal: React.FC<QuestionBuilderModalProps> = ({
               <Label htmlFor="reverseScored" className="text-sm font-medium cursor-pointer">Reverse Scored (higher = better)</Label>
             </div>
 
-            <div className="space-y-3">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-                <Label className="text-sm font-medium text-foreground">Response Options</Label>
-                <Button onClick={addOption} size="sm" variant="outline" className="h-9 text-sm">
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Option
-                </Button>
-              </div>
-
-              <div className="space-y-2">
-                {options.map((option, index) => (
-                  <div key={index} className="flex gap-2 items-center">
-                    <div className="w-20">
-                      <Input
-                        type="number"
-                        value={option.value}
-                        onChange={(e) => updateOption(index, 'value', Number(e.target.value))}
-                        placeholder="Value"
-                        className="text-sm h-10"
-                      />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <Input
-                        value={option.text}
-                        onChange={(e) => updateOption(index, 'text', e.target.value)}
-                        placeholder="Option text (e.g., Not at all)"
-                        className="text-sm h-10"
-                      />
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => removeOption(index)}
-                      disabled={options.length === 1}
-                      className="flex-shrink-0 h-10 w-10 p-0"
-                    >
-                      <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
-                  </div>
-                ))}
-              </div>
+            <div className="flex items-center space-x-2 py-1">
+              <Checkbox
+                id="customizeOptions"
+                checked={customizeOptions}
+                onCheckedChange={(checked) => setCustomizeOptions(Boolean(checked))}
+              />
+              <Label htmlFor="customizeOptions" className="text-sm font-medium cursor-pointer">Customize option text and values</Label>
             </div>
+
+            {customizeOptions ? (
+              <div className="space-y-3 pt-2">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                  <Label className="text-sm font-medium text-foreground">Response Options</Label>
+                  <Button onClick={addOption} size="sm" variant="outline" className="h-9 text-sm">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Option
+                  </Button>
+                </div>
+
+                <div className="space-y-2">
+                  {options.map((option, index) => (
+                    <div key={index} className="flex gap-2 items-center">
+                      <div className="w-20">
+                        <Input
+                          type="number"
+                          value={option.value ?? ''}
+                          onChange={(e) => updateOption(index, 'value', Number(e.target.value))}
+                          placeholder="Value"
+                          className="text-sm h-10"
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <Input
+                          value={option.text}
+                          onChange={(e) => updateOption(index, 'text', e.target.value)}
+                          placeholder="Option text (e.g., Not at all)"
+                          className="text-sm h-10"
+                        />
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removeOption(index)}
+                        disabled={options.length === 1}
+                        className="flex-shrink-0 h-10 w-10 p-0"
+                      >
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="p-3 bg-muted/40 border border-muted rounded-md text-xs text-muted-foreground italic">
+                Using standard preset options for {RESPONSE_TYPES.find(r => r.value === responseType)?.label || responseType}.
+              </div>
+            )}
             </div>
           </ScrollArea>
         </div>

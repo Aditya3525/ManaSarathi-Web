@@ -53,7 +53,7 @@ interface MediaPlayerProps {
 }
 
 // Simple YouTube embed ID extractor
-function extractYouTubeId(url?: string | null) {
+export function extractYouTubeId(url?: string | null) {
   if (!url) return null;
   const input = url.trim();
   if (/^[a-zA-Z0-9_-]{11}$/.test(input)) return input;
@@ -103,7 +103,7 @@ export const MediaPlayer: React.FC<MediaPlayerProps> = ({
   onVolumeChange,
   fillScreen
 }) => {
-  const ytId = extractYouTubeId(youtubeUrl);
+  const ytId = extractYouTubeId(youtubeUrl) || extractYouTubeId(audioUrl);
   const mediaRef = useRef<HTMLVideoElement | HTMLAudioElement | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   

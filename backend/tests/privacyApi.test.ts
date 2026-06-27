@@ -2,19 +2,17 @@ import express from 'express';
 import request from 'supertest';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { userFindUniqueMock, executeRawUnsafeMock, queryRawMock } = vi.hoisted(() => ({
+const { userFindUniqueMock, userUpdateMock } = vi.hoisted(() => ({
   userFindUniqueMock: vi.fn(),
-  executeRawUnsafeMock: vi.fn(),
-  queryRawMock: vi.fn(),
+  userUpdateMock: vi.fn(),
 }));
 
 vi.mock('@prisma/client', () => ({
   PrismaClient: vi.fn(() => ({
     user: {
       findUnique: userFindUniqueMock,
+      update: userUpdateMock,
     },
-    $executeRawUnsafe: executeRawUnsafeMock,
-    $queryRaw: queryRawMock,
   })),
 }));
 
@@ -44,20 +42,20 @@ describe('Privacy API', () => {
     userFindUniqueMock.mockResolvedValue({
       dataConsent: true,
       clinicianSharing: false,
+      anonymousAnalytics: true,
+      marketingEmails: false,
+      researchParticipation: false,
+      consentUpdatedAt: new Date('2026-03-26T10:00:00.000Z'),
     });
 
-    executeRawUnsafeMock.mockResolvedValue(1);
-
-    queryRawMock.mockResolvedValue([
-      {
-        anonymousAnalytics: true,
-        marketingEmails: false,
-        researchParticipation: false,
-        consentUpdatedAt: '2026-03-26T10:00:00.000Z',
-        dataConsent: true,
-        clinicianSharing: false,
-      },
-    ]);
+    userUpdateMock.mockResolvedValue({
+      dataConsent: false,
+      clinicianSharing: true,
+      anonymousAnalytics: false,
+      marketingEmails: false,
+      researchParticipation: false,
+      consentUpdatedAt: new Date('2026-03-26T10:00:00.000Z'),
+    });
   });
 
   it('returns privacy settings for an authenticated user', async () => {
@@ -83,7 +81,7 @@ describe('Privacy API', () => {
 
     expect(response.status).toBe(200);
     expect(response.body.success).toBe(true);
-    expect(executeRawUnsafeMock).toHaveBeenCalled();
+    expect(userUpdateMock).toHaveBeenCalled();
   });
 
   it('returns 401 when no auth token is provided', async () => {

@@ -40,6 +40,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter, DialogClose } from '../components/ui/dialog';
 import { ScrollArea } from '../components/ui/scroll-area';
 import { Skeleton } from '../components/ui/skeleton';
+
 import { useAdminAuth } from '../contexts/AdminAuthContext';
 import { adminApi, type ApiResponse } from '../services/api';
 import { useNotificationStore } from '../stores/notificationStore';
@@ -151,7 +152,11 @@ type Tab =
   | 'users'
   | 'activity';
 
-export const AdminDashboard: React.FC = () => {
+interface AdminDashboardProps {
+  onNavigate?: (page: any) => void;
+}
+
+export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
   const { admin, adminLogout } = useAdminAuth();
   const { push } = useNotificationStore();
   const [tab, setTab] = useState<Tab>('overview');
@@ -491,7 +496,16 @@ export const AdminDashboard: React.FC = () => {
   );
 
   const headerActions = (
-    <>
+    <div className="flex items-center gap-2.5">
+      {onNavigate && (
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => onNavigate('dashboard')}
+        >
+          Web App View
+        </Button>
+      )}
       <Button
         variant="outline"
         onClick={handleRefresh}
@@ -503,7 +517,7 @@ export const AdminDashboard: React.FC = () => {
         <span className="hidden sm:inline">Refresh</span>
         <span className="sm:hidden">Sync</span>
       </Button>
-    </>
+    </div>
   );
 
   const lastUpdatedLabel = formattedLastUpdated ? (

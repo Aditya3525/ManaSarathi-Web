@@ -25,8 +25,8 @@
   justify-content: center;
   font-size: 0.75rem;
   font-weight: 600;
-  border: 2px solid hsl(var(--muted-foreground) / 0.3);
-  color: hsl(var(--muted-foreground));
+  border: 2px solid color-mix(in oklab, var(--muted-foreground) 30%, transparent);
+  color: var(--muted-foreground);
   background: transparent;
   transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
@@ -34,10 +34,10 @@
 }
 
 .booking-step-circle.active {
-  border-color: hsl(var(--primary));
-  background: hsl(var(--primary));
-  color: hsl(var(--primary-foreground));
-  box-shadow: 0 0 0 4px hsl(var(--primary) / 0.15);
+  border-color: var(--primary);
+  background: var(--primary);
+  color: var(--primary-foreground);
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--primary) 15%, transparent);
   animation: stepPulse 2s ease-in-out infinite;
 }
 
@@ -50,7 +50,7 @@
 .booking-step-connector {
   width: 2.5rem;
   height: 2px;
-  background: hsl(var(--muted-foreground) / 0.2);
+  background: color-mix(in oklab, var(--muted-foreground) 20%, transparent);
   transition: background 0.35s ease;
   flex-shrink: 0;
 }
@@ -67,13 +67,13 @@
   .booking-step-label {
     display: block;
     font-size: 0.7rem;
-    color: hsl(var(--muted-foreground));
+    color: var(--muted-foreground);
     white-space: nowrap;
     transition: color 0.3s ease;
   }
 
   .booking-step-label.active {
-    color: hsl(var(--primary));
+    color: var(--primary);
     font-weight: 600;
   }
 
@@ -86,11 +86,11 @@
 
   0%,
   100% {
-    box-shadow: 0 0 0 4px hsl(var(--primary) / 0.15);
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--primary) 15%, transparent);
   }
 
   50% {
-    box-shadow: 0 0 0 8px hsl(var(--primary) / 0.08);
+    box-shadow: 0 0 0 8px color-mix(in oklab, var(--primary) 8%, transparent);
   }
 }
 
@@ -100,7 +100,7 @@
 }
 
 .booking-selectable:focus-visible {
-  outline: 2px solid hsl(var(--primary));
+  outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
 
@@ -108,11 +108,11 @@
 .consult-type-card {
   position: relative;
   padding: 1.25rem;
-  border: 2px solid hsl(var(--border));
+  border: 2px solid var(--border);
   border-radius: 0.75rem;
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  background: hsl(var(--card));
+  background: var(--card);
   overflow: hidden;
 }
 
@@ -120,15 +120,15 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, hsl(var(--primary) / 0.05), transparent);
+  background: linear-gradient(135deg, color-mix(in oklab, var(--primary) 5%, transparent), transparent);
   opacity: 0;
   transition: opacity 0.25s ease;
 }
 
 .consult-type-card:hover {
-  border-color: hsl(var(--primary) / 0.4);
+  border-color: color-mix(in oklab, var(--primary) 40%, transparent);
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px -5px hsl(var(--primary) / 0.1);
+  box-shadow: 0 8px 25px -5px color-mix(in oklab, var(--primary) 10%, transparent);
 }
 
 .consult-type-card:hover::before {
@@ -138,9 +138,9 @@
 .consult-type-card.selected,
 .consult-type-card[aria-pressed='true'],
 .consult-type-card[data-selected='true'] {
-  border-color: hsl(var(--primary));
-  background: linear-gradient(140deg, hsl(var(--primary) / 0.12), hsl(var(--primary) / 0.04));
-  box-shadow: 0 0 0 3px hsl(var(--primary) / 0.16), 0 10px 24px -14px hsl(var(--primary) / 0.45);
+  border-color: var(--primary);
+  background: linear-gradient(140deg, color-mix(in oklab, var(--primary) 12%, transparent), color-mix(in oklab, var(--primary) 4%, transparent));
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--primary) 16%, transparent), 0 10px 24px -14px color-mix(in oklab, var(--primary) 45%, transparent);
 }
 
 .consult-type-card.selected::before,
@@ -186,28 +186,28 @@
   padding: 0.5rem 0.25rem;
   font-size: 0.8rem;
   font-weight: 500;
-  border: 1.5px solid hsl(var(--border));
+  border: 1.5px solid var(--border);
   border-radius: 0.5rem;
-  background: hsl(var(--card));
-  color: hsl(var(--foreground));
+  background: var(--card);
+  color: var(--foreground);
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: center;
 }
 
 .time-slot-btn:hover {
-  border-color: hsl(var(--primary) / 0.5);
-  background: hsl(var(--primary) / 0.05);
+  border-color: color-mix(in oklab, var(--primary) 50%, transparent);
+  background: color-mix(in oklab, var(--primary) 5%, transparent);
 }
 
 .time-slot-btn.selected,
 .time-slot-btn[aria-pressed='true'],
 .time-slot-btn[data-selected='true'] {
-  border-color: hsl(var(--primary));
-  background: linear-gradient(180deg, hsl(var(--primary)), hsl(var(--primary) / 0.9));
-  color: hsl(var(--primary-foreground));
+  border-color: var(--primary);
+  background: linear-gradient(180deg, var(--primary), color-mix(in oklab, var(--primary) 90%, transparent));
+  color: var(--primary-foreground);
   font-weight: 700;
-  box-shadow: 0 0 0 2px hsl(var(--background)), 0 0 0 4px hsl(var(--primary) / 0.3);
+  box-shadow: 0 0 0 2px var(--background), 0 0 0 4px color-mix(in oklab, var(--primary) 30%, transparent);
   transform: translateY(-1px);
 }
 
@@ -221,14 +221,14 @@
   width: 0.36rem;
   height: 0.36rem;
   border-radius: 999px;
-  background: hsl(var(--primary-foreground));
+  background: var(--primary-foreground);
   opacity: 0.92;
 }
 
 /* --- Booking Summary Card --- */
 .booking-summary {
-  background: linear-gradient(135deg, hsl(var(--primary) / 0.04), hsl(var(--accent) / 0.06));
-  border: 1px solid hsl(var(--border));
+  background: linear-gradient(135deg, color-mix(in oklab, var(--primary) 4%, transparent), color-mix(in oklab, var(--accent) 6%, transparent));
+  border: 1px solid var(--border);
   border-radius: 0.75rem;
   padding: 1.25rem;
 }
@@ -241,18 +241,18 @@
 }
 
 .booking-summary-row+.booking-summary-row {
-  border-top: 1px solid hsl(var(--border) / 0.5);
+  border-top: 1px solid color-mix(in oklab, var(--border) 50%, transparent);
 }
 
 .booking-summary-label {
   font-size: 0.8rem;
-  color: hsl(var(--muted-foreground));
+  color: var(--muted-foreground);
 }
 
 .booking-summary-value {
   font-size: 0.85rem;
   font-weight: 600;
-  color: hsl(var(--foreground));
+  color: var(--foreground);
 }
 
 /* --- Step Content Transition --- */
@@ -276,7 +276,7 @@
 .therapist-profile-header {
   position: relative;
   padding: 1.5rem;
-  background: linear-gradient(135deg, hsl(var(--primary) / 0.08), hsl(var(--accent) / 0.1));
+  background: linear-gradient(135deg, color-mix(in oklab, var(--primary) 8%, transparent), color-mix(in oklab, var(--accent) 10%, transparent));
   border-radius: 0.75rem;
   overflow: hidden;
 }
@@ -288,7 +288,7 @@
   right: -20%;
   width: 200px;
   height: 200px;
-  background: radial-gradient(circle, hsl(var(--primary) / 0.08), transparent 70%);
+  background: radial-gradient(circle, color-mix(in oklab, var(--primary) 8%, transparent), transparent 70%);
   border-radius: 50%;
 }
 
@@ -297,33 +297,33 @@
   height: 5rem;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid hsl(var(--primary) / 0.2);
-  box-shadow: 0 4px 15px hsl(var(--primary) / 0.1);
+  border: 3px solid color-mix(in oklab, var(--primary) 20%, transparent);
+  box-shadow: 0 4px 15px color-mix(in oklab, var(--primary) 10%, transparent);
 }
 
 .therapist-profile-avatar-placeholder {
   width: 5rem;
   height: 5rem;
   border-radius: 50%;
-  background: linear-gradient(135deg, hsl(var(--primary) / 0.15), hsl(var(--primary) / 0.25));
+  background: linear-gradient(135deg, color-mix(in oklab, var(--primary) 15%, transparent), color-mix(in oklab, var(--primary) 25%, transparent));
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 3px solid hsl(var(--primary) / 0.2);
+  border: 3px solid color-mix(in oklab, var(--primary) 20%, transparent);
 }
 
 /* --- My Bookings Cards --- */
 .booking-card {
-  border: 1px solid hsl(var(--border));
+  border: 1px solid var(--border);
   border-radius: 0.75rem;
   padding: 1rem 1.25rem;
   transition: all 0.2s ease;
-  background: hsl(var(--card));
+  background: var(--card);
 }
 
 .booking-card:hover {
-  box-shadow: 0 4px 16px hsl(var(--foreground) / 0.06);
-  border-color: hsl(var(--border) / 0.8);
+  box-shadow: 0 4px 16px color-mix(in oklab, var(--foreground) 6%, transparent);
+  border-color: color-mix(in oklab, var(--border) 80%, transparent);
 }
 
 .booking-status-badge {
@@ -395,7 +395,7 @@
   width: 4rem;
   height: 4rem;
   border-radius: 50%;
-  background: hsl(var(--primary) / 0.08);
+  background: color-mix(in oklab, var(--primary) 8%, transparent);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -434,7 +434,7 @@
   border: 1px solid color-mix(in srgb, var(--primary) 25%, transparent);
   background: color-mix(in srgb, var(--primary) 14%, transparent);
   color: var(--primary);
-  box-shadow: 0 1px 3px hsl(var(--foreground) / 0.06);
+  box-shadow: 0 1px 3px color-mix(in oklab, var(--foreground) 6%, transparent);
   font-weight: 600;
 }
 

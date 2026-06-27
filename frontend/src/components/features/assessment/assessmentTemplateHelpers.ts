@@ -179,7 +179,13 @@ export const computeAssessmentScores = (
   if (Array.isArray(template.scoring.domains)) {
     template.scoring.domains.forEach((domain) => {
       let domainRaw = 0;
-      domain.items.forEach((itemId) => {
+      const items = (domain.items && domain.items.length > 0)
+        ? domain.items
+        : template.questions
+            .filter((q) => q.domain === domain.id || q.domain === domain.label)
+            .map((q) => q.id);
+
+      items.forEach((itemId) => {
         const selectedOption = template.questions
           .find((question) => question.id === itemId)?.options
           .find((option) => String(option.value) === answers[itemId]);

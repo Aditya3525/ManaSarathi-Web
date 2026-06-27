@@ -64,7 +64,22 @@ router.post('/conversations/:conversationId/messages', async (req: Request, res:
       });
     }
     
-    await chatbotService.addMessage(conversationId, role, content);
+    const conversation = await chatbotService.getConversation(conversationId);
+    if (!conversation) {
+      return res.status(404).json({
+        success: false,
+        error: 'Conversation not found',
+      });
+    }
+    
+    if (conversation.userId !== userId) {
+      return res.status(403).json({
+        success: false,
+        error: 'Unauthorized access to conversation',
+      });
+    }
+    
+    await chatbotService.addMessage(conversationId, userId, role, content);
     
     routeLogger.info(
       { userId, conversationId, role },
@@ -77,6 +92,12 @@ router.post('/conversations/:conversationId/messages', async (req: Request, res:
     });
   } catch (error) {
     routeLogger.error({ error, conversationId: req.params.conversationId }, 'Failed to add message');
+    if (error instanceof Error && error.message === 'Unauthorized access to conversation') {
+      return res.status(403).json({
+        success: false,
+        error: 'Unauthorized access to conversation',
+      });
+    }
     res.status(500).json({
       success: false,
       error: 'Failed to add message',
@@ -93,7 +114,22 @@ router.post('/conversations/:conversationId/end', async (req: Request, res: Resp
     const userId = (req as AuthRequest).user!.id;
     const { conversationId } = req.params;
     
-    await chatbotService.endConversation(conversationId);
+    const conversation = await chatbotService.getConversation(conversationId);
+    if (!conversation) {
+      return res.status(404).json({
+        success: false,
+        error: 'Conversation not found',
+      });
+    }
+    
+    if (conversation.userId !== userId) {
+      return res.status(403).json({
+        success: false,
+        error: 'Unauthorized access to conversation',
+      });
+    }
+    
+    await chatbotService.endConversation(conversationId, userId);
     
     routeLogger.info(
       { userId, conversationId },
@@ -106,6 +142,12 @@ router.post('/conversations/:conversationId/end', async (req: Request, res: Resp
     });
   } catch (error) {
     routeLogger.error({ error, conversationId: req.params.conversationId }, 'Failed to end conversation');
+    if (error instanceof Error && error.message === 'Unauthorized access to conversation') {
+      return res.status(403).json({
+        success: false,
+        error: 'Unauthorized access to conversation',
+      });
+    }
     res.status(500).json({
       success: false,
       error: 'Failed to end conversation',

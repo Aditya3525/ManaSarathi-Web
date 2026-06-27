@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 5: Mock External Examiner Interview</title>
+  <style>
+    body {
+      font-family: Georgia, serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 680px;
+      margin: 40px auto;
+      padding: 0 20px;
+      background-color: #fcfcfc;
+    }
+    h1, h2, h3 {
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      font-weight: 700;
+      color: #111;
+      margin-top: 1.5em;
+    }
+    h1 {
+      font-size: 2.2em;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 0.3em;
+    }
+    code {
+      font-family: Consolas, Monaco, monospace;
+      background-color: #f4f4f4;
+      padding: 2px 4px;
+      font-size: 0.9em;
+      border-radius: 3px;
+    }
+    pre {
+      background-color: #f4f4f4;
+      padding: 15px;
+      overflow-x: auto;
+      border-left: 3px solid #ccc;
+      font-family: Consolas, Monaco, monospace;
+    }
+    .note {
+      background-color: #fffae6;
+      border-left: 4px solid #e6b800;
+      padding: 15px;
+      margin: 20px 0;
+      font-style: italic;
+    }
+    .quiz-container {
+      background-color: #f0f7f4;
+      border: 1px solid #d0e6dc;
+      border-radius: 5px;
+      padding: 20px;
+      margin-top: 20px;
+    }
+    .btn {
+      background-color: #2e7d32;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      font-family: sans-serif;
+      font-size: 0.9em;
+      border-radius: 3px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .btn:hover {
+      background-color: #1b5e20;
+    }
+    .answer {
+      display: none;
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px dashed #ccc;
+    }
+    .badge {
+      background-color: #1976d2;
+      color: white;
+      padding: 3px 8px;
+      border-radius: 3px;
+      font-size: 0.8em;
+      font-family: sans-serif;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Lesson 5: Mock External Examiner Interview</h1>
+  
+  <p>Welcome to your final lesson! The best way to build <strong>storage strength</strong> and absolute confidence before your actual project viva is to practice answering the exact questions examiners will throw at you.</p>
+  <p>Below is a simulated interview. Try to speak your answer out loud <em>before</em> clicking the button to see the ideal response structure.</p>
+
+  <hr>
+
+  <h2>🎯 The Mock Viva</h2>
+
+  <div class="quiz-container">
+    <h3><span class="badge">Q1: Architecture</span> "Explain the flow of a request in your system when a user logs a mood."</h3>
+    <button class="btn" onclick="toggleAnswer('ans1')">Reveal Examiner-Grade Answer</button>
+    <div id="ans1" class="answer">
+      <p><strong>Ideal Answer Blueprint:</strong></p>
+      <blockquote>
+        "When the user logs a mood, the frontend sends an HTTP POST request to <code>/api/mood</code>. The request first passes through Express global middleware (such as Helmet, CORS, and rate limiters) to verify the source and protect server resources. Next, our JWT authentication middleware intercepts the header, decodes the token, and attaches the authenticated user object to the request. The router maps the request to the mood controller, which validates the inputs using a Joi/Zod schema. Finally, the controller calls Prisma ORM to insert the record into PostgreSQL and returns a <code>201 Created</code> response."
+      </blockquote>
+    </div>
+  </div>
+
+  <div class="quiz-container">
+    <h3><span class="badge">Q2: Security</span> "If I steal a user's JWT, can I access their account forever? How does your system mitigate this?"</h3>
+    <button class="btn" onclick="toggleAnswer('ans2')">Reveal Examiner-Grade Answer</button>
+    <div id="ans2" class="answer">
+      <p><strong>Ideal Answer Blueprint:</strong></p>
+      <blockquote>
+        "No, you cannot. Our JWT tokens are short-lived to minimize the security impact of a stolen token. However, to keep the user experience seamless, we built a custom auto-refresh middleware. If a user makes an API request and their token is near expiry, the server automatically issues a new JWT token in the <code>X-New-Token</code> response header. The frontend automatically switches to the new token, so active users are never logged out, but idle tokens expire quickly."
+      </blockquote>
+    </div>
+  </div>
+
+  <div class="quiz-container">
+    <h3><span class="badge">Q3: DB Modeling</span> "How do you define a one-to-many relationship in your Prisma schema?"</h3>
+    <button class="btn" onclick="toggleAnswer('ans3')">Reveal Examiner-Grade Answer</button>
+    <div id="ans3" class="answer">
+      <p><strong>Ideal Answer Blueprint:</strong></p>
+      <blockquote>
+        "In our <code>schema.prisma</code> file, we define it by declaring a list array of child records on the parent model (for example, <code>moodEntries MoodEntry[]</code> on the <code>User</code> model). In the child model (<code>MoodEntry</code>), we specify a foreign key field referencing the parent model's ID, mapped via the <code>@relation</code> attribute. When Prisma client generates types, it handles database joins automatically."
+      </blockquote>
+    </div>
+  </div>
+
+  <div class="quiz-container">
+    <h3><span class="badge">Q4: AI Logic</span> "Why did you build a fallback chain instead of sticking to a single model provider?"</h3>
+    <button class="btn" onclick="toggleAnswer('ans4')">Reveal Examiner-Grade Answer</button>
+    <div id="ans4" class="answer">
+      <p><strong>Ideal Answer Blueprint:</strong></p>
+      <blockquote>
+        "ManaSarathi is a mental wellness support platform, so high availability is critical. Relying on a single API provider (like OpenAI) creates a single point of failure. If they face an outage, rate limit, or network latency, our service goes down. We created a decoupled <code>AIProvider</code> interface and built an automated fallback chain (OpenAI → Anthropic → Gemini → NVIDIA → HuggingFace → Ollama). If one provider fails, the system immediately cascades to the next healthy provider."
+      </blockquote>
+    </div>
+  </div>
+
+  <div class="quiz-container">
+    <h3><span class="badge">Q5: Fail-Safe</span> "What is the circuit breaker/cooldown mechanism in your AI service?"</h3>
+    <button class="btn" onclick="toggleAnswer('ans5')">Reveal Examiner-Grade Answer</button>
+    <div id="ans5" class="answer">
+      <p><strong>Ideal Answer Blueprint:</strong></p>
+      <blockquote>
+        "If an AI provider fails 10 times consecutively, we don't want to keep calling it and wasting time on network timeouts. The system trips a circuit breaker and puts that provider on a 3-minute cooldown. During this cooldown, the provider is bypassed entirely, ensuring fast response times. After 3 minutes, it is tested again to see if it has recovered."
+      </blockquote>
+    </div>
+  </div>
+
+  <div class="quiz-container">
+    <h3><span class="badge">Q6: Security Checks</span> "How do you protect your app against XSS (Cross-Site Scripting) and SQL Injection?"</h3>
+    <button class="btn" onclick="toggleAnswer('ans6')">Reveal Examiner-Grade Answer</button>
+    <div id="ans6" class="answer">
+      <p><strong>Ideal Answer Blueprint:</strong></p>
+      <blockquote>
+        "For SQL Injection, our use of Prisma ORM prevents it naturally because Prisma converts queries into parameterized statements, ensuring user input is never interpreted as executable SQL. For XSS, we sanitise all request bodies using custom sanitization middleware (stripping out illegal script/HTML tags) and use Helmet CSP headers to prevent browsers from executing untrusted scripts."
+      </blockquote>
+    </div>
+  </div>
+
+  <script>
+    function toggleAnswer(id) {
+      const el = document.getElementById(id);
+      if (el.style.display === 'block') {
+        el.style.display = 'none';
+      } else {
+        el.style.display = 'block';
+      }
+    }
+  </script>
+
+</body>
+</html>

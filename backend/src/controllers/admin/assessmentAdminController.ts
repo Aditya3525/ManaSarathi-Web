@@ -233,10 +233,13 @@ export const createAssessment = async (req: Request, res: Response) => {
       category,
       description,
       timeEstimate,
+      timeframe,
       scoringConfig,
       questions,
       isActive = true,
-      tags
+      tags,
+      isBasicOverallOnly = false,
+      visibleInMainList = true
     } = req.body;
 
     // Check for duplicate type
@@ -265,10 +268,13 @@ export const createAssessment = async (req: Request, res: Response) => {
           category,
           description,
           timeEstimate,
+          timeframe,
           scoringConfig: JSON.stringify(scoringConfig),
           isActive,
           tags: tags || 'all',
-          createdBy: adminId
+          createdBy: adminId,
+          isBasicOverallOnly,
+          visibleInMainList
         }
       });
 
@@ -363,9 +369,12 @@ export const updateAssessment = async (req: Request, res: Response) => {
       if (updateData.category) data.category = updateData.category;
       if (updateData.description) data.description = updateData.description;
       if (updateData.timeEstimate !== undefined) data.timeEstimate = updateData.timeEstimate;
+      if (updateData.timeframe !== undefined) data.timeframe = updateData.timeframe;
       if (updateData.isActive !== undefined) data.isActive = updateData.isActive;
       if (updateData.tags !== undefined) data.tags = updateData.tags;
       if (updateData.scoringConfig) data.scoringConfig = JSON.stringify(updateData.scoringConfig);
+      if (updateData.isBasicOverallOnly !== undefined) data.isBasicOverallOnly = updateData.isBasicOverallOnly;
+      if (updateData.visibleInMainList !== undefined) data.visibleInMainList = updateData.visibleInMainList;
 
       // Update assessment
       await tx.assessmentDefinition.update({
@@ -513,9 +522,12 @@ export const duplicateAssessment = async (req: Request, res: Response) => {
           category: original.category,
           description: original.description,
           timeEstimate: original.timeEstimate,
+          timeframe: original.timeframe,
           scoringConfig: original.scoringConfig,
           isActive: false, // Duplicates start as inactive
-          createdBy: adminId
+          createdBy: adminId,
+          isBasicOverallOnly: original.isBasicOverallOnly,
+          visibleInMainList: original.visibleInMainList
         }
       });
 

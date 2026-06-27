@@ -85,7 +85,7 @@ const defaultSettings: AccessibilitySettings = {
   darkMode: false,
   simpleLanguage: false,
   fontFamily: 'system',
-  colorPalette: 'default'
+  colorPalette: 'forest'
 };
 
 const AccessibilityContext = createContext<AccessibilityContextValue | undefined>(undefined);
@@ -172,8 +172,8 @@ const loadStoredSettings = (storageKey: string): AccessibilitySettings => {
 
     let colorPalette = parsed.colorPalette ?? defaultSettings.colorPalette;
     const validPalettes: ColorPaletteOption[] = ['default', 'ocean', 'forest', 'sunset', 'lavender', 'neutral'];
-    if (!validPalettes.includes(colorPalette)) {
-      colorPalette = defaultSettings.colorPalette;
+    if (!validPalettes.includes(colorPalette) || colorPalette === 'default') {
+      colorPalette = 'forest';
     }
 
     return { ...defaultSettings, ...parsed, fontFamily, colorPalette };
@@ -260,6 +260,31 @@ export const AccessibilityProvider: React.FC<AccessibilityProviderProps> = ({ ch
       root.style.removeProperty('--font-serif');
     }
     root.setAttribute('data-font-family', next.fontFamily);
+
+    // Sync browser theme-color meta tag
+    if (typeof document !== 'undefined') {
+      const themeColors: Record<ColorPaletteOption, { light: string; dark: string }> = {
+        forest: { light: '#f9fbf7', dark: '#0a1e14' },
+        ocean: { light: '#f0f9ff', dark: '#0f172a' },
+        sunset: { light: '#fff7ed', dark: '#1c0f0a' },
+        lavender: { light: '#faf5ff', dark: '#1a0f25' },
+        neutral: { light: '#fafaf9', dark: '#1a1a1a' },
+        default: { light: '#f9fbf7', dark: '#0a1e14' }
+      };
+
+      const palette = next.colorPalette || 'forest';
+      const resolvedColor = next.darkMode
+        ? themeColors[palette]?.dark || '#0a1e14'
+        : themeColors[palette]?.light || '#f9fbf7';
+
+      let metaTag = document.querySelector('meta[name="theme-color"]');
+      if (!metaTag) {
+        metaTag = document.createElement('meta');
+        metaTag.setAttribute('name', 'theme-color');
+        document.head.appendChild(metaTag);
+      }
+      metaTag.setAttribute('content', resolvedColor);
+    }
   }, []);
 
   useEffect(() => {
@@ -416,7 +441,7 @@ export const AccessibilityProvider: React.FC<AccessibilityProviderProps> = ({ ch
 
     if (options?.announce) {
       const paletteNames: Record<ColorPaletteOption, string> = {
-        default: 'Default Teal',
+        default: 'Default Wellness',
         ocean: 'Ocean Calm',
         forest: 'Forest Zen',
         sunset: 'Sunset Warmth',
@@ -429,7 +454,7 @@ export const AccessibilityProvider: React.FC<AccessibilityProviderProps> = ({ ch
 
     if (options?.speak) {
       const paletteNames: Record<ColorPaletteOption, string> = {
-        default: 'Default Teal',
+        default: 'Default Wellness',
         ocean: 'Ocean Calm',
         forest: 'Forest Zen',
         sunset: 'Sunset Warmth',

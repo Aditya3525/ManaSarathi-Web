@@ -206,7 +206,7 @@ export const WellnessScoreTrend: React.FC<WellnessScoreTrendProps> = ({
 				</div>
 
 				{/* Stats */}
-				<div className="grid grid-cols-3 gap-4 pt-4 border-t">
+				<div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t">
 					<div className="text-center">
 						<div className="text-2xl font-semibold text-primary">{stats.avg}</div>
 						<div className="text-xs text-muted-foreground">Average</div>

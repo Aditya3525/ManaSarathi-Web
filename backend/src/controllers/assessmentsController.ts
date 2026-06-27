@@ -10,6 +10,7 @@ import {
   DatabaseError 
 } from '../shared/errors/AppError';
 import { AssessmentDetailContext, AssessmentInsightsPayload, buildAssessmentInsights } from '../services/assessmentInsightsService';
+import { SCORE_HANDLERS } from '../services/assessments/basicAssessments';
 
 type TemplateBaseType = 'anxiety' | 'stress' | 'trauma' | 'overthinking' | 'emotionalIntelligence' | 'personality' | 'depression';
 
@@ -305,6 +306,8 @@ type ParsedScoringDomain = {
 };
 
 type ParsedScoringConfig = {
+  algorithm?: 'SUM' | 'AVERAGE' | 'WEIGHTED_SUM' | 'CUSTOM_HOOK';
+  customHookId?: string;
   minScore?: number;
   maxScore?: number;
   reverseScored?: string[];
@@ -579,6 +582,10 @@ const parseScoringConfig = (rawConfig: string | null | undefined): ParsedScoring
 
   try {
     const parsed = JSON.parse(rawConfig) as Record<string, unknown>;
+    const algorithm = (parsed.algorithm === 'SUM' || parsed.algorithm === 'AVERAGE' || parsed.algorithm === 'WEIGHTED_SUM' || parsed.algorithm === 'CUSTOM_HOOK')
+      ? parsed.algorithm
+      : undefined;
+    const customHookId = typeof parsed.customHookId === 'string' ? parsed.customHookId : undefined;
     const minScore = toFiniteNumber(parsed.minScore) ?? undefined;
     const maxScore = toFiniteNumber(parsed.maxScore) ?? undefined;
     const interpretationBands = parseInterpretationBands(parsed.interpretationBands);
@@ -604,10 +611,6 @@ const parseScoringConfig = (rawConfig: string | null | undefined): ParsedScoring
               (item): item is string => typeof item === 'string' && item.trim().length > 0
             );
 
-            if (items.length === 0) {
-              return null;
-            }
-
             const id =
               typeof candidate.id === 'string' && candidate.id.trim().length > 0
                 ? candidate.id
@@ -630,6 +633,8 @@ const parseScoringConfig = (rawConfig: string | null | undefined): ParsedScoring
       : undefined;
 
     return {
+      algorithm,
+      customHookId,
       minScore,
       maxScore,
       interpretationBands,
@@ -658,9 +663,11 @@ const resolveShortFormVerificationRule = (assessmentType: string): ShortFormVeri
 
 const mapResponseTypeToUi = (responseType: string): 'likert' | 'binary' | 'multiple-choice' => {
   switch (responseType) {
+    case 'binary':
     case 'yes_no':
       return 'binary';
     case 'multiple_choice':
+    case 'multiple-choice':
       return 'multiple-choice';
     default:
       return 'likert';
@@ -882,6 +889,26 @@ const computeVerifiedScoreFromDefinition = (
   responses: Record<string, unknown>
 ): VerifiedScorePayload => {
   const parsedScoring = parseScoringConfig(definition.scoringConfig);
+
+  // Fallback to custom hook handler if specified
+  if (parsedScoring?.algorithm === 'CUSTOM_HOOK') {
+    const hookId = parsedScoring.customHookId || assessmentType;
+    const handler = SCORE_HANDLERS[hookId];
+    if (handler) {
+      try {
+        const result = handler(responses as any);
+        return {
+          score: result.normalizedScore,
+          rawScore: roundToOneDecimal(result.rawScore),
+          maxScore: result.maxScore,
+          categoryBreakdown: result.categoryBreakdown as any
+        };
+      } catch (err) {
+        console.warn(`Custom scoring hook failed for ${hookId}:`, err);
+      }
+    }
+  }
+
   const baseType = resolveTemplateType(assessmentType);
   const builtInScoring = baseType ? cloneScoring(TEMPLATE_SCORING[baseType]) : null;
   const shortRule = resolveShortFormVerificationRule(assessmentType);
@@ -926,21 +953,42 @@ const computeVerifiedScoreFromDefinition = (
   const configuredMaxScore =
     parsedScoring?.maxScore ?? builtInScoring?.maxScore ?? shortRule?.maxScore ?? fallbackMaxScore;
 
-  const normalizedScore = normalizeToPercent(rawScore, configuredMinScore, configuredMaxScore);
+  let normalizedScore = normalizeToPercent(rawScore, configuredMinScore, configuredMaxScore);
+  
+  if (parsedScoring?.algorithm === 'AVERAGE') {
+    const answeredQuestions = definition.questions.filter(q => responses[q.id] !== undefined);
+    const answeredCount = answeredQuestions.length;
+    const averageRaw = answeredCount > 0 ? rawScore / answeredCount : 0;
+    const avgMin = definition.questions.length > 0 ? configuredMinScore / definition.questions.length : 0;
+    const avgMax = definition.questions.length > 0 ? configuredMaxScore / definition.questions.length : 0;
+    normalizedScore = normalizeToPercent(averageRaw, avgMin, avgMax);
+  }
 
   const scoringDomains =
-    parsedScoring?.domains?.map((domain) => ({
-      id: domain.id,
-      label: domain.label,
-      items: domain.items,
-      minScore: domain.minScore,
-      maxScore: domain.maxScore,
-      interpretationBands: domain.interpretationBands
-    })) ?? builtInScoring?.domains;
+    parsedScoring?.domains?.map((domain) => {
+      // Dynamically resolve items from questions if not explicitly specified
+      const items = (domain.items && domain.items.length > 0)
+        ? domain.items
+        : definition.questions
+            .filter(q => q.domain === domain.id || q.domain === domain.label)
+            .map(q => q.id);
+
+      return {
+        id: domain.id,
+        label: domain.label,
+        items,
+        minScore: domain.minScore,
+        maxScore: domain.maxScore,
+        interpretationBands: domain.interpretationBands
+      };
+    }) ?? builtInScoring?.domains;
 
   const categoryBreakdown: Record<string, CategoryBreakdownEntry> = {};
   if (scoringDomains && scoringDomains.length > 0) {
     for (const domain of scoringDomains) {
+      if (domain.items.length === 0) {
+        continue;
+      }
       const domainRaw = domain.items.reduce((sum, questionId) => sum + (adjustedByQuestion.get(questionId) ?? 0), 0);
 
       const fallbackDomainMin = domain.items.reduce((sum, questionId) => {
@@ -952,12 +1000,12 @@ const computeVerifiedScoreFromDefinition = (
         return sum + (bounds?.max ?? 0);
       }, 0);
 
-      const domainMin = Number.isFinite(domain.minScore) ? domain.minScore : fallbackDomainMin;
-      const domainMax = Number.isFinite(domain.maxScore) && domain.maxScore > domainMin
+      const domainMin = (domain.minScore !== undefined && domain.minScore !== null) ? domain.minScore : fallbackDomainMin;
+      const domainMax = (domain.maxScore !== undefined && domain.maxScore !== null && domain.maxScore > domainMin)
         ? domain.maxScore
         : fallbackDomainMax;
 
-      categoryBreakdown[domain.id] = {
+      categoryBreakdown[domain.label] = {
         raw: roundToOneDecimal(domainRaw),
         normalized: normalizeToPercent(domainRaw, domainMin, domainMax),
         interpretation: resolveInterpretationBand(domain.interpretationBands, domainRaw)
@@ -1084,18 +1132,7 @@ const verifyAssessmentSubmission = async (
     };
   }
 
-  const fallback = computeFallbackVerifiedScore(
-    responses,
-    providedScore,
-    providedRawScore,
-    providedMaxScore
-  );
-
-  if (providedCategoryBreakdown && typeof providedCategoryBreakdown === 'object' && !Array.isArray(providedCategoryBreakdown)) {
-    fallback.categoryBreakdown = providedCategoryBreakdown as Record<string, CategoryBreakdownEntry>;
-  }
-
-  return fallback;
+  throw new BadRequestError(`Invalid or inactive assessment type: ${assessmentType}`);
 };
 
 const formatAssessmentTemplate = (
@@ -1118,6 +1155,7 @@ const formatAssessmentTemplate = (
     title: definition.name,
     description: definition.description ?? '',
     estimatedTime: definition.timeEstimate ?? null,
+    timeframe: definition.timeframe ?? null,
     scoring,
     questions: definition.questions
       .sort((a, b) => a.order - b.order)
@@ -1190,6 +1228,7 @@ const formatCustomAssessmentTemplate = (
     title: definition.name,
     description: definition.description ?? '',
     estimatedTime: definition.timeEstimate ?? null,
+    timeframe: definition.timeframe ?? null,
     scoring,
     questions: definition.questions
       .sort((a, b) => a.order - b.order)
@@ -1552,17 +1591,26 @@ export const submitAssessment = async (req: any, res: Response) => {
     );
 
     const insightId = randomUUID();
-    await prisma.$executeRawUnsafe(
-      `INSERT INTO "assessment_insights" ("id", "userId", "summary", "overallTrend", "aiSummary", "wellness_score", "createdAt", "updatedAt")
-       VALUES ($1, $2, $3::jsonb, $4, $5, $6, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-       ON CONFLICT("userId") DO UPDATE SET "summary" = EXCLUDED."summary", "overallTrend" = EXCLUDED."overallTrend", "aiSummary" = EXCLUDED."aiSummary", "wellness_score" = EXCLUDED."wellness_score", "updatedAt" = CURRENT_TIMESTAMP`,
-      insightId,
-      userId,
-      JSON.stringify(insightsPayload),
-      insightsPayload.insights.overallTrend,
-      insightsPayload.insights.aiSummary,
-      insightsPayload.insights.wellnessScore?.value ?? 0
-    );
+    await prisma.assessmentInsight.upsert({
+      where: { userId },
+      update: {
+        summary: insightsPayload as any,
+        overallTrend: insightsPayload.insights.overallTrend,
+        aiSummary: insightsPayload.insights.aiSummary,
+        wellnessScore: insightsPayload.insights.wellnessScore?.value ?? 0,
+        updatedAt: new Date()
+      },
+      create: {
+        id: insightId,
+        userId,
+        summary: insightsPayload as any,
+        overallTrend: insightsPayload.insights.overallTrend,
+        aiSummary: insightsPayload.insights.aiSummary,
+        wellnessScore: insightsPayload.insights.wellnessScore?.value ?? 0,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
+    });
 
     const enrichedAssessment =
       insightsPayload.history.find(item => item.id === record.id) ?? insightsPayload.history[0] ?? null;
@@ -1664,17 +1712,26 @@ export const getAssessmentHistory = async (req: any, res: Response) => {
     );
 
     const historyInsightId = randomUUID();
-    await prisma.$executeRawUnsafe(
-      `INSERT INTO "assessment_insights" ("id", "userId", "summary", "overallTrend", "aiSummary", "wellness_score", "createdAt", "updatedAt")
-       VALUES ($1, $2, $3::jsonb, $4, $5, $6, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-       ON CONFLICT("userId") DO UPDATE SET "summary" = EXCLUDED."summary", "overallTrend" = EXCLUDED."overallTrend", "aiSummary" = EXCLUDED."aiSummary", "wellness_score" = EXCLUDED."wellness_score", "updatedAt" = CURRENT_TIMESTAMP`,
-      historyInsightId,
-      userId,
-      JSON.stringify(insightsPayload),
-      insightsPayload.insights.overallTrend,
-      insightsPayload.insights.aiSummary,
-      insightsPayload.insights.wellnessScore?.value ?? 0
-    );
+    await prisma.assessmentInsight.upsert({
+      where: { userId },
+      update: {
+        summary: insightsPayload as any,
+        overallTrend: insightsPayload.insights.overallTrend,
+        aiSummary: insightsPayload.insights.aiSummary,
+        wellnessScore: insightsPayload.insights.wellnessScore?.value ?? 0,
+        updatedAt: new Date()
+      },
+      create: {
+        id: historyInsightId,
+        userId,
+        summary: insightsPayload as any,
+        overallTrend: insightsPayload.insights.overallTrend,
+        aiSummary: insightsPayload.insights.aiSummary,
+        wellnessScore: insightsPayload.insights.wellnessScore?.value ?? 0,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
+    });
 
     res.json({
       success: true,
@@ -2106,17 +2163,26 @@ export const submitCombinedAssessments = async (req: any, res: Response) => {
     // Save wellness score to database for combined onboarding assessment
     const wellnessScoreValue = insightsPayload.insights.wellnessScore?.value ?? 0;
     const insightId = randomUUID();
-    await prisma.$executeRawUnsafe(
-      `INSERT INTO "assessment_insights" ("id", "userId", "summary", "overallTrend", "aiSummary", "wellness_score", "createdAt", "updatedAt")
-       VALUES ($1, $2, $3::jsonb, $4, $5, $6, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-       ON CONFLICT("userId") DO UPDATE SET "summary" = EXCLUDED."summary", "overallTrend" = EXCLUDED."overallTrend", "aiSummary" = EXCLUDED."aiSummary", "wellness_score" = EXCLUDED."wellness_score", "updatedAt" = CURRENT_TIMESTAMP`,
-      insightId,
-      userId,
-  JSON.stringify(insightsPayload),
-      insightsPayload.insights.overallTrend,
-      insightsPayload.insights.aiSummary,
-      wellnessScoreValue
-    );
+    await prisma.assessmentInsight.upsert({
+      where: { userId },
+      update: {
+        summary: insightsPayload as any,
+        overallTrend: insightsPayload.insights.overallTrend,
+        aiSummary: insightsPayload.insights.aiSummary,
+        wellnessScore: wellnessScoreValue,
+        updatedAt: new Date()
+      },
+      create: {
+        id: insightId,
+        userId,
+        summary: insightsPayload as any,
+        overallTrend: insightsPayload.insights.overallTrend,
+        aiSummary: insightsPayload.insights.aiSummary,
+        wellnessScore: wellnessScoreValue,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
+    });
 
     const selectedTypes = updatedSession.selectedTypes as string[];
     const completedTypes = updatedSession.assessments.map(a => a.assessmentType);
@@ -2146,5 +2212,49 @@ export const submitCombinedAssessments = async (req: any, res: Response) => {
       success: false, 
       error: 'Unable to save combined assessments' 
     });
+  }
+};
+
+/**
+ * Get available screening choices for the Basic Overall Assessment selection.
+ * Fetches all active assessment definitions that have isBasicOverallOnly: true
+ */
+export const getOverallAssessmentOptions = async (_req: Request, res: Response) => {
+  try {
+    const assessments = await prisma.assessmentDefinition.findMany({
+      where: {
+        isActive: true,
+        isBasicOverallOnly: true
+      },
+      select: {
+        id: true,
+        name: true,
+        type: true,
+        category: true,
+        description: true,
+        timeEstimate: true,
+        questions: {
+          select: { id: true }
+        }
+      },
+      orderBy: { name: 'asc' }
+    });
+
+    const formatted = assessments.map((assessment) => ({
+      id: assessment.type, // client correlates options by type (e.g. 'anxiety_gad2')
+      title: assessment.name,
+      category: assessment.category,
+      description: assessment.description,
+      questions: assessment.questions.length,
+      estimatedTime: assessment.timeEstimate || '2 minutes'
+    }));
+
+    res.json({
+      success: true,
+      data: formatted
+    });
+  } catch (error) {
+    console.error('Get overall assessment options error:', error);
+    res.status(500).json({ success: false, error: 'Unable to fetch overall assessment options' });
   }
 };

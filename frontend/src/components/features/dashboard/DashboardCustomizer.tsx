@@ -17,9 +17,7 @@ import { Switch } from '../../ui/switch';
 export type DashboardWidget = 
 	| 'greeting-header'
 	| 'mood-check'
-	| 'one-thing-today'
 	| 'stats-row'
-	| 'adaptive-mode-banner'
 	| 'crisis-follow-up'
 	| 'checkins'
 	| 'smart-nudges'
@@ -28,8 +26,6 @@ export type DashboardWidget =
 	| 'gratitude'
 	| 'habits'
 	| 'intentions-sleep'
-	| 'assessment-scores'
-	| 'recommended-next-step'
 	| 'today-practice'
 	| 'quick-actions'
 	| 'recent-insights'
@@ -39,9 +35,7 @@ export type DashboardWidget =
 export interface WidgetVisibility {
 	'greeting-header': boolean;
 	'mood-check': boolean;
-	'one-thing-today': boolean;
 	'stats-row': boolean;
-	'adaptive-mode-banner': boolean;
 	'crisis-follow-up': boolean;
 	'checkins': boolean;
 	'smart-nudges': boolean;
@@ -50,8 +44,6 @@ export interface WidgetVisibility {
 	'gratitude': boolean;
 	'habits': boolean;
 	'intentions-sleep': boolean;
-	'assessment-scores': boolean;
-	'recommended-next-step': boolean;
 	'today-practice': boolean;
 	'quick-actions': boolean;
 	'recent-insights': boolean;
@@ -62,20 +54,16 @@ export interface WidgetVisibility {
 const DEFAULT_VISIBILITY: WidgetVisibility = {
 	'greeting-header': true,
 	'mood-check': true,
-	'one-thing-today': true,
 	'stats-row': true,
-	'adaptive-mode-banner': false,
-	'crisis-follow-up': true,
-	'checkins': true,
-	'smart-nudges': true,
-	'community-insights': true,
-	'assessment-reminder': true,
-	'gratitude': true,
-	'habits': true,
-	'intentions-sleep': true,
-	'assessment-scores': false,
-	'recommended-next-step': true,
-	'today-practice': true,
+	'crisis-follow-up': false,
+	'checkins': false,
+	'smart-nudges': false,
+	'community-insights': false,
+	'assessment-reminder': false,
+	'gratitude': false,
+	'habits': false,
+	'intentions-sleep': false,
+	'today-practice': false,
 	'quick-actions': true,
 	'recent-insights': true,
 	'this-week': true,
@@ -85,9 +73,7 @@ const DEFAULT_VISIBILITY: WidgetVisibility = {
 const WIDGET_LABELS: Record<DashboardWidget, string> = {
 	'greeting-header': 'Greeting Header',
 	'mood-check': 'Quick Mood Check',
-	'one-thing-today': 'One Thing Today',
 	'stats-row': 'Weekly Snapshot',
-	'adaptive-mode-banner': 'Adaptive Mode Banner',
 	'crisis-follow-up': 'Crisis Follow-up',
 	'checkins': 'Morning/Evening Check-ins',
 	'smart-nudges': 'Smart Nudges',
@@ -96,8 +82,6 @@ const WIDGET_LABELS: Record<DashboardWidget, string> = {
 	'gratitude': 'Daily Gratitude Prompt',
 	'habits': 'Habit Loops',
 	'intentions-sleep': 'Intentions & Sleep',
-	'assessment-scores': 'Assessment Scores',
-	'recommended-next-step': 'Recommended Next Step',
 	'today-practice': "Today's Practice",
 	'quick-actions': 'Quick Actions',
 	'recent-insights': 'Recent Insights',
@@ -109,7 +93,7 @@ const WIDGET_GROUPS: Array<{ id: string; title: string; widgets: DashboardWidget
 	{
 		id: 'foundational',
 		title: 'Foundation',
-		widgets: ['greeting-header', 'mood-check', 'one-thing-today', 'stats-row']
+		widgets: ['greeting-header', 'mood-check', 'stats-row']
 	},
 	{
 		id: 'adaptive-support',
@@ -119,7 +103,7 @@ const WIDGET_GROUPS: Array<{ id: string; title: string; widgets: DashboardWidget
 	{
 		id: 'growth',
 		title: 'Growth & Habits',
-		widgets: ['gratitude', 'habits', 'intentions-sleep', 'recommended-next-step', 'today-practice']
+		widgets: ['gratitude', 'habits', 'intentions-sleep', 'today-practice']
 	},
 	{
 		id: 'insights',

@@ -55,7 +55,7 @@ interface Practice {
   duration: number; // in minutes
   difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
   approach: 'Western' | 'Eastern' | 'Hybrid' | 'All';
-  format: 'Audio' | 'Video' | 'Audio/Video';
+  format: 'Audio' | 'Video' | 'Audio/Video' | 'Text';
   instructor: string;
   image: string;
   hasDownload: boolean;
@@ -67,6 +67,7 @@ interface Practice {
   audioUrl?: string | null;
   videoUrl?: string | null;
   youtubeUrl?: string | null;
+  instructions?: string[];
 }
 
 interface PracticeSession {
@@ -128,7 +129,15 @@ export function Practices({ onNavigate }: PracticesProps) {
   const [sortBy, setSortBy] = useState<PracticeSortKey>('recommended');
 
   // Mobile-responsive state
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState<string>(() => {
+    if (typeof window === 'undefined') return '';
+    const saved = window.sessionStorage.getItem('practices_search');
+    if (saved) {
+      window.sessionStorage.removeItem('practices_search');
+      return saved;
+    }
+    return '';
+  });
   const [viewMode, setViewMode] = useState<'grid' | 'list'>(device.isMobile ? 'list' : 'grid');
   const [isFilterSheetOpen, setIsFilterSheetOpen] = useState(false);
   const [isActiveFiltersExpanded, setIsActiveFiltersExpanded] = useState(false);
@@ -147,7 +156,7 @@ export function Practices({ onNavigate }: PracticesProps) {
         if(!resp.ok) throw new Error('Failed to load practices');
         const json = await resp.json();
         if(!json.success) throw new Error(json.error || 'Failed to load practices');
-  interface RawPractice { id:string; title:string; description?:string|null; type:string; duration:number; difficulty:string; approach:string; format:string; audioUrl?:string|null; videoUrl?:string|null; youtubeUrl?:string|null; thumbnailUrl?:string|null; tags?:string|null; focusAreas?: string | string[] | null; immediateRelief?: boolean | null; crisisEligible?: boolean | null; intensityLevel?: string | null; }
+  interface RawPractice { id:string; title:string; description?:string|null; type:string; duration:number; difficulty:string; approach:string; format:string; audioUrl?:string|null; videoUrl?:string|null; youtubeUrl?:string|null; thumbnailUrl?:string|null; tags?:string|null; focusAreas?: string | string[] | null; immediateRelief?: boolean | null; crisisEligible?: boolean | null; intensityLevel?: string | null; instructions?: any; }
         const mapped: Practice[] = (json.data as RawPractice[] || []).map((p) => ({
           id: p.id,
           title: p.title,
@@ -158,7 +167,7 @@ export function Practices({ onNavigate }: PracticesProps) {
             ? (p.difficulty === 'Moderate' ? 'Intermediate' : p.difficulty)
             : 'Beginner') as Practice['difficulty'],
           approach: (['Western','Eastern','Hybrid','All'].includes(p.approach) ? p.approach : 'All') as Practice['approach'],
-          format: (['Audio','Video','Audio/Video'].includes(p.format) ? p.format : 'Audio') as Practice['format'],
+          format: (['Audio','Video','Audio/Video','Text'].includes(p.format) ? p.format : 'Audio') as Practice['format'],
           instructor: 'Guide',
           image: p.thumbnailUrl || '/placeholder-practice.jpg',
           hasDownload: !!p.audioUrl,
@@ -169,7 +178,8 @@ export function Practices({ onNavigate }: PracticesProps) {
           intensityLevel: p.intensityLevel || null,
           audioUrl: p.audioUrl || undefined,
           videoUrl: p.videoUrl || undefined,
-          youtubeUrl: p.youtubeUrl || undefined
+          youtubeUrl: p.youtubeUrl || undefined,
+          instructions: parseStringArray(p.instructions)
         }));
         setPractices(mapped);
       } catch(err){
@@ -407,7 +417,7 @@ export function Practices({ onNavigate }: PracticesProps) {
     const totalSeconds = currentSession.duration || (currentSession.practice.duration * 60);
     const progress = totalSeconds ? (currentSession.currentTime / totalSeconds) * 100 : 0;
     const safeProgress = Number.isFinite(progress) ? Math.min(100, Math.max(0, progress)) : 0;
-    const { audioUrl, videoUrl, youtubeUrl, format } = currentSession.practice as Practice;
+    const { audioUrl, videoUrl, youtubeUrl, format, instructions } = currentSession.practice as Practice;
     const isVideoSession = Boolean(
       youtubeUrl ||
       videoUrl ||
@@ -549,7 +559,7 @@ export function Practices({ onNavigate }: PracticesProps) {
             <main className="flex-1 min-h-0 p-3 md:p-5 overflow-hidden">
               <div className="h-full max-w-[1700px] mx-auto grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_360px] gap-3 md:gap-5">
                 <section className="min-h-0 flex flex-col gap-3">
-                  <div className="relative flex-1 min-h-[60vh] lg:min-h-0 rounded-2xl border border-white/10 bg-black/55 overflow-hidden shadow-[0_0_0_1px_rgba(255,255,255,0.04),0_24px_80px_rgba(0,0,0,0.45)]">
+                  <div className="relative w-full aspect-video rounded-2xl border border-white/10 bg-black/55 overflow-hidden shadow-[0_0_0_1px_rgba(255,255,255,0.04),0_24px_80px_rgba(0,0,0,0.45)]">
                     <MediaPlayer
                       key={`session-video-${currentSession.practice.id}-${mediaInstanceKey}`}
                       audioUrl={format === 'Audio' || format === 'Audio/Video' ? audioUrl : undefined}
@@ -577,19 +587,21 @@ export function Practices({ onNavigate }: PracticesProps) {
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                     <div className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5">
                       <p className="text-[11px] text-slate-400 mb-1">Format</p>
-                      <p className="text-sm font-medium text-slate-100">{currentSession.practice.format}</p>
+                      <p className="text-sm font-medium text-slate-100 capitalize">{(currentSession.practice.format || '').toLowerCase()}</p>
                     </div>
                     <div className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5">
                       <p className="text-[11px] text-slate-400 mb-1">Intensity</p>
-                      <p className="text-sm font-medium text-slate-100">{currentSession.practice.intensityLevel || 'Balanced'}</p>
+                      <p className="text-sm font-medium text-slate-100 capitalize">
+                        {(currentSession.practice.intensityLevel || currentSession.practice.difficulty || 'Balanced').toLowerCase()}
+                      </p>
                     </div>
                     <div className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5">
                       <p className="text-[11px] text-slate-400 mb-1">Approach</p>
-                      <p className="text-sm font-medium text-slate-100">{currentSession.practice.approach}</p>
+                      <p className="text-sm font-medium text-slate-100 capitalize">{(currentSession.practice.approach || '').toLowerCase()}</p>
                     </div>
                     <div className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5">
                       <p className="text-[11px] text-slate-400 mb-1">Type</p>
-                      <p className="text-sm font-medium text-slate-100 capitalize">{currentSession.practice.type}</p>
+                      <p className="text-sm font-medium text-slate-100 capitalize">{(currentSession.practice.type || '').toLowerCase()}</p>
                     </div>
                   </div>
                 </section>
@@ -620,7 +632,7 @@ export function Practices({ onNavigate }: PracticesProps) {
                       <div>
                         <p className="text-xs uppercase tracking-wide text-slate-400 mb-2">Tags</p>
                         <div className="flex flex-wrap gap-2">
-                          {currentSession.practice.tags.slice(0, 10).map((tag) => (
+                          {Array.from(new Set(currentSession.practice.tags)).slice(0, 10).map((tag) => (
                             <Badge key={tag} className="bg-slate-800/80 text-slate-300 border border-slate-700/80">
                               #{tag}
                             </Badge>
@@ -672,26 +684,46 @@ export function Practices({ onNavigate }: PracticesProps) {
             </div>
 
             <div className="space-y-4">
-              <MediaPlayer
-                key={`session-audio-${currentSession.practice.id}-${mediaInstanceKey}`}
-                audioUrl={format === 'Audio' || format === 'Audio/Video' ? audioUrl : undefined}
-                videoUrl={format === 'Video' || format === 'Audio/Video' ? videoUrl : undefined}
-                youtubeUrl={youtubeUrl}
-                poster={currentSession.practice.image}
-                title={currentSession.practice.title}
-                artist={currentSession.practice.instructor}
-                autoPlay
-                playing={currentSession.isPlaying}
-                volume={currentSession.volume}
-                variant="full"
-                onTimeUpdate={(c, d) => {
-                  setCurrentSession(prev => prev ? { ...prev, currentTime: c, duration: d || prev.duration } : prev);
-                }}
-                onEnded={() => completePractice()}
-                onPlay={() => setCurrentSession(prev => prev ? { ...prev, isPlaying: true } : prev)}
-                onPause={() => setCurrentSession(prev => prev ? { ...prev, isPlaying: false } : prev)}
-                onVolumeChange={(v) => setCurrentSession(prev => prev ? { ...prev, volume: v } : prev)}
-              />
+              {format === 'Text' ? (
+                <div className="space-y-3 p-4 bg-slate-50 rounded-xl border border-slate-100 text-left max-h-[300px] overflow-y-auto">
+                  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Instructions</p>
+                  <div className="space-y-2.5">
+                    {instructions && instructions.length > 0 ? (
+                      instructions.map((step, idx) => (
+                        <div key={idx} className="flex items-start gap-2.5">
+                          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[10px] font-semibold text-primary font-mono mt-0.5">
+                            {idx + 1}
+                          </span>
+                          <span className="text-sm text-slate-700 leading-relaxed">{step}</span>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-xs text-slate-400 italic">No instructions available.</p>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <MediaPlayer
+                  key={`session-audio-${currentSession.practice.id}-${mediaInstanceKey}`}
+                  audioUrl={format === 'Audio' || format === 'Audio/Video' ? audioUrl : undefined}
+                  videoUrl={format === 'Video' || format === 'Audio/Video' ? videoUrl : undefined}
+                  youtubeUrl={youtubeUrl}
+                  poster={currentSession.practice.image}
+                  title={currentSession.practice.title}
+                  artist={currentSession.practice.instructor}
+                  autoPlay
+                  playing={currentSession.isPlaying}
+                  volume={currentSession.volume}
+                  variant="full"
+                  onTimeUpdate={(c, d) => {
+                    setCurrentSession(prev => prev ? { ...prev, currentTime: c, duration: d || prev.duration } : prev);
+                  }}
+                  onEnded={() => completePractice()}
+                  onPlay={() => setCurrentSession(prev => prev ? { ...prev, isPlaying: true } : prev)}
+                  onPause={() => setCurrentSession(prev => prev ? { ...prev, isPlaying: false } : prev)}
+                  onVolumeChange={(v) => setCurrentSession(prev => prev ? { ...prev, volume: v } : prev)}
+                />
+              )}
             </div>
 
             <div className="flex items-center justify-center gap-3 pt-2">
@@ -738,7 +770,7 @@ export function Practices({ onNavigate }: PracticesProps) {
       <div className="min-h-screen bg-background page-enter">
         {/* Header */}
         <div className="bg-gradient-to-r from-primary/10 to-accent/10">
-          <div className={`max-w-6xl mx-auto ${device.isMobile ? 'p-4' : 'p-6'}`}>
+          <div className="max-w-6xl mx-auto px-4 md:px-6 py-4 md:py-6">
             <div className={`flex items-center gap-4 ${device.isMobile ? 'mb-4' : 'mb-6'}`}>
               <Button 
                 variant="ghost" 
@@ -752,7 +784,7 @@ export function Practices({ onNavigate }: PracticesProps) {
             </div>
 
             <div className={`space-y-2 ${device.isMobile ? 'mb-4' : 'mb-6'}`}>
-              <h1 className={`font-bold ${device.isMobile ? 'text-2xl truncate' : 'text-3xl'}`}>
+              <h1 className="text-2xl md:text-3xl font-bold text-foreground truncate">
                 Mindful Practices
               </h1>
               <p className={`text-muted-foreground ${device.isMobile ? 'text-sm truncate' : 'text-lg'}`}>
@@ -811,7 +843,7 @@ export function Practices({ onNavigate }: PracticesProps) {
         </div>
 
         {/* Main Content */}
-        <div className={`max-w-6xl mx-auto ${device.isMobile ? 'py-4 px-4' : 'py-8 px-6'}`}>
+        <div className="max-w-6xl mx-auto px-4 md:px-6 py-4 md:py-6">
         
         {/* Sticky Filter Toolbar */}
         <div className={`${device.isMobile ? 'sticky top-0 z-10 bg-background -mx-4 px-4 py-3 border-b mb-4' : 'mb-6'}`}>
@@ -1330,7 +1362,7 @@ export function Practices({ onNavigate }: PracticesProps) {
         
         {!loading && !error && sortedPractices.length === 0 && (
           <Card className="p-8 text-center space-y-4">
-            <h3 className="text-lg font-semibold">No practices found</h3>
+            <h3 className="text-lg font-semibold text-foreground">No practices found</h3>
             <p className="text-muted-foreground">
               {hasActiveFilters ? "Try adjusting your filters" : "No practices available"}
             </p>
@@ -1489,7 +1521,7 @@ export function Practices({ onNavigate }: PracticesProps) {
                         </Badge>
                       </div>
 
-                  <h3 className="font-semibold leading-tight">{practice.title}</h3>
+                  <h3 className="text-lg font-semibold text-foreground leading-tight">{practice.title}</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     {practice.description}
                   </p>

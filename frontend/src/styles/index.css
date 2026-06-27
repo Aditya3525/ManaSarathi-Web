@@ -507,7 +507,43 @@
     }
   }
 
+  /* Smooth theme transitions across the webapp */
+  :root {
+    --theme-transition-properties: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, fill 0.3s ease, stroke 0.3s ease;
+  }
+
+  body,
+  header,
+  nav,
+  aside,
+  footer,
+  main,
+  section,
+  div,
+  h1, h2, h3, h4, h5, h6,
+  p, span, a,
+  button, input, select, textarea,
+  svg,
+  .card, .card-header, .card-content, .card-footer {
+    transition: var(--theme-transition-properties);
+  }
+
+  /* Support Accessibility Setting: Reduced Motion overrides */
+  :root.a11y-reduced-motion,
+  :root.a11y-reduced-motion *,
+  :root.a11y-reduced-motion body::before,
+  :root.a11y-reduced-motion body::after {
+    transition: none !important;
+    animation: none !important;
+  }
+
   @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      transition-duration: 0s !important;
+      animation-duration: 0s !important;
+    }
     :root[data-theme-transition] body::before,
     :root[data-theme-transition] body::after {
       animation: none !important;
@@ -5148,6 +5184,7 @@
   --muted: #f0f9ff;
   --muted-foreground: #0369a1;
   --ring: #06b6d4;
+  --input-background: #f0f9ff;
   --chart-1: #0891b2;
   --chart-2: #67e8f9;
   --chart-3: #bae6fd;
@@ -5168,9 +5205,10 @@
   --accent: #06b6d4;
   --accent-foreground: #f0f9ff;
   --muted: #1e293b;
-  --muted-foreground: #94a3b8;
+  --muted-foreground: #cbd5e1;
   --border: #334155;
   --input: #334155;
+  --input-background: #0f172a;
   --ring: #22d3ee;
 }
 
@@ -5185,6 +5223,7 @@
   --muted: #f0fdf4;
   --muted-foreground: #047857;
   --ring: #10b981;
+  --input-background: #f0fdf4;
   --chart-1: #059669;
   --chart-2: #6ee7b7;
   --chart-3: #a7f3d0;
@@ -5203,11 +5242,12 @@
   --secondary: #065f46;
   --secondary-foreground: #a7f3d0;
   --accent: #10b981;
-  --accent-foreground: #ecfdf5;
+  --accent-foreground: #064e3b;
   --muted: #14291e;
   --muted-foreground: #86a88f;
   --border: #1f3d2e;
   --input: #1f3d2e;
+  --input-background: #0a1e14;
   --ring: #34d399;
 }
 
@@ -5222,6 +5262,7 @@
   --muted: #fff7ed;
   --muted-foreground: #c2410c;
   --ring: #f97316;
+  --input-background: #fff7ed;
   --chart-1: #ea580c;
   --chart-2: #fbbf24;
   --chart-3: #fcd34d;
@@ -5236,7 +5277,7 @@
   --card: #2d1812;
   --card-foreground: #fff7ed;
   --primary: #ea580c;
-  --primary-foreground: #fff7ed;
+  --primary-foreground: #431407;
   --secondary: #7c2d12;
   --secondary-foreground: #fed7aa;
   --accent: #c2410c;
@@ -5245,6 +5286,7 @@
   --muted-foreground: #d4a574;
   --border: #431407;
   --input: #431407;
+  --input-background: #1c0f0a;
   --ring: #fb923c;
 }
 
@@ -5259,6 +5301,7 @@
   --muted: #faf5ff;
   --muted-foreground: #6d28d9;
   --ring: #8b5cf6;
+  --input-background: #faf5ff;
   --chart-1: #7c3aed;
   --chart-2: #c084fc;
   --chart-3: #e9d5ff;
@@ -5277,11 +5320,12 @@
   --secondary: #5b21b6;
   --secondary-foreground: #ddd6fe;
   --accent: #8b5cf6;
-  --accent-foreground: #faf5ff;
+  --accent-foreground: #2e1065;
   --muted: #2a1835;
   --muted-foreground: #b99edb;
   --border: #3b0764;
   --input: #3b0764;
+  --input-background: #1a0f25;
   --ring: #a78bfa;
 }
 
@@ -5296,6 +5340,7 @@
   --muted: #fafaf9;
   --muted-foreground: #525252;
   --ring: #737373;
+  --input-background: #fafaf9;
   --chart-1: #737373;
   --chart-2: #a3a3a3;
   --chart-3: #d4d4d4;
@@ -5314,11 +5359,12 @@
   --secondary: #404040;
   --secondary-foreground: #e5e5e5;
   --accent: #737373;
-  --accent-foreground: #fafaf9;
+  --accent-foreground: #171717;
   --muted: #262626;
   --muted-foreground: #a3a3a3;
   --border: #404040;
   --input: #404040;
+  --input-background: #1a1a1a;
   --ring: #a3a3a3;
 }
 
@@ -5326,16 +5372,19 @@
    These keep semantic foreground/background pairs at WCAG AA contrast and keep
    focus rings above the 3:1 UI-component threshold. */
 :root:not(.a11y-high-contrast):not([data-color-palette]) {
-  --primary: #84633f;
-  --primary-hover: #755735;
-  --ring: #84633f;
-  --muted-foreground: #6d5f56;
+  --primary: #047857;
+  --primary-hover: #065f46;
+  --ring: #047857;
+  --muted-foreground: #047857;
 }
 
 :root:not(.a11y-high-contrast):not([data-color-palette])[data-theme="dark"],
 :root:not(.a11y-high-contrast):not([data-color-palette]).dark {
-  --secondary-foreground: #102016;
-  --accent-foreground: #102822;
+  --secondary-foreground: #ecfdf5;
+  --accent-foreground: #064e3b;
+  --primary: #34d399;
+  --ring: #34d399;
+  --accent: #34d399;
 }
 
 :root:not(.a11y-high-contrast)[data-color-palette="ocean"] {
@@ -5345,6 +5394,8 @@
 
 :root:not(.a11y-high-contrast)[data-color-palette="ocean"][data-theme="dark"],
 :root:not(.a11y-high-contrast)[data-color-palette="ocean"].dark {
+  --primary: #22d3ee;
+  --ring: #22d3ee;
   --accent: #22d3ee;
   --accent-foreground: #164e63;
 }
@@ -5356,6 +5407,8 @@
 
 :root:not(.a11y-high-contrast)[data-color-palette="forest"][data-theme="dark"],
 :root:not(.a11y-high-contrast)[data-color-palette="forest"].dark {
+  --primary: #34d399;
+  --ring: #34d399;
   --accent: #34d399;
   --accent-foreground: #064e3b;
 }

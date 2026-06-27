@@ -20,7 +20,7 @@ import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 
 import { Badge } from '../../ui/badge';
 import { Button } from '../../ui/button';
-import { MediaPlayer } from '../../common/MediaPlayer';
+import { MediaPlayer, extractYouTubeId } from '../../common/MediaPlayer';
 import {
   Dialog,
   DialogContent
@@ -136,11 +136,15 @@ export function MediaPlayerDialog({ item, open, onOpenChange, showBreathingGuide
   const hideControlsTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const media = item?.media ?? null;
+  const audioYtId = media?.kind === 'audio' ? extractYouTubeId(media?.src) : null;
+  const resolvedYoutubeId = media?.youtubeId || audioYtId || undefined;
+
   const isVideo = media?.kind === 'video' && !media.youtubeId;
-  const isYouTube = media?.kind === 'video' && !!media.youtubeId;
-  const isAudio = media?.kind === 'audio';
+  const isYouTube = (media?.kind === 'video' && !!media.youtubeId) || !!audioYtId;
+  const isAudio = media?.kind === 'audio' && !audioYtId;
   const useSharedVideoPlayer = isVideo || isYouTube;
   const isTextualItem = item?.displayType === 'article' || item?.displayType === 'story' || item?.displayType === 'resource';
+  const isLightMode = isAudio || isTextualItem;
   const textualBody = typeof item?.body === 'string' ? item.body.trim() : '';
   const isTextBodyUrl = isProbablyUrl(textualBody);
   const externalUrl = item?.externalUrl || (isTextBodyUrl ? textualBody : null);
@@ -358,10 +362,10 @@ export function MediaPlayerDialog({ item, open, onOpenChange, showBreathingGuide
       <DialogContent 
         className={cn(
           "max-w-6xl p-0 overflow-hidden border-none shadow-2xl transition-colors duration-500",
-          isAudio ? 'bg-[#F2F5F3] text-slate-900' : 'bg-slate-950 text-white',
+          isLightMode ? 'bg-gradient-to-br from-slate-50 to-[#F2F5F3] text-slate-900' : 'bg-slate-950 text-white',
           "!bg-opacity-100"
         )}
-        style={{ backgroundColor: isAudio ? '#F2F5F3' : '#020617' }}
+        style={{ backgroundColor: isLightMode ? undefined : '#020617' }}
         aria-label={`Media player: ${item?.title || 'No content'}`}
       >
         {item ? (
@@ -371,9 +375,9 @@ export function MediaPlayerDialog({ item, open, onOpenChange, showBreathingGuide
               ref={containerRef}
               className={cn(
                 "relative flex flex-col",
-                isAudio ? 'bg-[#E6EBE8] p-12 items-center justify-center' : 'bg-black items-center justify-center group'
+                isLightMode ? 'bg-gradient-to-tr from-cyan-50/70 via-teal-50/40 to-emerald-50/60 p-12 items-center justify-center' : 'bg-black items-center justify-center group'
               )}
-              style={{ backgroundColor: isAudio ? '#E6EBE8' : '#000000' }}
+              style={{ backgroundColor: isLightMode ? undefined : '#000000' }}
               onMouseMove={handleMouseMove}
             >
               {/* Completion Celebration Overlay */}
@@ -388,11 +392,11 @@ export function MediaPlayerDialog({ item, open, onOpenChange, showBreathingGuide
               )}
 
               {/* --- VIDEO PLAYER --- */}
-              {useSharedVideoPlayer && (media?.src || media?.youtubeId) ? (
+              {useSharedVideoPlayer && (media?.src || resolvedYoutubeId) ? (
                 <div className="h-full w-full">
                   <MediaPlayer
                     videoUrl={!isYouTube ? media?.src : undefined}
-                    youtubeUrl={media?.youtubeId || undefined}
+                    youtubeUrl={resolvedYoutubeId}
                     poster={media?.poster ?? item.thumbnail}
                     title={item.title}
                     artist={item.author || undefined}
@@ -710,7 +714,7 @@ export function MediaPlayerDialog({ item, open, onOpenChange, showBreathingGuide
                 <div className="relative w-full h-full bg-black">
                   <iframe
                     className="w-full h-full"
-                    src={`https://www.youtube.com/embed/${media?.youtubeId}?autoplay=1&rel=0&modestbranding=1`}
+                    src={`https://www.youtube.com/embed/${resolvedYoutubeId}?autoplay=1&rel=0&modestbranding=1`}
                     title={item.title}
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
@@ -720,31 +724,33 @@ export function MediaPlayerDialog({ item, open, onOpenChange, showBreathingGuide
 
               {/* --- TEXTUAL/RESOURCE VIEW --- */}
               {!isVideo && !isAudio && !isYouTube && isTextualItem && (
-                <div className="w-full max-w-3xl px-6 py-10">
-                  <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                    <h3 className="text-xl font-semibold text-slate-900 mb-3">{item.title}</h3>
-                    <p className="text-sm text-slate-600 mb-5">
-                      {item.description || 'This item is presented as reading/resource content.'}
-                    </p>
+                <ScrollArea className="w-full h-full max-h-[600px]">
+                  <div className="w-full max-w-3xl px-6 py-10 mx-auto">
+                    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                      <h3 className="text-xl font-semibold text-slate-900 mb-3">{item.title}</h3>
+                      <p className="text-sm text-slate-600 mb-5">
+                        {item.description || 'This item is presented as reading/resource content.'}
+                      </p>
 
-                    {externalUrl && (
-                      <Button
-                        type="button"
-                        onClick={() => window.open(externalUrl, '_blank', 'noopener,noreferrer')}
-                        className="mb-4"
-                      >
-                        <ExternalLink className="h-4 w-4 mr-2" />
-                        Open Source
-                      </Button>
-                    )}
+                      {externalUrl && (
+                        <Button
+                          type="button"
+                          onClick={() => window.open(externalUrl, '_blank', 'noopener,noreferrer')}
+                          className="mb-4"
+                        >
+                          <ExternalLink className="h-4 w-4 mr-2" />
+                          Open Source
+                        </Button>
+                      )}
 
-                    {!!textualBody && !isTextBodyUrl && (
-                      <div className="prose prose-sm max-w-none text-slate-700 whitespace-pre-wrap">
-                        {textualBody}
-                      </div>
-                    )}
+                      {!!textualBody && !isTextBodyUrl && (
+                        <div className="prose prose-sm max-w-none text-slate-700 whitespace-pre-wrap">
+                          {textualBody}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
+                </ScrollArea>
               )}
             </div>
 
@@ -752,9 +758,9 @@ export function MediaPlayerDialog({ item, open, onOpenChange, showBreathingGuide
             <div 
               className={cn(
                 "flex flex-col h-full overflow-hidden",
-                isAudio ? 'bg-white' : 'bg-slate-900 border-l border-white/5'
+                isLightMode ? 'bg-white/80 backdrop-blur-md border-l border-slate-200/50' : 'bg-slate-900 border-l border-white/5'
               )}
-              style={{ backgroundColor: isAudio ? '#ffffff' : '#0f172a' }}
+              style={{ backgroundColor: isLightMode ? undefined : '#0f172a' }}
             >
               <ScrollArea className="flex-1">
                 <div className="p-8 space-y-8">
@@ -762,12 +768,12 @@ export function MediaPlayerDialog({ item, open, onOpenChange, showBreathingGuide
                   <div className="space-y-3">
                     <div className="flex items-center gap-2 mb-2">
                       {item.category && (
-                        <Badge variant="outline" className={`capitalize ${isAudio ? 'border-teal-100 text-teal-700 bg-teal-50' : 'border-white/10 text-white/60'
+                        <Badge variant="outline" className={`capitalize ${isLightMode ? 'border-teal-100 text-teal-700 bg-teal-50' : 'border-white/10 text-white/60'
                           }`}>
                           {item.category}
                         </Badge>
                       )}
-                      <Badge variant="outline" className={`flex items-center gap-1 ${isAudio ? 'border-slate-100 text-slate-500' : 'border-white/10 text-white/60'
+                      <Badge variant="outline" className={`flex items-center gap-1 ${isLightMode ? 'border-slate-100 text-slate-500' : 'border-white/10 text-white/60'
                         }`}>
                         <Clock className="h-3 w-3" />
                         {item.durationLabel || formatTime(duration)}
@@ -780,13 +786,13 @@ export function MediaPlayerDialog({ item, open, onOpenChange, showBreathingGuide
                       )}
                     </div>
 
-                    <h2 className={`text-2xl font-bold leading-tight ${isAudio ? 'text-slate-900' : 'text-white'
+                    <h2 className={`text-2xl font-bold leading-tight ${isLightMode ? 'text-slate-900' : 'text-white'
                       }`}>
                       {item.title}
                     </h2>
 
                     {item.description && (
-                      <p className={`text-sm leading-relaxed ${isAudio ? 'text-slate-500' : 'text-white/60'
+                      <p className={`text-sm leading-relaxed ${isLightMode ? 'text-slate-500' : 'text-white/60'
                         }`}>
                         {item.description}
                       </p>
@@ -796,7 +802,7 @@ export function MediaPlayerDialog({ item, open, onOpenChange, showBreathingGuide
                   {/* Tags */}
                   {item.tags.length > 0 && (
                     <div className="space-y-3">
-                      <h4 className={`text-xs font-semibold uppercase tracking-wider ${isAudio ? 'text-slate-400' : 'text-white/40'
+                      <h4 className={`text-xs font-semibold uppercase tracking-wider ${isLightMode ? 'text-slate-400' : 'text-white/40'
                         }`}>
                         Tags
                       </h4>
@@ -805,7 +811,7 @@ export function MediaPlayerDialog({ item, open, onOpenChange, showBreathingGuide
                           <Badge
                             key={tag}
                             variant="secondary"
-                            className={`border-none ${isAudio
+                            className={`border-none ${isLightMode
                                 ? 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                                 : 'bg-white/10 text-white/80 hover:bg-white/20'
                               }`}
@@ -844,7 +850,7 @@ export function MediaPlayerDialog({ item, open, onOpenChange, showBreathingGuide
 
                   {/* Article Content */}
                   {(item.displayType === 'article' || item.displayType === 'story' || item.displayType === 'resource') && textualBody && !isTextBodyUrl && (
-                    <div className={`mt-4 prose prose-sm max-w-none ${isAudio ? 'prose-slate' : 'prose-invert'
+                    <div className={`mt-4 prose prose-sm max-w-none ${isLightMode ? 'prose-slate' : 'prose-invert'
                       }`}>
                       {textualBody}
                     </div>

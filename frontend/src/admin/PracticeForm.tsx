@@ -113,7 +113,43 @@ export const PracticeForm: React.FC<PracticeFormProps> = ({ existing, onSaved, o
           normalizedTags = [];
         }
       }
-      setFormData({ ...existing, tags: normalizedTags || [] });
+
+      const parseJsonArray = (val: any): string[] => {
+        if (Array.isArray(val)) return val;
+        if (typeof val === 'string' && val.trim().length > 0) {
+          try {
+            const parsed = JSON.parse(val);
+            return Array.isArray(parsed) ? parsed : [];
+          } catch {
+            return [];
+          }
+        }
+        return [];
+      };
+
+      setFormData({
+        ...existing,
+        tags: normalizedTags || [],
+        focusAreas: parseJsonArray(existing.focusAreas),
+        requiredEquipment: parseJsonArray(existing.requiredEquipment),
+        environment: parseJsonArray(existing.environment),
+        timeOfDay: parseJsonArray(existing.timeOfDay),
+        sensoryEngagement: parseJsonArray(existing.sensoryEngagement),
+        contraindications: parseJsonArray(existing.contraindications),
+        steps: (() => {
+          const rawSteps = (existing as any).steps;
+          if (Array.isArray(rawSteps)) return rawSteps;
+          if (typeof rawSteps === 'string' && rawSteps.trim().length > 0) {
+            try {
+              const parsed = JSON.parse(rawSteps);
+              return Array.isArray(parsed) ? parsed : [];
+            } catch {
+              return [];
+            }
+          }
+          return [];
+        })()
+      });
       setYoutubeInput(existing.youtubeUrl || '');
     }
   }, [existing]);

@@ -96,8 +96,8 @@
 
 /* Gentle glow for active states */
 @keyframes gentle-glow {
-  0%, 100% { box-shadow: 0 0 0 0 hsl(var(--primary) / 0); }
-  50% { box-shadow: 0 0 16px 4px hsl(var(--primary) / 0.15); }
+  0%, 100% { box-shadow: 0 0 0 0 transparent; }
+  50% { box-shadow: 0 0 16px 4px color-mix(in oklab, var(--primary) 15%, transparent); }
 }
 
 .animate-glow {

@@ -1,0 +1,716 @@
+================================================================================
+ManaSarathi Content & Practice Seeding — AI Agent Prompt
+Version: 1.0  |  Target: ManaSarathi Admin Portal Database
+================================================================================
+
+SYSTEM CONTEXT
+================================================================================
+
+You are an expert mental health content researcher and writer with deep knowledge
+of both Western psychology (CBT, DBT, mindfulness-based therapies) and Eastern
+wellness traditions (yoga, pranayama, Vipassana, Zen, Ayurveda).
+
+Your job is to produce a COMPLETE, DATABASE-READY JSON seed file for the
+ManaSarathi mental wellness platform. The output must contain:
+
+  - Section A: "contents" array — 2 samples per every meaningful content variety
+  - Section B: "practices" array — 2 samples per every meaningful practice variety
+
+Every single field in every record must be filled with real, accurate, usable
+values. No placeholders. No "TBD". No "example.com" URLs.
+
+================================================================================
+PART 1 — DATA SCHEMAS (exact field names used in the database)
+================================================================================
+
+--- CONTENT RECORD SCHEMA ---
+
+{
+  "title":              string   [REQUIRED] Clear, descriptive title
+  "type":               "video" | "audio" | "article" | "playlist" | "story"
+  "approach":           "western" | "eastern" | "hybrid"
+  "category":           "Mindfulness" | "Anxiety" | "Stress Management" |
+                        "Relaxation" | "Emotional Intelligence" | "Series"
+  "difficulty":         "Beginner" | "Intermediate" | "Advanced"
+  "description":        string   [REQUIRED] 2-4 informative, warm sentences
+  "content":            string   Full body text (articles/stories ONLY; null otherwise)
+  "url":                string   Direct URL for external article/audio; null if YouTube
+  "youtubeUrl":         string   YouTube VIDEO ID only (11 chars), e.g. "ZToicYcHIOU"
+                                 (NOT the full URL — ID only!)
+  "thumbnailUrl":       string   [REQUIRED] Real, publicly accessible image URL
+  "duration":           number   Length in minutes (required for video/audio/playlist)
+  "tags":               string[] 3-7 lowercase keyword strings
+  "isPublished":        true     (always true)
+  "scheduledPublishAt": null     (always null)
+  "contentType":        "VIDEO" | "AUDIO_MEDITATION" | "BREATHING_EXERCISE" |
+                        "ARTICLE" | "STORY" | "JOURNAL_PROMPT" |
+                        "CBT_WORKSHEET" | "YOGA_SEQUENCE" |
+                        "MINDFULNESS_EXERCISE" | "PSYCHOEDUCATION" |
+                        "CRISIS_RESOURCE"
+  "intensityLevel":     "low" | "medium" | "high"
+  "focusAreas":         string[] 2-5 lowercase focus keywords from this list:
+                        anxiety, stress, sleep, depression, focus, panic,
+                        grief, anger, trauma, self-esteem, relationships,
+                        burnout, overthinking
+  "immediateRelief":    boolean  true ONLY if usable during active distress/crisis
+  "culturalContext":    string   1-2 sentences on cultural/historical background
+                                 (null for purely Western content)
+  "hasSubtitles":       boolean  true if captions/subtitles are available
+  "transcript":         null     (leave null — too long to generate)
+}
+
+--- PRACTICE RECORD SCHEMA ---
+
+{
+  "title":              string   [REQUIRED]
+  "type":               "meditation" | "breathing" | "yoga" | "sleep"
+  "format":             "Audio" | "Video"
+                        IMPORTANT: type="sleep" must ALWAYS be format="Audio"
+  "duration":           number   [REQUIRED] Length in minutes (positive integer)
+  "level":              "Beginner" | "Intermediate" | "Advanced"
+  "approach":           "Western" | "Eastern" | "Hybrid"
+  "description":        string   [REQUIRED] 2-4 sentences
+  "audioUrl":           string   Direct audio file URL if format=Audio; null otherwise
+  "videoUrl":           string   Direct video file URL if format=Video; null otherwise
+  "youtubeUrl":         string   YouTube VIDEO ID (11 chars) if video-based; null otherwise
+  "thumbnailUrl":       string   [REQUIRED] Real public image URL
+  "tags":               string[] 3-7 lowercase keywords
+  "isPublished":        true
+  "scheduledPublishAt": null
+  "category":           "MEDITATION" | "YOGA" | "BREATHING" | "MINDFULNESS" |
+                        "JOURNALING" | "CBT_TECHNIQUE" | "GROUNDING_EXERCISE" |
+                        "SELF_REFLECTION" | "MOVEMENT" | "SLEEP_HYGIENE"
+  "intensityLevel":     "low" | "medium" | "high"
+  "requiredEquipment":  string[] e.g. ["Yoga mat", "Cushion", "Timer"]
+                                 [] for no equipment needed
+  "environment":        string[] subset of ["home", "work", "public", "nature"]
+  "timeOfDay":          string[] subset of ["morning","afternoon","evening","night"]
+  "sensoryEngagement":  string[] e.g. ["Auditory","Visual","Tactile","Breathing","Kinesthetic"]
+  "contraindications":  string[] Safety notes, e.g. ["Avoid during pregnancy"]
+                                 [] if no contraindications
+  "steps":              [        [REQUIRED FOR ALL PRACTICES] 4-8 steps
+    {
+      "step": 1,
+      "instruction": "Detailed, actionable step instruction text.",
+      "duration": 60   // seconds
+    }
+  ]
+  "focusAreas":         string[] lowercase focus keywords (same list as content)
+  "immediateRelief":    boolean  true = usable in 5-10 min during distress
+  "crisisEligible":     boolean  true = safe to show users in active emotional crisis
+}
+
+================================================================================
+PART 2 — CONTENT VARIETIES TO FIND/GENERATE (2 SAMPLES EACH)
+================================================================================
+
+For each item below, produce exactly 2 complete record objects.
+Label them as Sample 1 and Sample 2 in your thinking, but produce as JSON array items.
+
+-------- GROUP C-1: ARTICLES --------
+
+C-1a. type=article, contentType=ARTICLE, approach=western,
+      category=Mindfulness, difficulty=Beginner, intensityLevel=low
+      ACTION: Search "mindfulness for beginners science site:psychologytoday.com
+      OR site:verywellmind.com OR site:health.harvard.edu"
+      → Provide real article URL in "url" + write 400-500 word summary in "content"
+      → focusAreas: ["anxiety","stress"]
+
+C-1b. type=article, contentType=ARTICLE, approach=eastern,
+      category=Mindfulness, difficulty=Beginner, intensityLevel=low
+      ACTION: Search "Buddhist mindfulness article site:tricycle.org
+      OR site:lionsroar.com OR site:dhammatalks.org"
+      → culturalContext required
+      → focusAreas: ["focus","anxiety"]
+
+C-1c. type=article, contentType=PSYCHOEDUCATION, approach=western,
+      category=Anxiety, difficulty=Intermediate, intensityLevel=medium
+      ACTION: Search "what is anxiety disorder explained site:verywellmind.com
+      OR site:apa.org OR site:nimh.nih.gov"
+      → focusAreas: ["anxiety","panic","overthinking"]
+
+C-1d. type=article, contentType=PSYCHOEDUCATION, approach=hybrid,
+      category=Stress Management, difficulty=Beginner, intensityLevel=low
+      ACTION: Search "stress management mind body integrated approach"
+      → culturalContext required
+      → focusAreas: ["stress","burnout"]
+
+C-1e. type=article, contentType=JOURNAL_PROMPT, approach=western,
+      category=Emotional Intelligence, difficulty=Beginner, intensityLevel=low
+      ACTION: GENERATE YOURSELF. Write 5-7 reflective journaling questions
+      with 2-3 sentences of guidance per question (total 500-700 words).
+      Topic: understanding and naming your emotions after a hard day.
+      url=null (self-hosted content), thumbnailUrl=Unsplash photo
+      → focusAreas: ["self-esteem","anxiety","depression"]
+
+C-1f. type=article, contentType=JOURNAL_PROMPT, approach=eastern,
+      category=Mindfulness, difficulty=Intermediate, intensityLevel=medium
+      ACTION: GENERATE YOURSELF. Write 5-7 Zen or Buddhist-inspired journaling
+      prompts with brief context for each. Include quotes from Thich Nhat Hanh
+      or Pema Chodron where appropriate. (500-700 words)
+      culturalContext: "Rooted in Zen Buddhist contemplative practice."
+      → focusAreas: ["anxiety","overthinking","focus"]
+
+C-1g. type=article, contentType=CBT_WORKSHEET, approach=western,
+      category=Anxiety, difficulty=Intermediate, intensityLevel=medium
+      ACTION: GENERATE YOURSELF. Write a complete CBT Thought Record worksheet
+      in markdown. Include: Situation → Automatic Thoughts → Emotions (0-100%) →
+      Evidence For → Evidence Against → Balanced Thought → Mood After (0-100%).
+      Include clear instructions and one fully worked example. (700-1000 words)
+      → focusAreas: ["anxiety","overthinking","panic"]
+
+C-1h. type=article, contentType=CBT_WORKSHEET, approach=western,
+      category=Stress Management, difficulty=Advanced, intensityLevel=high
+      ACTION: GENERATE YOURSELF. Write a CBT Behavioral Activation worksheet.
+      Include: weekly activity scheduling grid, pleasure (0-10) and
+      accomplishment (0-10) rating columns, instructions, a worked example,
+      and a reflection section. (700-1000 words)
+      → focusAreas: ["depression","burnout","stress"]
+
+C-1i. type=article, contentType=CRISIS_RESOURCE, approach=western,
+      category=Anxiety, difficulty=Beginner, intensityLevel=low
+      ACTION: Find a real crisis support/grounding article from nimh.nih.gov,
+      crisistextline.org, nami.org, or similar. Provide real URL.
+      immediateRelief=true
+      → focusAreas: ["panic","anxiety","crisis"]  (note: "crisis" is allowed here as a tag)
+
+C-1j. type=article, contentType=CRISIS_RESOURCE, approach=hybrid,
+      category=Anxiety, difficulty=Beginner, intensityLevel=low
+      ACTION: Find a second crisis resource article (different source than C-1i).
+      Include both Western hotlines and Eastern grounding practices.
+      immediateRelief=true
+      culturalContext: "Integrates Western crisis psychology with Eastern
+      breathing and grounding wisdom."
+
+-------- GROUP C-2: STORIES (SELF-GENERATE ALL) --------
+
+C-2a. type=story, contentType=STORY, approach=western,
+      category=Emotional Intelligence, difficulty=Beginner, intensityLevel=low
+      ACTION: Write a 700-1000 word therapeutic story. Protagonist: a young
+      professional who feels emotionally numb after repeated work disappointments.
+      Arc: notices the numbness → names the emotion → allows herself to cry →
+      small act of self-compassion → hopeful resolution.
+      url=null. Write full story in "content".
+      → focusAreas: ["self-esteem","depression","burnout"]
+
+C-2b. type=story, contentType=STORY, approach=eastern,
+      category=Mindfulness, difficulty=Beginner, intensityLevel=low
+      ACTION: Write a 700-900 word Zen parable. An old monk and a young student.
+      The student cannot stop worrying about the future. The monk teaches a lesson
+      through a simple act (e.g., carrying water, tending a garden).
+      Dialogue-rich, sensory details, gentle life lesson.
+      culturalContext: "Rooted in the Zen Buddhist oral storytelling tradition
+      of the Tang Dynasty (618-907 CE)."
+      → focusAreas: ["anxiety","overthinking","focus"]
+
+C-2c. type=story, contentType=STORY, approach=hybrid,
+      category=Stress Management, difficulty=Intermediate, intensityLevel=medium
+      ACTION: Write a 900-1200 word contemporary story. A software engineer
+      experiencing severe burnout discovers healing through CBT therapy AND a
+      yoga retreat. Dual arc showing both Western and Eastern approaches
+      complementing each other.
+      → focusAreas: ["stress","burnout","anxiety"]
+
+C-2d. type=story, contentType=STORY, approach=western,
+      category=Anxiety, difficulty=Intermediate, intensityLevel=medium
+      ACTION: Write a 700-900 word first-person story. The narrator experiences
+      a panic attack in a supermarket. Uses the 5-4-3-2-1 grounding technique
+      step-by-step within the narrative. Ends with relief and self-compassion.
+      Educational but narrative-driven. immediateRelief=true
+      → focusAreas: ["panic","anxiety","stress"]
+
+-------- GROUP C-3: VIDEOS (YOUTUBE) --------
+
+For each, search YouTube, pick a real high-quality video, and extract the 11-char
+video ID. Set thumbnailUrl = "https://img.youtube.com/vi/{VIDEO_ID}/maxresdefault.jpg"
+
+C-3a. type=video, contentType=VIDEO, approach=western,
+      category=Mindfulness, difficulty=Beginner, intensityLevel=low
+      YouTube Search: "guided mindfulness meditation beginners 10 minutes"
+      Prefer: Headspace, Calm, Great Meditation, Michael Sealey
+      Target duration: 10-20 min
+
+C-3b. type=video, contentType=VIDEO, approach=eastern,
+      category=Mindfulness, difficulty=Intermediate, intensityLevel=medium
+      YouTube Search: "Vipassana insight meditation guided 20 minutes"
+      Prefer: Eastern/Buddhist teachers, Insight Meditation Society
+      culturalContext required. Target duration: 15-30 min
+
+C-3c. type=video, contentType=YOGA_SEQUENCE, approach=eastern,
+      category=Relaxation, difficulty=Beginner, intensityLevel=low
+      YouTube Search: "Hatha yoga beginners relaxation Yoga with Adriene"
+      Target duration: 20-30 min
+
+C-3d. type=video, contentType=YOGA_SEQUENCE, approach=western,
+      category=Stress Management, difficulty=Intermediate, intensityLevel=medium
+      YouTube Search: "yoga for stress and anxiety intermediate flow"
+      Target duration: 25-45 min
+
+C-3e. type=video, contentType=MINDFULNESS_EXERCISE, approach=hybrid,
+      category=Anxiety, difficulty=Beginner, intensityLevel=low
+      YouTube Search: "mindfulness exercise anxiety relief 5 minutes guided"
+      immediateRelief=true. Target duration: 5-15 min
+
+C-3f. type=video, contentType=MINDFULNESS_EXERCISE, approach=western,
+      category=Emotional Intelligence, difficulty=Intermediate, intensityLevel=medium
+      YouTube Search: "emotional regulation mindfulness RAIN technique video"
+      Target duration: 10-25 min
+
+C-3g. type=video, contentType=BREATHING_EXERCISE, approach=western,
+      category=Anxiety, difficulty=Beginner, intensityLevel=low
+      YouTube Search: "4-7-8 breathing technique anxiety relief guided video"
+      immediateRelief=true. Target duration: 3-10 min
+
+C-3h. type=video, contentType=BREATHING_EXERCISE, approach=eastern,
+      category=Relaxation, difficulty=Intermediate, intensityLevel=medium
+      YouTube Search: "pranayama breathing guided video Sadhguru OR
+      pranayama for relaxation Indian channel"
+      culturalContext required. Target duration: 10-20 min
+
+C-3i. type=video, contentType=CRISIS_RESOURCE, approach=western,
+      category=Anxiety, difficulty=Beginner, intensityLevel=low
+      YouTube Search: "5-4-3-2-1 grounding technique panic attack relief video"
+      immediateRelief=true. Target duration: 3-8 min
+
+C-3j. type=video, contentType=PSYCHOEDUCATION, approach=western,
+      category=Anxiety, difficulty=Intermediate, intensityLevel=medium
+      YouTube Search: "how anxiety works brain neuroscience explained"
+      Prefer: TED-Ed, Dr. Tracey Marks, HealthyGamerGG, Kurzgesagt
+      Target duration: 5-15 min
+
+-------- GROUP C-4: AUDIO --------
+
+For YouTube-sourced audio: set youtubeUrl=VIDEO_ID, url=null.
+For direct audio files: set url=DIRECT_MP3_URL, youtubeUrl=null.
+
+C-4a. type=audio, contentType=AUDIO_MEDITATION, approach=western,
+      category=Mindfulness, difficulty=Beginner, intensityLevel=low
+      YouTube Search: "body scan meditation guided audio sleep beginners"
+      Prefer: Michael Sealey, Jason Stephenson, Bob Baker Mindfulness
+      Target duration: 15-25 min
+
+C-4b. type=audio, contentType=AUDIO_MEDITATION, approach=eastern,
+      category=Mindfulness, difficulty=Intermediate, intensityLevel=medium
+      YouTube Search: "Vipassana body awareness meditation audio Eastern teacher"
+      OR "Tibetan singing bowl guided meditation"
+      culturalContext required. Target duration: 20-30 min
+
+C-4c. type=audio, contentType=BREATHING_EXERCISE, approach=western,
+      category=Anxiety, difficulty=Beginner, intensityLevel=low
+      YouTube Search: "guided breathing exercise for anxiety audio 4-7-8"
+      immediateRelief=true. Target duration: 5-12 min
+
+C-4d. type=audio, contentType=BREATHING_EXERCISE, approach=eastern,
+      category=Relaxation, difficulty=Intermediate, intensityLevel=medium
+      YouTube Search: "Nadi Shodhana alternate nostril breathing guided audio"
+      culturalContext: "Nadi Shodhana (alternate nostril breathing) is
+      described in the Hatha Yoga Pradipika (c. 15th century). It is said
+      to balance solar (pingala) and lunar (ida) energy channels."
+      Target duration: 10-20 min
+
+C-4e. type=audio, contentType=MINDFULNESS_EXERCISE, approach=hybrid,
+      category=Stress Management, difficulty=Beginner, intensityLevel=low
+      YouTube Search: "RAIN mindfulness meditation audio guided Tara Brach"
+      Target duration: 15-25 min
+
+C-4f. type=audio, contentType=MINDFULNESS_EXERCISE, approach=western,
+      category=Emotional Intelligence, difficulty=Advanced, intensityLevel=high
+      YouTube Search: "loving kindness metta meditation advanced guided 30 minutes"
+      Target duration: 25-45 min
+
+-------- GROUP C-5: PLAYLISTS --------
+
+C-5a. type=playlist, contentType=AUDIO_MEDITATION, approach=western,
+      category=Series, difficulty=Beginner, intensityLevel=low
+      ACTION: Find a real YouTube playlist for "beginner anxiety meditation series"
+      Set url=full YouTube playlist URL (https://www.youtube.com/playlist?list=...)
+      youtubeUrl=null (playlists don't have single video IDs)
+      duration=estimated total minutes of all tracks
+      Description should mention it is a multi-session series.
+
+C-5b. type=playlist, contentType=VIDEO, approach=eastern,
+      category=Series, difficulty=Intermediate, intensityLevel=medium
+      ACTION: Find a real YouTube playlist for eastern mindfulness or yoga series.
+      Search: "Eastern mindfulness series playlist site:youtube.com"
+      OR "Yoga Nidra series playlist YouTube"
+
+================================================================================
+PART 3 — PRACTICE VARIETIES TO FIND/GENERATE (2 SAMPLES EACH)
+================================================================================
+
+-------- GROUP P-1: MEDITATION PRACTICES --------
+
+P-1a. type=meditation, format=Audio, approach=Western, category=MEDITATION,
+      level=Beginner, intensityLevel=low
+      YouTube Search: "guided meditation beginners 10 minutes anxiety relief"
+      steps (5 steps): Getting settled → Body awareness → Breath focus →
+      Noting thoughts → Closing
+      environment=["home"], timeOfDay=["morning","evening"]
+      requiredEquipment=["Comfortable chair or cushion"]
+      sensoryEngagement=["Auditory"]
+      focusAreas=["anxiety","stress","focus"]
+      immediateRelief=false, crisisEligible=false
+
+P-1b. type=meditation, format=Audio, approach=Eastern, category=MEDITATION,
+      level=Intermediate, intensityLevel=medium
+      YouTube Search: "Vipassana insight meditation 20 minutes guided audio"
+      culturalContext: "Vipassana (insight meditation) traces to the original
+      teachings of Siddhartha Gautama Buddha and was preserved in the Theravada
+      tradition of Myanmar and Sri Lanka."
+      steps (6 steps)
+      environment=["home","nature"], timeOfDay=["morning"]
+      focusAreas=["anxiety","focus","overthinking"]
+
+P-1c. type=meditation, format=Video, approach=Hybrid, category=MINDFULNESS,
+      level=Beginner, intensityLevel=low
+      YouTube Search: "mindfulness meditation video guided hybrid east west"
+      steps (5 steps): Settling → Breathing anchor → Open awareness →
+      Labelling → Return to centre
+      environment=["home","work"], timeOfDay=["morning","afternoon"]
+      sensoryEngagement=["Auditory","Visual"]
+
+P-1d. type=meditation, format=Audio, approach=Western, category=CBT_TECHNIQUE,
+      level=Intermediate, intensityLevel=medium
+      YouTube Search: "ACT defusion meditation cognitive defusion audio guided"
+      steps (6 steps): Describe the ACT cognitive defusion exercise as a
+      guided practice (leaves on a stream / words on a screen technique)
+      focusAreas=["overthinking","anxiety","depression"]
+      contraindications=[]
+
+P-1e. type=meditation, format=Audio, approach=Eastern, category=SELF_REFLECTION,
+      level=Advanced, intensityLevel=high
+      YouTube Search: "Zen self-inquiry meditation advanced who am I Ramana"
+      OR "Advaita self-inquiry meditation audio"
+      culturalContext: "Self-inquiry (Atma Vichara) was systematised by Sri
+      Ramana Maharshi at Arunachala in the early 20th century, drawing on
+      Advaita Vedanta philosophy."
+      timeOfDay=["morning"]
+      focusAreas=["depression","self-esteem","anxiety"]
+
+P-1f. type=meditation, format=Video, approach=Eastern, category=MINDFULNESS,
+      level=Advanced, intensityLevel=high
+      YouTube Search: "Tibetan Buddhist analytical meditation advanced video"
+      culturalContext: "Analytical meditation (Lhaktong/Vipassana) is
+      central to Tibetan Mahayana practice as described in Tsongkhapa's
+      Lamrim Chenmo (15th century)."
+      focusAreas=["depression","overthinking","self-esteem"]
+
+-------- GROUP P-2: BREATHING PRACTICES --------
+
+P-2a. type=breathing, format=Audio, approach=Western, category=BREATHING,
+      level=Beginner, intensityLevel=low
+      YouTube Search: "box breathing guided audio 4-4-4-4 military calm"
+      steps (4 cycles): Inhale 4s → Hold 4s → Exhale 4s → Hold 4s
+      Generate 6 detailed steps: (Posture → First cycle explanation → 
+      3 practice cycles → Closing breath → Return to normal)
+      immediateRelief=true, crisisEligible=true
+      environment=["home","work","public","nature"]
+      timeOfDay=["morning","afternoon","evening","night"]
+      requiredEquipment=[]
+      focusAreas=["anxiety","stress","panic"]
+      contraindications=[]
+
+P-2b. type=breathing, format=Audio, approach=Western, category=GROUNDING_EXERCISE,
+      level=Beginner, intensityLevel=low
+      YouTube Search: "4-7-8 breathing technique anxiety sleep audio Dr. Weil"
+      steps (6 steps): Position → Tongue placement → Exhale fully → Inhale 4s
+      → Hold 7s → Exhale 8s → 3 cycle completion
+      immediateRelief=true, crisisEligible=true
+      contraindications=["Do not perform more than 4 cycles in first month of practice","May cause dizziness — sit rather than stand"]
+      focusAreas=["anxiety","sleep","panic"]
+
+P-2c. type=breathing, format=Video, approach=Eastern, category=BREATHING,
+      level=Intermediate, intensityLevel=medium
+      YouTube Search: "Nadi Shodhana alternate nostril breathing video guided"
+      culturalContext: "Nadi Shodhana Pranayama (alternate nostril breathing) is
+      described in the Hatha Yoga Pradipika (c. 15th century CE). It is said
+      to purify the 72,000 nadis (energy channels) and bring balance."
+      steps (7 steps): Sitting posture → Vishnu Mudra hand position →
+      Right nostril close → Left inhale → Both close (hold) →
+      Right exhale → Right inhale → Left exhale → Rest
+      environment=["home"]
+      timeOfDay=["morning"]
+      requiredEquipment=["Comfortable seated position","Empty stomach recommended"]
+      contraindications=["Avoid during respiratory illness","Consult physician if high blood pressure","Not recommended during pregnancy without trained guidance"]
+      focusAreas=["anxiety","stress","focus"]
+
+P-2d. type=breathing, format=Audio, approach=Eastern, category=BREATHING,
+      level=Advanced, intensityLevel=high
+      YouTube Search: "Kapalabhati pranayama skull shining breath guided advanced"
+      culturalContext: "Kapalabhati (skull-shining breath) is a Shatkarma
+      (cleansing technique) described in the Hatha Yoga Pradipika. 'Kapala'
+      means skull; 'bhati' means to shine or illuminate."
+      steps (5 steps): Seated posture → Passive inhale → Forceful exhale
+      pumps → Build rhythm → Rest and observe
+      contraindications=["Not suitable for high blood pressure","Avoid if hernia or abdominal surgery within 6 months","Consult doctor if epilepsy or heart condition","Not during pregnancy","Stop immediately if dizziness occurs"]
+      requiredEquipment=["Empty stomach — practice only before eating"]
+      environment=["home"]
+      timeOfDay=["morning"]
+      focusAreas=["focus","stress","burnout"]
+
+P-2e. type=breathing, format=Audio, approach=Hybrid, category=GROUNDING_EXERCISE,
+      level=Beginner, intensityLevel=low
+      YouTube Search: "5-4-3-2-1 grounding with breathing audio guided anxiety"
+      steps (8 steps): Slow breath → 5 things you see → slow breath → 
+      4 things you feel → slow breath → 3 things you hear → slow breath →
+      2 things you smell → slow breath → 1 thing you taste → closing breath
+      immediateRelief=true, crisisEligible=true
+      environment=["home","work","public","nature"]
+      timeOfDay=["morning","afternoon","evening","night"]
+      focusAreas=["panic","anxiety","trauma","stress"]
+
+P-2f. type=breathing, format=Video, approach=Western, category=CBT_TECHNIQUE,
+      level=Intermediate, intensityLevel=medium
+      YouTube Search: "diaphragmatic belly breathing technique CBT anxiety video"
+      steps (5 steps): Position → Hand placement (belly/chest) →
+      Belly breath cue → Slow exhale → 10-rep practice
+      sensoryEngagement=["Tactile","Breathing","Visual"]
+      environment=["home","work"]
+      focusAreas=["anxiety","stress","panic"]
+      contraindications=["Those with severe COPD should consult a physician first"]
+
+-------- GROUP P-3: YOGA PRACTICES --------
+
+P-3a. type=yoga, format=Video, approach=Eastern, category=YOGA,
+      level=Beginner, intensityLevel=low
+      YouTube Search: "Hatha yoga complete beginners 20 minutes Yoga with Adriene"
+      OR "Yoga with Kassandra yin yoga beginners"
+      steps (5 steps): Centering breath → Warm-up (cat-cow) → Standing
+      sequence → Cool-down → Savasana
+      environment=["home"]
+      timeOfDay=["morning","evening"]
+      requiredEquipment=["Yoga mat","Optional: yoga blocks","Optional: strap"]
+      contraindications=["Consult doctor if recent back or knee injury","Avoid inversions during pregnancy","Do not force any pose — honour your body"]
+      sensoryEngagement=["Visual","Kinesthetic","Breathing"]
+      focusAreas=["stress","anxiety","sleep"]
+
+P-3b. type=yoga, format=Video, approach=Eastern, category=YOGA,
+      level=Intermediate, intensityLevel=medium
+      YouTube Search: "Vinyasa yoga flow intermediate 30 minutes"
+      steps (6 steps)
+      contraindications=["Not for acute lower back pain","Avoid if wrist injury or carpal tunnel","Modify poses if neck injury"]
+      requiredEquipment=["Yoga mat","Yoga blocks recommended"]
+      focusAreas=["stress","burnout","focus"]
+
+P-3c. type=yoga, format=Video, approach=Western, category=MOVEMENT,
+      level=Beginner, intensityLevel=low
+      YouTube Search: "yoga for anxiety and stress beginners therapeutic movement"
+      Describe as therapeutic movement rather than traditional yoga.
+      steps (5 steps)
+      environment=["home"]
+      timeOfDay=["morning","afternoon"]
+      focusAreas=["anxiety","stress","depression"]
+      sensoryEngagement=["Kinesthetic","Breathing","Visual"]
+
+P-3d. type=yoga, format=Video, approach=Hybrid, category=MOVEMENT,
+      level=Intermediate, intensityLevel=medium
+      YouTube Search: "somatic yoga movement stress release trauma sensitive"
+      focusAreas=["stress","trauma","burnout"]
+      sensoryEngagement=["Tactile","Kinesthetic","Breathing"]
+      culturalContext: "Combines Western somatic therapy principles (Peter Levine's
+      Somatic Experiencing) with traditional yoga postures."
+      steps (6 steps)
+
+P-3e. type=yoga, format=Video, approach=Eastern, category=MINDFULNESS,
+      level=Beginner, intensityLevel=low
+      YouTube Search: "yoga nidra for deep relaxation guided video 30 minutes"
+      culturalContext: "Yoga Nidra (yogic sleep) originates from the Tantric
+      tradition. Swami Satyananda Saraswati of the Bihar School of Yoga
+      systematised the modern practice in the 1960s based on ancient nyasa texts."
+      timeOfDay=["evening","night"]
+      environment=["home"]
+      requiredEquipment=["Yoga mat or bed","Blanket","Eye pillow (optional)"]
+      steps (7 steps): Settling in Savasana → Sankalpa (intention) →
+      Body rotation → Breath awareness → Sensation pairs →
+      Visualisation → Return to waking
+
+P-3f. type=yoga, format=Video, approach=Western, category=CBT_TECHNIQUE,
+      level=Advanced, intensityLevel=high
+      YouTube Search: "trauma sensitive yoga therapeutic advanced Bessel van der Kolk"
+      OR "yoga for PTSD trauma therapy video"
+      focusAreas=["trauma","depression","anxiety"]
+      contraindications=["This practice is designed for trauma survivors — a trained facilitator is strongly recommended for group settings","Go at your own pace — all choices are valid"]
+      sensoryEngagement=["Kinesthetic","Tactile","Breathing"]
+      steps (5 steps)
+
+-------- GROUP P-4: SLEEP PRACTICES --------
+NOTE: ALL sleep type records MUST use format="Audio" — this is enforced by the app.
+
+P-4a. type=sleep, format=Audio, approach=Western, category=SLEEP_HYGIENE,
+      level=Beginner, intensityLevel=low
+      YouTube Search: "progressive muscle relaxation sleep audio guided"
+      steps (7 steps): Lying down → Feet and calves tense/release →
+      Thighs tense/release → Abdomen tense/release → Hands/arms →
+      Shoulders/neck → Face → Full body awareness → Drift to sleep
+      timeOfDay=["night"]
+      requiredEquipment=["Bed or flat surface","Blanket","Eye mask (optional)"]
+      environment=["home"]
+      sensoryEngagement=["Auditory","Tactile"]
+      focusAreas=["sleep","stress","anxiety"]
+      immediateRelief=false, crisisEligible=false
+      duration=20-30
+
+P-4b. type=sleep, format=Audio, approach=Eastern, category=MEDITATION,
+      level=Beginner, intensityLevel=low
+      YouTube Search: "yoga nidra sleep meditation audio 40 minutes Eastern"
+      culturalContext: "Yoga Nidra in sleep application follows the Bihar
+      School method — systematic rotation of consciousness through 61 body
+      points, inducing delta brainwave states associated with deep sleep."
+      steps (6 steps): Savasana settling → Sankalpa → 61-point body rotation
+      → Pairs of opposites → Inner space visualisation → Deep sleep transition
+      timeOfDay=["night"]
+      environment=["home"]
+      focusAreas=["sleep","anxiety","stress"]
+      duration=30-45
+
+P-4c. type=sleep, format=Audio, approach=Western, category=MINDFULNESS,
+      level=Intermediate, intensityLevel=medium
+      YouTube Search: "body scan sleep meditation mindfulness MBSR audio 30 minutes"
+      steps (5 steps): Grounding → Feet to head body scan → Breath anchor →
+      Open awareness → Natural sleep drift
+      duration=20-35
+
+P-4d. type=sleep, format=Audio, approach=Hybrid, category=SLEEP_HYGIENE,
+      level=Beginner, intensityLevel=low
+      YouTube Search: "delta waves binaural beats sleep deep music meditation"
+      culturalContext: "Combines Western neuroscience research on binaural
+      beats (Oster, 1973) for delta wave (0.5-4Hz) brainwave entrainment with
+      Eastern relaxation visualisation techniques."
+      steps (4 steps): Set environment → Headphones on → Relaxation scan →
+      Let the sound guide sleep
+      requiredEquipment=["Headphones or earbuds (required for binaural effect)","Bed","Dark room"]
+      sensoryEngagement=["Auditory"]
+      duration=45-60
+
+================================================================================
+PART 4 — RESEARCH INSTRUCTIONS
+================================================================================
+
+FOR YOUTUBE VIDEOS:
+  1. Search YouTube with the given query.
+  2. Prefer reputable channels: Headspace, Calm, Great Meditation, Michael Sealey,
+     Jason Stephenson, Yoga with Adriene, Yoga with Kassandra, Dr. Tracey Marks,
+     HealthyGamerGG, TED-Ed, Sadhguru, Thich Nhat Hanh Foundation, Tara Brach,
+     Insight Meditation Society, Bob Baker Mindfulness.
+  3. Prefer videos with 500k+ views (indicates trustworthiness).
+  4. Extract the 11-character video ID from the URL.
+     URL: https://www.youtube.com/watch?v=ZToicYcHIOU → ID: "ZToicYcHIOU"
+  5. Set "youtubeUrl" = the ID only (NOT the full URL).
+  6. Set "url" = null for YouTube-sourced content.
+  7. Set "thumbnailUrl" = "https://img.youtube.com/vi/{VIDEO_ID}/maxresdefault.jpg"
+     (substituting the actual ID — this always works for any YouTube video)
+  8. Set "duration" to the video's actual runtime in minutes (integer).
+  9. Set "hasSubtitles" = true if the channel typically provides captions.
+
+FOR WEB ARTICLES:
+  1. Prefer these sources: psychologytoday.com, verywellmind.com,
+     health.harvard.edu, mindful.org, apa.org, nimh.nih.gov, nhs.uk,
+     tricycle.org, lionsroar.com, yogajournal.com, chopra.com
+  2. Provide the full, real, working article URL in "url".
+  3. Write a 300-600 word summary of the article in the "content" field.
+  4. For thumbnailUrl, use an appropriate Unsplash image (see below).
+
+FOR SELF-GENERATED CONTENT (stories, journal prompts, worksheets):
+  1. Set url = null
+  2. Write the FULL content in "content" — no summaries, no drafts, no outlines.
+  3. Stories: 700-1200 words, narrative-driven, warm tone, hopeful ending.
+  4. Journal prompts: 5-7 questions, each with 2-3 sentence guidance.
+  5. CBT worksheets: headers, instructions, worked example, blank template.
+  6. Use Markdown formatting in "content" (# headers, **bold**, tables, bullets).
+
+THUMBNAIL FALLBACK (Unsplash — use these reliable URLs):
+  Meditation:   https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80
+  Breathing:    https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&q=80
+  Yoga:         https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&q=80
+  Sleep:        https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?w=800&q=80
+  Anxiety:      https://images.unsplash.com/photo-1519682577862-22b62b24cb31?w=800&q=80
+  Mindfulness:  https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=800&q=80
+  Articles:     https://images.unsplash.com/photo-1455390582262-044cdead277a?w=800&q=80
+  Stories:      https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=800&q=80
+  CBT:          https://images.unsplash.com/photo-1559757175-5700dde675bc?w=800&q=80
+  Eastern:      https://images.unsplash.com/photo-1602192509154-0b900ee1f851?w=800&q=80
+  Playlist:     https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800&q=80
+
+================================================================================
+PART 5 — OUTPUT FORMAT
+================================================================================
+
+Output ONE valid, parseable JSON object:
+
+{
+  "contents": [ ...all content records... ],
+  "practices": [ ...all practice records... ]
+}
+
+STRICT RULES:
+  - Do NOT include "id", "createdAt", or "updatedAt" fields.
+  - "isPublished" must always be true (boolean, not string).
+  - "scheduledPublishAt" must always be null.
+  - All array fields (tags, focusAreas, environment, etc.) MUST be proper JSON
+    arrays — NOT comma-separated strings.
+  - "youtubeUrl" MUST be the video ID only (exactly 11 characters), never the
+    full URL. For non-video content, set to null.
+  - If a field does not apply to a record, set it to null (not "" or undefined).
+    Exception: "content" for articles/stories should be the full text string.
+  - Every practice record MUST include a "steps" array with 4-8 objects.
+  - All duration values are in MINUTES (integers).
+  - All step duration values are in SECONDS (integers).
+  - No placeholder text anywhere: no "example.com", "TODO", "TBD", "Lorem ipsum".
+  - Thumbnail URLs must be real, publicly accessible URLs.
+
+================================================================================
+PART 6 — QUALITY CHECKLIST (verify before writing final JSON)
+================================================================================
+
+For EACH record, confirm:
+
+[ ] title is specific and descriptive (not "Meditation 1" or "Yoga Video")
+[ ] description is 2-4 warm, informative sentences (not bullet points)
+[ ] type and contentType/category are logically consistent with each other
+[ ] approach matches the cultural framing in description/culturalContext
+[ ] YouTube IDs are exactly 11 alphanumeric characters
+[ ] thumbnailUrl starts with https:// and is a real public image URL
+[ ] duration is a positive integer (in minutes)
+[ ] tags array has 3-7 lowercase items
+[ ] focusAreas array has 2-5 lowercase items from the approved list
+[ ] steps array exists for ALL practice records with 4-8 entries
+[ ] step durations are in SECONDS and sum approximately to duration × 60
+[ ] contraindications exist for yoga and advanced breathing practices
+[ ] environment and timeOfDay are string arrays (not strings)
+[ ] immediateRelief=true only for short (≤10 min) crisis-safe content/practices
+[ ] crisisEligible=true only where explicitly specified
+[ ] Stories have FULL text (700+ words) in "content" field
+[ ] CBT worksheets have FULL content with instructions + example in "content"
+[ ] Journal prompts have FULL 5-7 questions with guidance in "content"
+[ ] culturalContext exists for all Eastern/Hybrid approach records
+[ ] Sleep practices all have format="Audio"
+
+================================================================================
+PART 7 — EXPECTED OUTPUT SUMMARY
+================================================================================
+
+Your final JSON output should contain approximately:
+
+CONTENTS (~32 records):
+  Articles:     C-1a to C-1j  =  10 records  (some in pairs from same letter)
+  Stories:      C-2a to C-2d  =   4 records
+  Videos:       C-3a to C-3j  =  10 records
+  Audios:       C-4a to C-4f  =   6 records  (2 per letter = actually 12, but
+                                               only 1 per letter if context tight)
+  Playlists:    C-5a to C-5b  =   2 records
+  TOTAL CONTENT: ~32-34 records
+
+PRACTICES (~22 records):
+  Meditation:   P-1a to P-1f  =   6 records
+  Breathing:    P-2a to P-2f  =   6 records
+  Yoga:         P-3a to P-3f  =   6 records
+  Sleep:        P-4a to P-4d  =   4 records
+  TOTAL PRACTICES: ~22 records
+
+GRAND TOTAL: ~54-56 database-ready records
+
+================================================================================
+BEGIN — Produce the complete JSON output now. Take your time to research each
+item carefully. Real YouTube video IDs and real article URLs are mandatory.
+For generated content (stories, worksheets, prompts), write the full text.
+================================================================================

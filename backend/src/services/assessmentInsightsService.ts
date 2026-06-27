@@ -1,4 +1,5 @@
 import { AssessmentResult, Prisma } from '@prisma/client';
+import { prisma } from '../config/database';
 import { llmService } from './llmProvider';
 
 type Trend = 'improving' | 'declining' | 'stable' | 'baseline';
@@ -577,15 +578,27 @@ function computeHistoryAndSummaries(assessments: AssessmentResult[]): {
 }
 
 function calculateWellnessScore(
-  summaries: Record<string, AssessmentTypeSummary>
+  summaries: Record<string, AssessmentTypeSummary>,
+  basicTypes: Set<string>,
+  advancedTypes: Set<string>
 ): { value: number; updatedAt: string | null } | null {
   let total = 0;
   let count = 0;
   let latestCompletedAt: string | null = null;
 
   Object.entries(summaries).forEach(([type, summary]) => {
-    // Include both advanced assessments AND basic overall assessments
-    if (!isAdvancedAssessmentType(type) && !isBasicOverallAssessmentType(type)) {
+    const normalizedType = normalizeType(type);
+
+    // Exclude basic overall assessment ('basic_overall') and basic component types
+    if (normalizedType === 'basicoverall' || normalizedType === 'basic_overall') {
+      return;
+    }
+
+    const isBasic = basicTypes.has(normalizedType);
+    const isAdvanced = advancedTypes.has(normalizedType) && !isBasic;
+
+    // Only consider advanced/required assessments for the combined Wellness score
+    if (!isAdvanced) {
       return;
     }
 
@@ -772,7 +785,33 @@ export async function buildAssessmentInsights(
   const { history, summaries } = computeHistoryAndSummaries(assessments);
   const aiSummary = await generateAISummary(summaries, options.userName, detailedAssessments);
   const overallTrend = deriveOverallTrend(summaries);
-  const wellnessScore = calculateWellnessScore(summaries);
+
+  // Fetch active assessment definitions to dynamically categorize types
+  let dbBasicTypes = new Set<string>();
+  let dbAdvancedTypes = new Set<string>();
+  try {
+    const definitions = await prisma.assessmentDefinition.findMany({
+      where: { isActive: true },
+      select: { type: true, isBasicOverallOnly: true }
+    });
+
+    definitions.forEach((d) => {
+      const normalized = normalizeType(d.type);
+      if (d.isBasicOverallOnly) {
+        dbBasicTypes.add(normalized);
+      } else {
+        dbAdvancedTypes.add(normalized);
+      }
+    });
+  } catch (error) {
+    console.error('Failed to fetch assessment definitions for dynamic categorization:', error);
+  }
+
+  // Add fallbacks to ensure compatibility
+  BASIC_OVERALL_ASSESSMENT_TYPES.forEach((t) => dbBasicTypes.add(t));
+  ADVANCED_ASSESSMENT_TYPES.forEach((t) => dbAdvancedTypes.add(t));
+
+  const wellnessScore = calculateWellnessScore(summaries, dbBasicTypes, dbAdvancedTypes);
 
   return {
     history,

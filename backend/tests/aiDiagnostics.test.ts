@@ -61,7 +61,7 @@ import { journalService } from '../src/services/journalService';
 import { enhancedRecommendationService } from '../src/services/enhancedRecommendationService';
 import { AIProviderType } from '../src/types/ai';
 
-describe('MaanSarathi AI Services Diagnostic Tests', () => {
+describe('ManaSarathi AI Services Diagnostic Tests', () => {
   const ORIGINAL_ENV = { ...process.env };
 
   beforeEach(() => {
@@ -176,7 +176,13 @@ describe('MaanSarathi AI Services Diagnostic Tests', () => {
 
     it('handles addMessage when conversation is not found', async () => {
       prismaMock.chatbotConversation.findUnique.mockResolvedValueOnce(null);
-      await expect(chatbotService.addMessage('invalid-id', 'user', 'hello')).rejects.toThrow('Conversation not found');
+      await expect(chatbotService.addMessage('invalid-id', 'u1', 'user', 'hello')).rejects.toThrow('Conversation not found');
+    });
+
+    it('handles addMessage when user is not the owner of the conversation', async () => {
+      const conv = { id: 'c1', messages: JSON.stringify([]), userId: 'u1' };
+      prismaMock.chatbotConversation.findUnique.mockResolvedValueOnce(conv);
+      await expect(chatbotService.addMessage('c1', 'unauthorized-user', 'user', 'hello')).rejects.toThrow('Unauthorized access to conversation');
     });
 
     it('handles addMessage database update failure and handles empty inputs', async () => {
@@ -184,7 +190,7 @@ describe('MaanSarathi AI Services Diagnostic Tests', () => {
       prismaMock.chatbotConversation.findUnique.mockResolvedValueOnce(conv);
       prismaMock.chatbotConversation.update.mockRejectedValueOnce(new Error('Write lock failure'));
 
-      await expect(chatbotService.addMessage('c1', 'user', '')).rejects.toThrow('Write lock failure');
+      await expect(chatbotService.addMessage('c1', 'u1', 'user', '')).rejects.toThrow('Write lock failure');
     });
 
     it('handles endConversation with empty messages and fallback summary generation', async () => {
@@ -194,10 +200,16 @@ describe('MaanSarathi AI Services Diagnostic Tests', () => {
       prismaMock.dashboardInsights.deleteMany.mockResolvedValueOnce({ count: 1 });
 
       // Should complete without throwing, returning a fallback "Empty conversation."
-      await chatbotService.endConversation('c1');
+      await chatbotService.endConversation('c1', 'u1');
       expect(prismaMock.chatbotConversation.update).toHaveBeenCalledTimes(1);
       const updateData = prismaMock.chatbotConversation.update.mock.calls[0][0].data;
       expect(updateData.summary).toBe('Empty conversation.');
+    });
+
+    it('handles endConversation when user is not the owner of the conversation', async () => {
+      const conv = { id: 'c1', messages: JSON.stringify([]), userId: 'u1' };
+      prismaMock.chatbotConversation.findUnique.mockResolvedValueOnce(conv);
+      await expect(chatbotService.endConversation('c1', 'unauthorized-user')).rejects.toThrow('Unauthorized access to conversation');
     });
 
     it('handles getConversationStats when user has no conversations', async () => {

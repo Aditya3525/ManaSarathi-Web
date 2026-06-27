@@ -177,101 +177,102 @@ export const EmotionalPatternWidget: React.FC<EmotionalPatternWidgetProps> = ({ 
   const shiftIcon = SHIFT_ICONS[pattern.recentShift] || SHIFT_ICONS.stable;
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Smile className="h-5 w-5" />
+    <Card className="shadow-md border border-slate-100 hover:shadow-lg transition-shadow duration-300">
+      <CardHeader className="pb-3 bg-gradient-to-br from-emerald-500/5 to-teal-500/5 border-b">
+        <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-800">
+          <Smile className="h-5 w-5 text-emerald-600 animate-bounce" style={{ animationDuration: '3s' }} />
           Emotional Patterns
         </CardTitle>
-        <CardDescription>
+        <p className="text-xs text-muted-foreground mt-1">
           Your emotional tone in recent conversations
-        </CardDescription>
+        </p>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-5 pt-4">
         {/* Sentiment Distribution */}
         {hasData ? (
           <div className="space-y-4">
-            <h4 className="text-sm font-semibold text-gray-700">Sentiment Distribution</h4>
+            <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Sentiment Distribution</h4>
             
             {/* Positive Sentiment */}
-            <div className="space-y-2">
+            <div className="space-y-1 hover:translate-x-1 transition-transform duration-200">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  {MOOD_LABELS.positive.icon}
-                  <span className={`text-sm font-medium ${MOOD_LABELS.positive.color}`}>
+                  <div className="p-1 rounded bg-green-50">{MOOD_LABELS.positive.icon}</div>
+                  <span className={`text-xs font-medium ${MOOD_LABELS.positive.color}`}>
                     {MOOD_LABELS.positive.label}
                   </span>
                 </div>
-                <span className="text-sm font-semibold text-gray-900">
+                <span className="text-xs font-bold text-slate-800">
                   {positivePercent}%
                 </span>
               </div>
               <Progress 
                 value={positivePercent} 
-                className="h-2 bg-green-100"
+                className="h-2 bg-green-50"
                 indicatorClassName="bg-green-500"
               />
             </div>
 
             {/* Neutral Sentiment */}
-            <div className="space-y-2">
+            <div className="space-y-1 hover:translate-x-1 transition-transform duration-200">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  {MOOD_LABELS.neutral.icon}
-                  <span className={`text-sm font-medium ${MOOD_LABELS.neutral.color}`}>
+                  <div className="p-1 rounded bg-yellow-50">{MOOD_LABELS.neutral.icon}</div>
+                  <span className={`text-xs font-medium ${MOOD_LABELS.neutral.color}`}>
                     {MOOD_LABELS.neutral.label}
                   </span>
                 </div>
-                <span className="text-sm font-semibold text-gray-900">
+                <span className="text-xs font-bold text-slate-800">
                   {neutralPercent}%
                 </span>
               </div>
               <Progress 
                 value={neutralPercent} 
-                className="h-2 bg-yellow-100"
+                className="h-2 bg-yellow-50"
                 indicatorClassName="bg-yellow-500"
               />
             </div>
 
             {/* Negative Sentiment */}
-            <div className="space-y-2">
+            <div className="space-y-1 hover:translate-x-1 transition-transform duration-200">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  {MOOD_LABELS.negative.icon}
-                  <span className={`text-sm font-medium ${MOOD_LABELS.negative.color}`}>
+                  <div className="p-1 rounded bg-red-50">{MOOD_LABELS.negative.icon}</div>
+                  <span className={`text-xs font-medium ${MOOD_LABELS.negative.color}`}>
                     {MOOD_LABELS.negative.label}
                   </span>
                 </div>
-                <span className="text-sm font-semibold text-gray-900">
+                <span className="text-xs font-bold text-slate-800">
                   {negativePercent}%
                 </span>
               </div>
               <Progress 
                 value={negativePercent} 
-                className="h-2 bg-red-100"
+                className="h-2 bg-red-50"
                 indicatorClassName="bg-red-500"
               />
             </div>
           </div>
         ) : (
-          <div className="text-center py-6 text-gray-500">
-            <p className="text-sm">No sentiment data available yet</p>
+          <div className="text-center py-6 text-slate-400">
+            <Smile className="h-10 w-10 mx-auto mb-2 text-slate-300" />
+            <p className="text-xs">No sentiment data available yet</p>
           </div>
         )}
 
         {/* Predominant Mood & Recent Shift */}
-        <div className="grid grid-cols-2 gap-4 pt-4 border-t">
-          <div className="space-y-1">
-            <p className="text-xs text-gray-500 uppercase tracking-wide">Predominant Mood</p>
-            <p className={`text-lg font-semibold ${predominantMood.color}`}>
+        <div className="grid grid-cols-2 gap-4 pt-3 border-t">
+          <div className="space-y-1 p-2 bg-slate-50 rounded-lg border border-slate-100 hover:bg-slate-100/50 transition-colors text-left">
+            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Predominant Mood</p>
+            <p className={`text-sm font-bold ${predominantMood.color}`}>
               {predominantMood.label}
             </p>
           </div>
-          <div className="space-y-1">
-            <p className="text-xs text-gray-500 uppercase tracking-wide">Recent Shift</p>
-            <div className="flex items-center gap-2">
+          <div className="space-y-1 p-2 bg-slate-50 rounded-lg border border-slate-100 hover:bg-slate-100/50 transition-colors text-left">
+            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Recent Shift</p>
+            <div className="flex items-center gap-1.5">
               {shiftIcon}
-              <p className="text-lg font-semibold text-gray-900 capitalize">
+              <p className="text-sm font-bold text-slate-700 capitalize">
                 {pattern.recentShift}
               </p>
             </div>
@@ -280,8 +281,8 @@ export const EmotionalPatternWidget: React.FC<EmotionalPatternWidgetProps> = ({ 
 
         {/* Insight Message */}
         {hasData && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-4">
-            <p className="text-sm text-blue-900">
+          <div className="bg-sky-50/50 border border-sky-100 rounded-lg p-3 mt-3 text-left">
+            <p className="text-xs text-sky-800 font-medium leading-relaxed">
               {positivePercent >= 50 ? (
                 <span>💙 You&apos;re expressing mostly positive emotions. Keep nurturing what&apos;s working!</span>
               ) : negativePercent >= 50 ? (
