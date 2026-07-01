@@ -40,7 +40,7 @@ export class NvidiaProvider extends BaseAIProvider {
         await axios.post(
           this.endpoint,
           {
-            model: this.config.model || 'meta/llama3-70b-instruct',
+            model: this.config.model || 'meta/llama-3.1-8b-instruct',
             messages: [{ role: 'user', content: 'Reply with OK' }],
             max_tokens: 8,
             temperature: 0
@@ -77,15 +77,12 @@ export class NvidiaProvider extends BaseAIProvider {
         const response = await axios.post<NvidiaChatCompletionResponse>(
           this.endpoint,
           {
-            model: config?.model || this.config.model || 'moonshotai/kimi-k2.5',
+            model: config?.model || this.config.model || 'meta/llama-3.1-8b-instruct',
             messages: preparedMessages,
             max_tokens: config?.maxTokens || this.config.maxTokens || 600,
             temperature: config?.temperature ?? this.config.temperature ?? 0.6,
             top_p: 1,
-            stream: false,
-            chat_template_kwargs: {
-              thinking: true
-            }
+            stream: false
           },
           {
             headers: {

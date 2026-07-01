@@ -165,6 +165,7 @@ export class LLMService {
 
     // Gemini Configuration
     const geminiKeys = sanitizeKeys([
+      process.env.GEMINI_API_KEY,
       process.env.GEMINI_API_KEY_1,
       process.env.GEMINI_API_KEY_2,
       process.env.GEMINI_API_KEY_3
@@ -191,7 +192,7 @@ export class LLMService {
     ]);
 
     if (nvidiaKeys.length > 0) {
-      const nvidiaModel = process.env.NVIDIA_MODEL?.trim() || 'meta/llama3-70b-instruct';
+      const nvidiaModel = process.env.NVIDIA_MODEL?.trim() || 'meta/llama-3.1-8b-instruct';
       configs.nvidia = {
         apiKeys: nvidiaKeys,
         baseURL: process.env.NVIDIA_INVOKE_URL?.trim() || 'https://integrate.api.nvidia.com/v1/chat/completions',
