@@ -200,7 +200,7 @@ app.use(session({
   cookie: {
     secure: process.env.NODE_ENV === 'production', // HTTPS only in production
     httpOnly: true, // Prevent client-side JS access
-    sameSite: 'strict', // CSRF protection - strict in all environments
+    sameSite: 'lax', // ponytail: 'strict' breaks Google OAuth redirect; 'lax' still blocks cross-site POST CSRF
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
     domain: process.env.NODE_ENV === 'production'
       ? process.env.COOKIE_DOMAIN || undefined

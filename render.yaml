@@ -1,7 +1,7 @@
 services:
   - type: web
     name: manasarthi-backend
-    branch: update
+    branch: main
     runtime: node
     region: oregon
     plan: starter
