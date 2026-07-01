@@ -58,7 +58,8 @@ export class NvidiaProvider extends BaseAIProvider {
       }, 1);
 
       return true;
-    } catch {
+    } catch (error: any) {
+      console.error('[NVIDIA] Connection test failed:', error?.response?.data || error?.message || error);
       return false;
     }
   }
