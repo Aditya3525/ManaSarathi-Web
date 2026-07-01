@@ -804,9 +804,9 @@ const BASIC_OVERALL_SEED: AssessmentSeed = {
 };
 
 // --- Genuine Practices ---
-const part1Articles = JSON.parse(fs.readFileSync(path.join(__dirname, '../../../../Project Data/seed_data_part1_articles.json'), 'utf-8')).contents;
-const part2Contents = JSON.parse(fs.readFileSync(path.join(__dirname, '../../../../Project Data/seed_data_part2_contents.json'), 'utf-8')).contents;
-const part3Practices = JSON.parse(fs.readFileSync(path.join(__dirname, '../../../../Project Data/seed_data_part3_practices.json'), 'utf-8')).practices;
+const part1Articles = JSON.parse(fs.readFileSync(path.join(__dirname, '../../../Project Data/seed_data_part1_articles.json'), 'utf-8')).contents;
+const part2Contents = JSON.parse(fs.readFileSync(path.join(__dirname, '../../../Project Data/seed_data_part2_contents.json'), 'utf-8')).contents;
+const part3Practices = JSON.parse(fs.readFileSync(path.join(__dirname, '../../../Project Data/seed_data_part3_practices.json'), 'utf-8')).practices;
 
 const allContents = [...part1Articles, ...part2Contents];
 
