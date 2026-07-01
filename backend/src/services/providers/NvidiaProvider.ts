@@ -40,7 +40,7 @@ export class NvidiaProvider extends BaseAIProvider {
         await axios.post(
           this.endpoint,
           {
-            model: this.config.model || 'moonshotai/kimi-k2.5',
+            model: this.config.model || 'meta/llama3-70b-instruct',
             messages: [{ role: 'user', content: 'Reply with OK' }],
             max_tokens: 8,
             temperature: 0

@@ -191,7 +191,7 @@ export class LLMService {
     ]);
 
     if (nvidiaKeys.length > 0) {
-      const nvidiaModel = process.env.NVIDIA_MODEL?.trim() || 'moonshotai/kimi-k2.5';
+      const nvidiaModel = process.env.NVIDIA_MODEL?.trim() || 'meta/llama3-70b-instruct';
       configs.nvidia = {
         apiKeys: nvidiaKeys,
         baseURL: process.env.NVIDIA_INVOKE_URL?.trim() || 'https://integrate.api.nvidia.com/v1/chat/completions',
