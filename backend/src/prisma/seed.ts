@@ -782,7 +782,7 @@ const BASIC_OVERALL_SEED: AssessmentSeed = {
   timeEstimate: '10 minutes',
   timeframe: 'Over the last 2 weeks',
   isBasicOverallOnly: false,
-  visibleInMainList: true,
+  visibleInMainList: false,
   scoringConfig: {
     minScore: 0,
     maxScore: 132,
@@ -811,13 +811,13 @@ const part3Practices = JSON.parse(fs.readFileSync(path.join(__dirname, '../../..
 const allContents = [...part1Articles, ...part2Contents];
 
 const contentEntries: Array<Prisma.ContentUncheckedCreateInput> = allContents.map((c: any, i: number) => {
-  let contentType = ContentType.ARTICLE;
+  let contentType: ContentType = ContentType.ARTICLE;
   if (c.type === 'video' || c.type === 'playlist') contentType = ContentType.VIDEO;
   if (c.type === 'audio') contentType = ContentType.AUDIO_MEDITATION;
   if (c.type === 'story') contentType = ContentType.STORY;
   if (c.type === 'worksheet' || c.type === 'prompt') contentType = ContentType.CBT_WORKSHEET;
   
-  let intensityLevel = DifficultyLevel.BEGINNER;
+  let intensityLevel: DifficultyLevel = DifficultyLevel.BEGINNER;
   if (c.intensityLevel === 'medium') intensityLevel = DifficultyLevel.INTERMEDIATE;
   if (c.intensityLevel === 'high') intensityLevel = DifficultyLevel.ADVANCED;
 
@@ -853,13 +853,13 @@ const contentEntries: Array<Prisma.ContentUncheckedCreateInput> = allContents.ma
 });
 
 const practiceEntries: Array<Prisma.PracticeUncheckedCreateInput> = part3Practices.map((p: any, i: number) => {
-  let cat = PracticeCategory.MINDFULNESS;
+  let cat: PracticeCategory = PracticeCategory.MINDFULNESS;
   if (p.type === 'yoga') cat = PracticeCategory.YOGA;
   if (p.type === 'breathing') cat = PracticeCategory.BREATHING;
   if (p.type === 'meditation') cat = PracticeCategory.MEDITATION;
   if (p.type === 'sleep') cat = PracticeCategory.SLEEP_HYGIENE;
 
-  let intensityLevel = DifficultyLevel.BEGINNER;
+  let intensityLevel: DifficultyLevel = DifficultyLevel.BEGINNER;
   if (p.difficulty === 'Intermediate') intensityLevel = DifficultyLevel.INTERMEDIATE;
   if (p.difficulty === 'Advanced') intensityLevel = DifficultyLevel.ADVANCED;
 
