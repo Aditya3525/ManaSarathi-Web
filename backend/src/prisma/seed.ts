@@ -885,9 +885,12 @@ const practiceEntries: Array<Prisma.PracticeUncheckedCreateInput> = part3Practic
     tags: p.tags ? p.tags.join(',') : '',
     isPublished: true,
     sourceName: 'ManaSarathi Curated',
-    sourceUrl: p.mediaUrl,
-    audioUrl: p.format === 'Audio' ? p.mediaUrl : null,
-    // Note: the schema doesn't have a videoUrl on Practice model, so we omit it or put it in sourceUrl
+    sourceUrl: p.sourceUrl || p.mediaUrl,
+    audioUrl: p.audioUrl || (p.format === 'Audio' ? p.mediaUrl : null),
+    videoUrl: p.videoUrl || null,
+    youtubeUrl: p.youtubeUrl || null,
+    thumbnailUrl: p.thumbnailUrl || null,
+    steps: p.steps ? json(p.steps) : null,
     confidence: 0.95
   };
 });
