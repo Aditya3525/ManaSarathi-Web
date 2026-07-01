@@ -4,7 +4,7 @@ import { AIMessage, AIResponse, AIConfig, ConversationContext, AIProviderConfig 
 
 export class HuggingFaceProvider extends BaseAIProvider {
   private hf: HfInference;
-  private model: string = 'meta-llama/Llama-3.2-1B-Instruct';
+  private model: string = 'meta-llama/Llama-3.1-8B-Instruct';
 
   constructor(config: AIProviderConfig) {
     super('huggingface', config);
@@ -136,8 +136,8 @@ export class HuggingFaceProvider extends BaseAIProvider {
       });
       
       return true;
-    } catch (error) {
-      console.error('❌ HuggingFace connection test failed:', error);
+    } catch (error: any) {
+      console.error('❌ HuggingFace connection test failed:', error?.message || error);
       return false;
     }
   }

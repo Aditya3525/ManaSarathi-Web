@@ -213,7 +213,7 @@ export class LLMService {
     ]);
 
     if (huggingfaceKeys.length > 0) {
-      const huggingfaceModel = process.env.HUGGINGFACE_MODEL?.trim() || 'Guilherme34/Psychologist-3b';
+      const huggingfaceModel = process.env.HUGGINGFACE_MODEL?.trim() || 'meta-llama/Llama-3.1-8B-Instruct';
       configs.huggingface = {
         apiKeys: huggingfaceKeys,
         model: huggingfaceModel,
