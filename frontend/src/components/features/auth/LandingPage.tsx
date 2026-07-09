@@ -346,7 +346,7 @@ export function LandingPage({
       <header className={`landing-nav ${isHeaderSticky ? 'scrolled' : ''}`}>
         <div className="landing-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 'clamp(3.5rem, 5vw, 4rem)' }}>
           <div className="flex items-center gap-2.5 cursor-pointer" onClick={() => onNavigate?.('landing')}>
-            <Logo className="h-8 w-8" />
+            <Logo className="h-11 w-11" />
             <span className="text-lg font-bold tracking-tight text-foreground">
               Mana<span className="text-primary font-normal">Sarathi</span>
             </span>
@@ -534,7 +534,7 @@ export function LandingPage({
         <div className="landing-container">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2">
-              <Logo className="h-5 w-5" />
+              <Logo className="h-7 w-7" />
               <span className="font-semibold text-foreground">ManaSarathi</span>
             </div>
             <div className="flex items-center gap-4 text-sm">
