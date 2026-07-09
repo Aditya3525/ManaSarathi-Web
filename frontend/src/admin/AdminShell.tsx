@@ -2,6 +2,8 @@ import type { LucideIcon } from 'lucide-react';
 import { LogOut, Menu, Shield, X, Search, Command } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 
+import { Logo } from '../components/common/Logo';
+
 import { Button } from '../components/ui/button';
 import { cn } from '../components/ui/utils';
 
@@ -256,9 +258,7 @@ export function AdminShell({
           <div className="sticky top-8 rounded-2xl border bg-background/80 backdrop-blur-md shadow-lg transition-all duration-300 hover:shadow-xl">
             {/* Logo section */}
             <div className="flex items-center gap-3 border-b px-5 py-5 bg-gradient-to-r from-primary/5 to-transparent rounded-t-2xl">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/70 text-primary-foreground shadow-lg">
-                <Shield className="h-5 w-5" aria-hidden="true" />
-              </div>
+              <Logo className="h-10 w-10" />
               <div>
                 <p className="text-sm font-semibold leading-tight">Admin Console</p>
                 <p className="text-xs text-muted-foreground">Mental Wellbeing AI</p>

@@ -1,6 +1,8 @@
 import { Heart, MessageCircle, Sparkles, TrendingUp } from 'lucide-react';
 import React from 'react';
 
+import { Logo } from '../../common/Logo';
+
 import { Button } from '../../ui/button';
 
 interface EmptyStateProps {
@@ -31,7 +33,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
         
         {/* Central Lotus Container */}
         <div className="relative flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-3xl bg-white dark:bg-slate-900 shadow-md border border-teal-500/10 hover:scale-105 transition-transform duration-300">
-          <span className="text-3xl leading-none select-none filter drop-shadow animate-breathe" role="img" aria-label="Lotus logo">🪷</span>
+          <Logo className="h-12 w-12 sm:h-14 sm:w-14 animate-breathe" />
         </div>
         
         {/* Floating Sparkles */}
