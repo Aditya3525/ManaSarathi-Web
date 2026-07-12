@@ -104,3 +104,6 @@ URGENT_SET_ENV_VARS.md
 # Large binaries / generated caches
 render.exe
 graphify-out/cache/
+
+.vercel
+.env*
