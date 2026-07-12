@@ -1708,6 +1708,7 @@ Rules:
     // Build conversation memory context
     let memorySection = '';
     if (memoryContext) {
+      memorySection += `\nCONVERSATION MEMORY (You MUST use this history to personalize your response and demonstrate you remember the user's situation):\n`;
       if (memoryContext.recentTopics && memoryContext.recentTopics.length > 0) {
         memorySection += `\nRECENT CONVERSATION TOPICS:\n`;
         memorySection += memoryContext.recentTopics.slice(0, 5).map((topic: any) =>
@@ -1721,10 +1722,10 @@ Rules:
       }
 
       if (memoryContext.emotionalPatterns) {
-        const { predominantMood, recentShift } = memoryContext.emotionalPatterns;
-        if (predominantMood) {
+        const { predominant, recentShift } = memoryContext.emotionalPatterns;
+        if (predominant) {
           memorySection += `\n\nEMOTIONAL PATTERNS:\n`;
-          memorySection += `Predominant mood: ${predominantMood}\n`;
+          memorySection += `Predominant mood: ${predominant}\n`;
           if (recentShift) {
             memorySection += `Recent shift: ${recentShift}\n`;
           }

@@ -50,7 +50,7 @@ interface AvailableAssessment {
 }
 
 import { AssessmentTrendsVisualization } from './AssessmentTrendsVisualization';
-import { friendlyAssessmentLabel, trendLabelForType, deltaClassForType } from './assessmentUtils';
+import { friendlyAssessmentLabel, trendLabelForType, deltaClassForType, isHigherScoreBetter } from './assessmentUtils';
 import { OVERALL_ASSESSMENT_OPTION_IDS } from './OverallAssessmentSelection';
 
 interface AssessmentListProps {
@@ -496,7 +496,18 @@ export function AssessmentList({ onStartAssessment, onStartCombinedAssessment, o
     .map(([key, entries]) => {
       const sortedEntries = [...entries].sort((a, b) => new Date(b.completedAt).getTime() - new Date(a.completedAt).getTime());
       const latest = sortedEntries[0];
-      const combinedScore = Math.round(sortedEntries.reduce((acc, entry) => acc + entry.score, 0) / sortedEntries.length);
+      const eligibleEntries = sortedEntries.filter((entry) => {
+        const type = entry.assessmentType.toLowerCase();
+        return !(type.includes('personality') || type.includes('bigfive') || type.includes('mini_ipip') || type.includes('archetype'));
+      });
+      const combinedScore = eligibleEntries.length > 0
+        ? Math.round(
+            eligibleEntries.reduce((acc, entry) => {
+              const val = isHigherScoreBetter(entry.assessmentType) ? entry.score : 100 - entry.score;
+              return acc + val;
+            }, 0) / eligibleEntries.length
+          )
+        : 100;
       return {
         id: `basic-overall-${key}`,
         completedAt: latest.completedAt,

@@ -28,6 +28,12 @@ import {
   updateProfileSchema,
 } from '../api/validators';
 import { prisma } from '../config/database';
+import {
+  loginLimiter,
+  registerLimiter,
+  passwordResetLimiter,
+  oauthLimiter,
+} from '../middleware/authRateLimits';
 
 const router = express.Router();
 
@@ -73,12 +79,12 @@ const encodeOAuthState = (payload: { platform: 'web' | 'mobile'; frontendOrigin?
 };
 
 // Traditional email/password routes
-router.post('/register', validate(registerSchema), asyncHandler(register));
-router.post('/login', validate(loginSchema), asyncHandler(login));
+router.post('/register', registerLimiter, validate(registerSchema), asyncHandler(register));
+router.post('/login', loginLimiter, validate(loginSchema), asyncHandler(login));
 
 // Google OAuth routes
 // Accept ?platform=mobile query param so the callback knows where to redirect
-router.get('/google', (req, res, next) => {
+router.get('/google', oauthLimiter, (req, res, next) => {
   const platform = req.query.platform === 'mobile' ? 'mobile' : 'web';
   let frontendOriginForState = '';
 
@@ -112,7 +118,7 @@ router.get('/google/failure', googleAuthFailure);
 
 // Mobile Google OAuth: Exchange authorization code for JWT token
 // (Mobile apps can't use browser redirect flow, so they send an idToken from Google Sign-In SDK)
-router.post('/google/mobile', asyncHandler(async (req, res) => {
+router.post('/google/mobile', loginLimiter, asyncHandler(async (req, res) => {
   const { code, idToken, email, name, googleId, profilePhoto, firstName, lastName } = req.body;
 
   if (!email || !googleId) {
@@ -242,7 +248,7 @@ router.post('/approach/update', authenticate as any, asyncHandler(updateApproach
 router.post('/logout', asyncHandler(logout));
 
 // Forgot password via security question
-router.post('/forgot-password', asyncHandler(getSecurityQuestionForReset));
-router.post('/reset-password', asyncHandler(resetPasswordWithSecurityAnswer));
+router.post('/forgot-password', passwordResetLimiter, asyncHandler(getSecurityQuestionForReset));
+router.post('/reset-password', passwordResetLimiter, asyncHandler(resetPasswordWithSecurityAnswer));
 
 export default router;

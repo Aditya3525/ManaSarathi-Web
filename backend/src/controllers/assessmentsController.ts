@@ -1327,7 +1327,10 @@ export const getAvailableAssessments = async (_req: Request, res: Response) => {
       where: {
         isActive: true,
         visibleInMainList: true,
-        isBasicOverallOnly: false
+        isBasicOverallOnly: false,
+        NOT: {
+          id: 'basic_overall'
+        }
       },
       select: {
         id: true,
@@ -2241,7 +2244,7 @@ export const getOverallAssessmentOptions = async (_req: Request, res: Response) 
     });
 
     const formatted = assessments.map((assessment) => ({
-      id: assessment.type, // client correlates options by type (e.g. 'anxiety_gad2')
+      id: resolveAssessmentTypeKey(assessment.type, assessment.id), // client correlates options by type (e.g. 'anxiety_gad2')
       title: assessment.name,
       category: assessment.category,
       description: assessment.description,

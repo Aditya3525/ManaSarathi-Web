@@ -132,7 +132,7 @@ export function ConversationItem({
             <Button
               variant="ghost"
               size="sm"
-              className="h-7 w-7 shrink-0 bg-transparent hover:bg-slate-200 dark:hover:bg-slate-800 p-0 text-slate-400 hover:text-slate-800 dark:hover:text-slate-100 rounded-lg md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-150 shadow-none border-0"
+              className="h-7 w-7 shrink-0 bg-transparent hover:bg-slate-200 dark:hover:bg-slate-800 p-0 text-slate-400 hover:text-slate-800 dark:hover:text-slate-100 rounded-lg transition-opacity duration-150 shadow-none border-0"
               onClick={(e) => e.stopPropagation()}
             >
               <MoreHorizontal className="h-4 w-4" />

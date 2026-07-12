@@ -39,7 +39,7 @@ import {
 import { Progress } from '../../ui/progress';
 import { InsightsSkeleton } from '../../ui/skeleton-loaders';
 
-import { deltaClassForType, trendLabelForType } from './assessmentUtils';
+import { deltaClassForType, trendLabelForType, isHigherScoreBetter } from './assessmentUtils';
 import { OVERALL_ASSESSMENT_OPTION_IDS } from './OverallAssessmentSelection';
 
 interface InsightsResultsProps {
@@ -295,7 +295,6 @@ export function InsightsResults({ insights, history, onNavigate, isLoading, erro
     ? Array.from(appliedFocusSet).some((key) => BASIC_OVERALL_NORMALIZED_SET.has(key))
     : false;
 
-  const visibleBasicSummaryEntries = appliedFocusSet ? focusFilteredBasic : basicSummaryEntries;
   const visibleOtherSummaryEntries = appliedFocusSet ? focusFilteredOther : otherSummaryEntries;
   const nonBasicFocusedEntries = appliedFocusSet ? focusFilteredOther : [];
 
@@ -320,7 +319,18 @@ export function InsightsResults({ insights, history, onNavigate, isLoading, erro
     .map(([key, entries]) => {
       const sortedEntries = [...entries].sort((a, b) => new Date(b.completedAt).getTime() - new Date(a.completedAt).getTime());
       const latest = sortedEntries[0];
-      const combinedScore = Math.round(sortedEntries.reduce((acc, entry) => acc + entry.score, 0) / sortedEntries.length);
+      const eligibleEntries = sortedEntries.filter((entry) => {
+        const type = entry.assessmentType.toLowerCase();
+        return !(type.includes('personality') || type.includes('bigfive') || type.includes('mini_ipip') || type.includes('archetype'));
+      });
+      const combinedScore = eligibleEntries.length > 0
+        ? Math.round(
+            eligibleEntries.reduce((acc, entry) => {
+              const val = isHigherScoreBetter(entry.assessmentType) ? entry.score : 100 - entry.score;
+              return acc + val;
+            }, 0) / eligibleEntries.length
+          )
+        : 100;
       return {
         id: `basic-overall-${key}`,
         completedAt: latest.completedAt,
@@ -338,6 +348,17 @@ export function InsightsResults({ insights, history, onNavigate, isLoading, erro
       change: next ? snapshot.combinedScore - next.combinedScore : null
     };
   });
+
+  const baseBasicSummaryEntries = appliedFocusSet ? focusFilteredBasic : basicSummaryEntries;
+  const visibleBasicSummaryEntries = useMemo(() => {
+    if (combinedSnapshotsWithChange.length > 0) {
+      const latestIncludedTypes = new Set(
+        combinedSnapshotsWithChange[0].assessments.map((a) => a.assessmentType)
+      );
+      return baseBasicSummaryEntries.filter(([type]) => latestIncludedTypes.has(type));
+    }
+    return baseBasicSummaryEntries;
+  }, [baseBasicSummaryEntries, combinedSnapshotsWithChange]);
 
   const groupedHistory = filteredHistory.reduce<Record<string, AssessmentHistoryEntry[]>>((acc, entry) => {
     if (!acc[entry.assessmentType]) {
@@ -701,14 +722,14 @@ export function InsightsResults({ insights, history, onNavigate, isLoading, erro
                       <span>Basic Overall Assessment</span>
                     </div>
                     <Badge variant="outline" className="border-primary/40 bg-white/70 text-primary">
-                      Combined score {combinedWellnessScore}%
+                      Combined score {combinedSnapshotsWithChange[0]?.combinedScore ?? combinedWellnessScore}%
                     </Badge>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div className="grid gap-4 md:grid-cols-3">
                     <div className="md:col-span-1 space-y-2">
-                      <p className="text-4xl font-semibold text-primary">{combinedWellnessScore}</p>
+                      <p className="text-4xl font-semibold text-primary">{combinedSnapshotsWithChange[0]?.combinedScore ?? combinedWellnessScore}</p>
                       <p className="text-sm text-muted-foreground">
                         Overall wellbeing snapshot from your quick baseline.
                       </p>

@@ -63,7 +63,7 @@ const DEFAULT_VISIBILITY: WidgetVisibility = {
 	'gratitude': false,
 	'habits': false,
 	'intentions-sleep': false,
-	'today-practice': false,
+	'today-practice': true,
 	'quick-actions': true,
 	'recent-insights': true,
 	'this-week': true,
@@ -82,7 +82,7 @@ const WIDGET_LABELS: Record<DashboardWidget, string> = {
 	'gratitude': 'Daily Gratitude Prompt',
 	'habits': 'Habit Loops',
 	'intentions-sleep': 'Intentions & Sleep',
-	'today-practice': "Today's Practice",
+	'today-practice': 'Recommended Practices',
 	'quick-actions': 'Quick Actions',
 	'recent-insights': 'Recent Insights',
 	'this-week': 'This Week',
@@ -117,7 +117,7 @@ const WIDGET_GROUPS: Array<{ id: string; title: string; widgets: DashboardWidget
 	}
 ];
 
-const STORAGE_KEY = 'mw-dashboard-widget-visibility';
+const STORAGE_KEY = 'mw-dashboard-widget-visibility-v2';
 
 const resolveStorageKey = (userId?: string | null): string => {
 	if (!userId) {

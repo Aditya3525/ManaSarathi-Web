@@ -26,8 +26,6 @@ import {
 } from 'lucide-react';
 import React, { useMemo, useState, useEffect, useRef, useCallback } from 'react';
 
-import { Logo } from '../../common/Logo';
-
 import { getServerBaseUrl } from '../../../config/apiConfig';
 import { useAccessibility } from '../../../contexts/AccessibilityContext';
 import { useAnalytics } from '../../../hooks/use-analytics';
@@ -346,7 +344,9 @@ export function LandingPage({
       <header className={`landing-nav ${isHeaderSticky ? 'scrolled' : ''}`}>
         <div className="landing-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 'clamp(3.5rem, 5vw, 4rem)' }}>
           <div className="flex items-center gap-2.5 cursor-pointer" onClick={() => onNavigate?.('landing')}>
-            <Logo className="h-11 w-11" />
+            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary">
+              <Leaf className="h-4 w-4 text-primary-foreground" />
+            </div>
             <span className="text-lg font-bold tracking-tight text-foreground">
               Mana<span className="text-primary font-normal">Sarathi</span>
             </span>
@@ -534,7 +534,7 @@ export function LandingPage({
         <div className="landing-container">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2">
-              <Logo className="h-7 w-7" />
+              <Leaf className="h-4 w-4 text-primary" />
               <span className="font-semibold text-foreground">ManaSarathi</span>
             </div>
             <div className="flex items-center gap-4 text-sm">

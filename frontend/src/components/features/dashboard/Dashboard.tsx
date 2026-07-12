@@ -1357,8 +1357,8 @@ export function Dashboard({ user: userProp, onNavigate, onLogout, showTour = fal
 
 
 
-              {/* Priority 5: Enhanced AI Insights & This Week */}
-              {(showInsightsWidget || showThisWeekWidget) && (
+              {/* Priority 5: Enhanced AI Insights, This Week & Navigation Shortcuts */}
+              {(showInsightsWidget || showThisWeekWidget || isModeSectionVisible('navigation-shortcuts', isVisible('navigation-shortcuts'))) && (
                 <ResponsiveGrid
                   columns="custom"
                   className={showInsightsWidget && showThisWeekWidget ? "lg:grid-cols-2 items-start" : "grid-cols-1"}

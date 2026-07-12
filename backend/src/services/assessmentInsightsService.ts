@@ -90,6 +90,18 @@ const NON_DIRECTIONAL_WELLNESS_TYPES = new Set([
 
 const normalizeType = (type: string): string => type.toLowerCase().replace(/[^a-z0-9]/g, '');
 
+const canonicalizeTypeKey = (type: string): string => {
+  const norm = type.toLowerCase().replace(/[^a-z0-9]/g, '');
+  if (norm === 'gad2' || norm === 'anxietygad2') return 'anxiety_gad2';
+  if (norm === 'phq2' || norm === 'depressionphq2') return 'depression_phq2';
+  if (norm === 'pss4' || norm === 'stresspss4') return 'stress_pss4';
+  if (norm === 'rrs4' || norm === 'overthinkingrrs4') return 'overthinking_rrs4';
+  if (norm === 'pcptsd5' || norm === 'pcptsd' || norm === 'traumapcptsd5' || norm === 'pcptsd5') return 'trauma_pcptsd5';
+  if (norm === 'eq5' || norm === 'emotionalintelligenceeq5') return 'emotional_intelligence_eq5';
+  if (norm === 'bigfiveshort' || norm === 'bigfive10' || norm === 'personalitybigfive10') return 'personality_bigfive10';
+  return type;
+};
+
 const BASIC_OVERALL_ASSESSMENT_TYPES = new Set([
   'anxiety_gad2',
   'depression_phq2',
@@ -474,9 +486,10 @@ function computeHistoryAndSummaries(assessments: AssessmentResult[]): {
   });
 
   dedupedAssessments.forEach((record) => {
-    const existing = grouped.get(record.assessmentType) || [];
+    const canonicalType = canonicalizeTypeKey(record.assessmentType);
+    const existing = grouped.get(canonicalType) || [];
     existing.push(record);
-    grouped.set(record.assessmentType, existing);
+    grouped.set(canonicalType, existing);
   });
 
   grouped.forEach((records, type) => {
@@ -582,6 +595,16 @@ function calculateWellnessScore(
   basicTypes: Set<string>,
   advancedTypes: Set<string>
 ): { value: number; updatedAt: string | null } | null {
+  // First check if any advanced/required assessments are completed
+  const hasAdvanced = Object.entries(summaries).some(([type, summary]) => {
+    const normalizedType = normalizeType(type);
+    const isBasic = basicTypes.has(normalizedType);
+    const isAdvanced = advancedTypes.has(normalizedType) && !isBasic;
+    const isNonDirectional = isNonDirectionalWellnessType(type);
+    const value = summary.normalizedScore ?? summary.latestScore;
+    return isAdvanced && !isNonDirectional && typeof value === 'number' && !Number.isNaN(value);
+  });
+
   let total = 0;
   let count = 0;
   let latestCompletedAt: string | null = null;
@@ -597,8 +620,10 @@ function calculateWellnessScore(
     const isBasic = basicTypes.has(normalizedType);
     const isAdvanced = advancedTypes.has(normalizedType) && !isBasic;
 
-    // Only consider advanced/required assessments for the combined Wellness score
-    if (!isAdvanced) {
+    // If hasAdvanced is true, only consider advanced/required assessments.
+    // If hasAdvanced is false, fall back to basic ones.
+    const eligible = hasAdvanced ? isAdvanced : (isAdvanced || isBasic);
+    if (!eligible) {
       return;
     }
 

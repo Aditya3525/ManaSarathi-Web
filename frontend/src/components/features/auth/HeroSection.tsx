@@ -1,8 +1,6 @@
 import { ArrowRight, Play, Shield, Sparkles } from 'lucide-react';
 import React from 'react';
 
-import { Logo } from '../../common/Logo';
-
 import { Badge } from '../../ui/badge';
 import { Button } from '../../ui/button';
 
@@ -42,8 +40,7 @@ export function HeroSection({ onStartJourney, onSignUp, onDemo }: HeroSectionPro
               id="hero-heading"
               className="text-4xl font-light leading-[1.1] tracking-tight text-foreground sm:text-5xl lg:text-6xl xl:text-7xl"
             >
-              <span className="flex items-center gap-3 font-serif italic text-primary">
-                <Logo className="h-12 w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16" />
+              <span className="block font-serif italic text-primary">
                 ManaSarathi
               </span>
               <span className="mt-3 block text-[0.7em] font-sans font-medium tracking-tight text-foreground/90">

@@ -357,6 +357,10 @@ function AppInner() {
   }, []);
 
   const startAssessment = (assessmentId: string, session?: AssessmentSessionSummary | null) => {
+    if (assessmentId === 'basic_overall') {
+      navigateTo('assessment-selection');
+      return;
+    }
     // React Query handles error state
     setCurrentAssessment(assessmentId);
     setActiveSession(session ?? null);
@@ -1105,7 +1109,11 @@ function AppInner() {
             isSubmitting={isStartingOverallSession}
             errorMessage={assessmentError}
             defaultSelected={assessmentSelectionDefaults}
-            options={overallOptions.length > 0 ? overallOptions : undefined}
+            options={
+              overallOptions.length > 0 && new Set(overallOptions.map((o) => o.id)).size === overallOptions.length
+                ? overallOptions
+                : undefined
+            }
           />
         );
       case 'combined-assessment-flow':

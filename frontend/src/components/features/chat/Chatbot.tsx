@@ -15,7 +15,6 @@ import {
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Logo } from '../../common/Logo';
 import { LoadingSpinner } from '../../ui/loading-spinner';
 
 import { useAccessibility } from '../../../contexts/AccessibilityContext';
@@ -224,7 +223,7 @@ const MessagesList = React.memo(({
             {isSystem ? (
               <AlertTriangle className="h-5 w-5 text-amber-600 dark:text-amber-400" />
             ) : (
-              <Logo className="h-7 w-7" />
+              <span className="text-xl leading-none" role="img" aria-label="Manasarathi">🪷</span>
             )}
           </div>
         )}
@@ -376,7 +375,7 @@ const MessagesList = React.memo(({
       {isTyping && (
         <div className="flex items-center gap-3 px-4 py-3 bg-card border border-border/50 rounded-2xl w-fit max-w-[80%] shadow-sm animate-pulse message-enter">
           <div className="w-6 h-6 rounded-full flex items-center justify-center bg-gradient-to-tr from-teal-50 to-emerald-50 dark:from-teal-950/20 dark:to-emerald-950/20 border border-teal-500/10">
-            <Logo className="h-5 w-5" />
+            <span className="text-xs leading-none" role="img" aria-label="Lotus logo">🪷</span>
           </div>
           <span className="text-sm text-slate-500 dark:text-slate-400 italic">
             {(() => {

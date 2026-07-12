@@ -63,7 +63,7 @@ export interface ConversationStyle {
  * Tracks conversation topics, patterns, and context across sessions
  */
 export class ConversationMemoryService {
-  private readonly MEMORY_UPDATE_DEBOUNCE_MS = 3000;
+  private readonly MEMORY_UPDATE_DEBOUNCE_MS = 0;
   private readonly pendingUpdates = new Map<string, PendingMemoryUpdate[]>();
   private readonly flushTimers = new Map<string, ReturnType<typeof setTimeout>>();
   
