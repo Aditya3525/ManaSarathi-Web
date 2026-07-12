@@ -1,4 +1,5 @@
 import path from 'path';
+import fs from 'fs';
 
 import react from '@vitejs/plugin-react-swc';
 import { defineConfig } from 'vite';
@@ -18,8 +19,12 @@ export default defineConfig({
     dedupe: ['react', 'react-dom'],
     extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
     alias: {
-      react: path.resolve(__dirname, '../node_modules/react'),
-      'react-dom': path.resolve(__dirname, '../node_modules/react-dom'),
+      react: fs.existsSync(path.resolve(__dirname, './node_modules/react'))
+        ? path.resolve(__dirname, './node_modules/react')
+        : path.resolve(__dirname, '../node_modules/react'),
+      'react-dom': fs.existsSync(path.resolve(__dirname, './node_modules/react-dom'))
+        ? path.resolve(__dirname, './node_modules/react-dom')
+        : path.resolve(__dirname, '../node_modules/react-dom'),
       'vaul@1.1.2': 'vaul',
       'sonner@2.0.3': 'sonner',
       'recharts@2.15.2': 'recharts',
