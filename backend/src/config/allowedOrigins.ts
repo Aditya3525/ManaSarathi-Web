@@ -1,5 +1,5 @@
 const DEFAULT_PRODUCTION_ORIGINS = [
-  'https://mana-sarathi-platform-frontend.vercel.app',
+  'https://manasarathi-frontend.vercel.app',
   'https://manasarthi-frontend.onrender.com',
   'https://manasarthi.app',
   'https://api.manasarthi.app',

@@ -25,7 +25,7 @@ services:
       - key: PORT
         value: 10000
       - key: FRONTEND_URL
-        value: https://mana-sarathi-platform-frontend.vercel.app
+        value: https://manasarathi-frontend.vercel.app
       - key: BACKEND_URL
         value: https://mana-sarathi-platform.onrender.com
       - key: AI_PROVIDER_PRIORITY

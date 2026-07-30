@@ -9,9 +9,9 @@ afterEach(() => {
 describe('allowedOrigins', () => {
   it('allows configured production frontend origins exactly', () => {
     vi.stubEnv('NODE_ENV', 'production');
-    vi.stubEnv('FRONTEND_URL', 'https://mana-sarathi-platform-frontend.vercel.app');
+    vi.stubEnv('FRONTEND_URL', 'https://manasarathi-frontend.vercel.app');
 
-    expect(isAllowedFrontendOrigin('https://mana-sarathi-platform-frontend.vercel.app')).toBe(true);
+    expect(isAllowedFrontendOrigin('https://manasarathi-frontend.vercel.app')).toBe(true);
     expect(isAllowedFrontendOrigin('https://random-preview.vercel.app')).toBe(false);
   });
 

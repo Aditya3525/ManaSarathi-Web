@@ -1,12 +1,12 @@
 /**
  * Centralized API URL configuration.
  * 
- * In production, VITE_API_URL is set at build time (e.g. https://maansarathi-backend.onrender.com/api).
+ * In production, VITE_API_URL is set at build time (e.g. https://mana-sarathi-platform.onrender.com/api).
  * In development, dynamically resolves based on the browser's hostname so LAN
  * access from mobile devices also works.
  */
 
-const PROD_API_ORIGIN_FALLBACK = 'https://maansarathi-backend.onrender.com';
+const PROD_API_ORIGIN_FALLBACK = 'https://mana-sarathi-platform.onrender.com';
 
 /** Returns the API base URL with /api suffix, e.g. http://192.168.1.5:5000/api */
 export const getApiBaseUrl = (): string => {
