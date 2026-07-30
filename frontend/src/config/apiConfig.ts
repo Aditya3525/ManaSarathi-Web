@@ -6,7 +6,7 @@
  * access from mobile devices also works.
  */
 
-const PROD_API_ORIGIN_FALLBACK = 'https://mana-sarathi-platform.onrender.com';
+const PROD_API_ORIGIN_FALLBACK = 'https://manasarthi-backend.onrender.com';
 
 /** Returns the API base URL with /api suffix, e.g. http://192.168.1.5:5000/api */
 export const getApiBaseUrl = (): string => {
