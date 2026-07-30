@@ -110,3 +110,15 @@ graphify-out/cache/
 .agents/
 .codex/
 .github/
+
+# Temp and auxiliary folders
+graphify-out/
+tmp/
+learning-records/
+lessons/
+output/
+/*.mjs
+/*.py
+/*.cjs
+!/package.json
+!/package-lock.json
