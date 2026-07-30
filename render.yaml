@@ -27,7 +27,7 @@ services:
       - key: FRONTEND_URL
         value: https://manasarathi-frontend.vercel.app
       - key: BACKEND_URL
-        value: https://mana-sarathi-platform.onrender.com
+        value: https://manasarthi-backend.onrender.com
       - key: AI_PROVIDER_PRIORITY
         value: huggingface,gemini,openai,anthropic
       - key: AI_ENABLE_FALLBACK
