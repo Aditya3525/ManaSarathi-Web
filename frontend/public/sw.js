@@ -3,7 +3,7 @@
  * Provides offline capability and caching strategies
  */
 
-const CACHE_NAME = 'ManaSarathi-v1.0.9';
+const CACHE_NAME = 'ManaSarathi-v1.1.0';
 
 // Assets to cache on install
 const STATIC_ASSETS = [
