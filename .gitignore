@@ -122,3 +122,13 @@ output/
 /*.cjs
 !/package.json
 !/package-lock.json
+
+# Project specific exclusions
+black book/
+dashboard-render.html
+dashboard-render.png
+debug-html.txt
+debug-screenshot.png
+RESOURCES.md
+NOTES.md
+MISSION.md
