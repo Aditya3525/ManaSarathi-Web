@@ -98,12 +98,14 @@ lib-cov
 API_KEYS_REFERENCE.md
 URGENT_SET_ENV_VARS.md
 
-.vercel
-.env*.local
-
 # Large binaries / generated caches
 render.exe
 graphify-out/cache/
 
 .vercel
 .env*
+
+# AI Agent folders
+.agent/
+.agents/
+.codex/

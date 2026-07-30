@@ -1,14 +1,14 @@
 # ManaSarathi
 
-An AI-powered comprehensive mental wellbeing platform providing personalized support, mood tracking, clinical assessments, therapeutic games, and professional oversight — available on **Web** and **Mobile**.
+An AI-powered comprehensive mental wellbeing platform providing personalized support, mood tracking, clinical assessments, therapeutic games, and professional oversight — available on **Web**.
 
-This repository is a monorepo containing three packages: the **React web frontend**, the **Express/Prisma backend API**, and the **React Native / Expo mobile app**.
+This repository is a monorepo containing two packages: the **React web frontend** and the **Express/Prisma backend API**.
 
 ---
 
 ## 🚀 Project Overview
 
-ManaSarathi bridges the gap between self-care and professional mental health support. By leveraging AI, the platform provides real-time empathetic conversations, emotional progress tracking, and personalized mindfulness and CBT (Cognitive Behavioral Therapy) resources — all accessible from a browser or a native mobile device.
+ManaSarathi bridges the gap between self-care and professional mental health support. By leveraging AI, the platform provides real-time empathetic conversations, emotional progress tracking, and personalized mindfulness and CBT (Cognitive Behavioral Therapy) resources — all accessible from a web browser.
 
 ### Core Architecture & Modules
 
@@ -31,7 +31,7 @@ ManaSarathi bridges the gap between self-care and professional mental health sup
 #### 4. Content, Practices & Therapeutic Games
 - **Multimedia Resources**: Articles, video, audio meditations, breathing exercises, and yoga sequences.
 - **Personalized Recommendations**: Engine suggests practices based on mood, engagement history, and assessment results.
-- **Therapeutic Mini-Games** *(Mobile)*: Interactive mental wellness games including Breathing Guide, Anxiety Pop, Memory Match, Mindful Patterns, Mood Colors, and Gratitude Puzzle.
+- **Therapeutic Mini-Games**: Interactive mental wellness games including Breathing Guide, Anxiety Pop, Memory Match, Mindful Patterns, Mood Colors, and Gratitude Puzzle.
 
 #### 5. Admin & Therapist Portals
 - **Therapist Portal**: Clinicians can view client profiles, manage session notes, handle bookings via a calendar, and monitor crisis alerts.
@@ -66,25 +66,6 @@ ManaSarathi bridges the gap between self-care and professional mental health sup
 | Routing | Internal path-based routing (`App.tsx`) |
 | Internationalization | i18next |
 | Testing | Vitest |
-
-### Mobile App (`mobile/`)
-| Concern | Technology |
-|---|---|
-| Framework | React Native (Expo SDK 54) |
-| Language | TypeScript |
-| Routing | Expo Router (file-based) |
-| Styling | NativeWind (Tailwind for RN) |
-| State Management | Zustand |
-| Data Fetching | TanStack React Query |
-| Internationalization | i18next (EN, HI, DE, ES, FR, ZH) |
-| Notifications | Expo Notifications |
-| Offline Support | AsyncStorage + offline cache service |
-| Auth | JWT + Expo Secure Store + OAuth (Google) |
-| Media | expo-av (audio/video) |
-| Biometrics | expo-local-authentication |
-| Deep Linking | expo-linking |
-| Build & Distribution | Expo Application Services (EAS) |
-| Testing | Jest + jest-expo |
 
 ### Backend (`backend/`)
 | Concern | Technology |
@@ -145,26 +126,6 @@ ManaSarathi/
 │       ├── schema.prisma            # Production DB schema
 │       ├── schema.local.prisma      # Local SQLite schema
 │       └── dev.db                   # Local SQLite database
-├── mobile/                          # React Native / Expo mobile app
-│   ├── app/
-│   │   ├── (auth)/                  # Auth screens (login, register, forgot-password, OAuth)
-│   │   ├── (onboarding)/            # Onboarding flow
-│   │   ├── (tabs)/                  # Tab navigation (Home, Chat, Mood, Content, Profile)
-│   │   ├── assessments/             # Assessment screens
-│   │   ├── content/                 # Content detail screens
-│   │   ├── games/                   # Therapeutic mini-games (6 games)
-│   │   ├── help-safety/             # Help & safety screens
-│   │   ├── profile/                 # Profile management screens
-│   │   ├── progress/                # Progress tracking screens
-│   │   ├── notifications.tsx        # Notification center
-│   │   ├── recommendations.tsx      # Personalized recommendations
-│   │   └── biometric-lock.tsx       # Biometric authentication gate
-│   ├── services/                    # API client, auth, offline cache, notifications, media
-│   ├── stores/                      # Zustand stores (app, auth, notifications)
-│   ├── hooks/                       # Custom hooks
-│   ├── components/ui/               # Reusable UI components
-│   ├── i18n/locales/                # Translation files (EN, HI, DE, ES, FR, ZH)
-│   └── config/                      # App configuration
 ├── shared/                          # Shared config across packages
 ├── graphify-out/                    # Graphify codebase AST graph output
 ├── render.yaml                      # Render.com deployment (frontend + backend + DB)
@@ -195,17 +156,6 @@ npm run doctor:config
 npm run dev
 ```
 
-### Mobile App
-
-```bash
-cd mobile
-npm install
-npx expo start        # Scan QR with Expo Go
-# or
-npm run android       # Launch Android emulator
-npm run ios           # Launch iOS simulator (macOS only)
-```
-
 ### Local URLs
 | Service | URL |
 |---|---|
@@ -214,7 +164,6 @@ npm run ios           # Launch iOS simulator (macOS only)
 | Health Check | `http://localhost:5000/api/health` |
 | Readiness Check | `http://localhost:5000/api/health/ready` |
 | Prisma Studio | `npm run db:studio` |
-| Expo Dev Server | `http://localhost:8081` |
 
 ---
 
@@ -268,14 +217,6 @@ ADMIN_INITIAL_PASSWORD=your_admin_password
 VITE_API_URL=http://localhost:5000/api
 VITE_GOOGLE_CLIENT_ID=your_google_client_id
 ```
-
-### Mobile (`mobile/.env`)
-
-```env
-EXPO_PUBLIC_API_URL=http://localhost:5000/api
-EXPO_PUBLIC_GOOGLE_CLIENT_ID=your_google_client_id
-```
-
 ---
 
 ## 📜 API Overview
@@ -357,14 +298,6 @@ npm run build --workspace frontend
 ### GitHub Actions
 The repository keeps CI in `.github/workflows/ci.yml` for type/build/test checks. Production deployment is owned by Render and Vercel, so older Azure/Netlify/Railway/Heroku workflows have been removed to prevent accidental or confusing deploy paths.
 
-### Mobile (EAS Build)
-```bash
-cd mobile
-eas build --profile production --platform all   # Build iOS + Android
-eas submit --platform ios                        # Submit to App Store
-eas submit --platform android                    # Submit to Play Store
-```
-
 ### Production Checklist
 - Use PostgreSQL (`DATABASE_URL=postgresql://...`)
 - Set strong `JWT_SECRET` and `SESSION_SECRET`
@@ -401,9 +334,6 @@ npm run test
 npm run test:backend
 npm run test:frontend
 
-# Mobile
-cd mobile && npm test
-```
 
 ---
 
