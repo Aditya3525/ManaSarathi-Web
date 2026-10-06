@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" role="img" aria-labelledby="title">
+  <title>Video thumbnail unavailable</title>
+  <rect width="1280" height="720" fill="#172033"/>
+  <circle cx="640" cy="320" r="72" fill="#2f6fed"/>
+  <path d="m620 280 58 40-58 40z" fill="#fff"/>
+  <text x="640" y="470" fill="#dbe5f5" font-family="Arial, sans-serif" font-size="32" text-anchor="middle">Video preview unavailable</text>
+</svg>

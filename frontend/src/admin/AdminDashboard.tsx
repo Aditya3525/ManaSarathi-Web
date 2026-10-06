@@ -40,7 +40,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter, DialogClose } from '../components/ui/dialog';
 import { ScrollArea } from '../components/ui/scroll-area';
 import { Skeleton } from '../components/ui/skeleton';
-
 import { useAdminAuth } from '../contexts/AdminAuthContext';
 import { adminApi, type ApiResponse } from '../services/api';
 import { useNotificationStore } from '../stores/notificationStore';
@@ -57,17 +56,17 @@ import { ContentForm, ContentRecord } from './ContentForm';
 import { ContentList, ContentItem } from './ContentList';
 import { CrisisResourceManagement } from './CrisisResourceManagement';
 import { FAQManagement } from './FAQManagement';
+import {
+  useAdminContent,
+  useAdminDashboardSummary,
+  useAdminPractices
+} from './hooks/useAdminQueries';
 import { PracticeForm, PracticeRecord } from './PracticeForm';
 import { PracticesList, Practice } from './PracticesList';
 import { SupportTicketManagement } from './SupportTicketManagement';
 import { SystemDiagnostics } from './SystemDiagnostics';
 import { TherapistManagement } from './TherapistManagement';
 import { UserManagement } from './UserManagement';
-import {
-  useAdminContent,
-  useAdminDashboardSummary,
-  useAdminPractices
-} from './hooks/useAdminQueries';
 
 const PRACTICE_LEVELS: Practice['level'][] = ['Beginner', 'Intermediate', 'Advanced'];
 

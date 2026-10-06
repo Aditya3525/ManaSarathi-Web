@@ -318,7 +318,7 @@ export const MediaPlayer: React.FC<MediaPlayerProps> = ({
               loading="lazy"
               onError={(event) => {
                 event.currentTarget.onerror = null;
-                event.currentTarget.style.display = 'none';
+                event.currentTarget.src = poster || '/placeholder-video.svg';
               }}
             />
             {/* Gradient overlay */}
