@@ -63,7 +63,11 @@ import { SupportTicketManagement } from './SupportTicketManagement';
 import { SystemDiagnostics } from './SystemDiagnostics';
 import { TherapistManagement } from './TherapistManagement';
 import { UserManagement } from './UserManagement';
-import { useAdminContent, useAdminPractices } from './hooks/useAdminQueries';
+import {
+  useAdminContent,
+  useAdminDashboardSummary,
+  useAdminPractices
+} from './hooks/useAdminQueries';
 
 const PRACTICE_LEVELS: Practice['level'][] = ['Beginner', 'Intermediate', 'Advanced'];
 
@@ -167,6 +171,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) =>
 
   const practicesQuery = useAdminPractices(Boolean(admin));
   const contentQuery = useAdminContent(Boolean(admin));
+  const dashboardSummaryQuery = useAdminDashboardSummary(Boolean(admin));
 
   const isLoading = practicesQuery.isLoading || contentQuery.isLoading;
   const isSyncing = practicesQuery.isFetching || contentQuery.isFetching;
@@ -560,13 +565,19 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) =>
           ? '…'
           : typeof assessmentCount === 'number'
             ? assessmentCount
-            : '—',
+            : dashboardSummaryQuery.data?.kpis.totalAssessments ?? '—',
         icon: ClipboardList,
         color: 'text-teal-600',
         bgColor: 'bg-teal-50'
       }
     ];
-  }, [practices, contentItems, assessmentCount, isLoadingAssessments]);
+  }, [
+    practices,
+    contentItems,
+    assessmentCount,
+    dashboardSummaryQuery.data?.kpis.totalAssessments,
+    isLoadingAssessments
+  ]);
 
   const hasData = practices.length > 0 || contentItems.length > 0;
   const isInitialLoading = isLoading && !hasData;

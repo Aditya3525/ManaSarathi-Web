@@ -287,7 +287,7 @@ export const MediaPlayer: React.FC<MediaPlayerProps> = ({
 
   // YouTube Player
   if (ytId) {
-    const thumbnail = `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`;
+    const thumbnail = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
     return (
       <div 
         className={cn(
@@ -316,6 +316,10 @@ export const MediaPlayer: React.FC<MediaPlayerProps> = ({
               alt={title || "Video thumbnail"}
               className="w-full h-full object-cover transition-transform duration-700 group-hover/btn:scale-105"
               loading="lazy"
+              onError={(event) => {
+                event.currentTarget.onerror = null;
+                event.currentTarget.style.display = 'none';
+              }}
             />
             {/* Gradient overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
